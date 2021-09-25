@@ -5,20 +5,27 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
+#include "../FragPlayer.h"
+#include "InputCoreTypes.h"
 #include "Gun.generated.h"
 
 UENUM()
-enum WeaponModType
+enum class WeaponModType
 {
-	RATE_OF_FIRE
+	WM_INVALID	UMETA(DisplayName = "Invalid"),
+	WM_ROF		UMETA(DisplayName = "Rate Of Fire"),
+	WM_AMMO		UMETA(DisplayName = "Ammo"),
+	
 
 };
 
 USTRUCT()
 struct FWeaponModifier
 {
-
 	GENERATED_BODY()
+
+	WeaponModType type;
+	int stacks = 0;
 };
 
 UCLASS()
@@ -29,13 +36,21 @@ class RLFPS_API AGun : public AActor
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> ProjectileClass;
-	
+
+	UPROPERTY(EditAnywhere)
+	TArray<FWeaponModifier> Mods;
+
 public:	
 	// Sets default values for this actor's properties
 	AGun();
-	void Fire();
-	void Reload();
 
+
+	void Fire(float deltaTime);
+	void SpawnRound();
+	void Reload();
+	bool GetFireKey();
+	bool GetReloadKey();
+	void AddMod(WeaponModType type);
 
 protected:
 	// Called when the game starts or when spawned
@@ -48,16 +63,30 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (MakeEditWidget = true))
 	float MuzzleLocation;
 
-	float elapsedTime = 0;
-	int roundsPerMinute = 200;
-	int shotsPerRound = 1;
+	UPROPERTY(BlueprintReadWrite)
+	bool firing = false;
 
-	float bulletSpeed = 500;
+	UPROPERTY(BlueprintReadWrite)
+	int ammoRemaining;
 
-
-	float ammoCount = 35;
-	float ammoRemaining;
+	UPROPERTY(BlueprintReadWrite)
 	bool reloading = false;
+	 
+	UPROPERTY(EditAnywhere, Category = "Game Stats")
 	float reloadTime = 5;
+	UPROPERTY(EditAnywhere, Category = "Game Stats")
+	float ammoCount = 35;
+	UPROPERTY(EditAnywhere, Category = "Game Stats")
+	float bulletSpeed = 500;
+	UPROPERTY(EditAnywhere, Category = "Game Stats")
+	int roundsPerMinute = 200;
 	
+	int shotsPerRound = 1;
+	float elapsedTime = 0;
+
+	UPROPERTY(EditAnywhere, Category = "Controls")
+	FKey FireKey;
+	UPROPERTY(EditAnywhere, Category = "Controls")
+	FKey ReloadKey;
+
 };
