@@ -24,7 +24,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere)
-		WeaponModType type;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	WeaponModType type;
+
+	UFUNCTION(BlueprintCallable)
+	int GetTypeAsInt();
 
 };
