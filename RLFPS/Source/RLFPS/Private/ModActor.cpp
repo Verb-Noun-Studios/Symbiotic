@@ -25,3 +25,8 @@ void AModActor::Tick(float DeltaTime)
 
 }
 
+int AModActor::GetTypeAsInt()
+{
+	return (int)type;
+}
+

@@ -16,6 +16,7 @@ enum class WeaponModType
 	WM_ROF			UMETA(DisplayName = "Rate Of Fire"),
 	WM_AMMO			UMETA(DisplayName = "Ammo"),
 	WM_RELOAD		UMETA(DisplayName = "Reload"),
+	WM_TEST			UMETA(DisplayName = "TEST"),
 	WM_INVALID_LAST	UMETA(DisplayName = "Invalid Last"),
 	
 
@@ -52,7 +53,8 @@ public:
 	void Reload();
 	bool GetFireKey();
 	bool GetReloadKey();
-	void AddMod(WeaponModType type);
+	UFUNCTION(BlueprintCallable)
+	void AddMod(int modNum);
 	void UpdateCoreStats();
 
 

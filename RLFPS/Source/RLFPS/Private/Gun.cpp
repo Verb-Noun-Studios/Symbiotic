@@ -51,7 +51,7 @@ void AGun::Tick(float DeltaTime)
 	
 	if (reloading)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 0.10f, FColor::Yellow, TEXT("Reloading"));
+		//GEngine->AddOnScreenDebugMessage(-1, 0.10f, FColor::Yellow, TEXT("Reloading"));
 		if (elapsedTime >= reloadTime)
 		{
 			reloading = false;
@@ -62,19 +62,12 @@ void AGun::Tick(float DeltaTime)
 	}
 	else if(GetFireKey() && ammoRemaining > 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Calling Fire"));
+		//UE_LOG(LogTemp, Warning, TEXT("Calling Fire"));
 		Fire(DeltaTime);
 	}
 
 
-	APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	bool makeNewMod = playerController->IsInputKeyDown(EKeys::RightMouseButton);
 	
-	if (makeNewMod)
-	{
-		AddMod(WeaponModType::WM_ROF);
-		UE_LOG(LogTemp, Warning, TEXT("Adding Mod"));
-	}
 	
 }
 
@@ -91,7 +84,7 @@ void AGun::Fire(float deltaTime)
 		ammoRemaining--;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Ammo Remaining: %d"), ammoRemaining);
+	//UE_LOG(LogTemp, Warning, TEXT("Ammo Remaining: %d"), ammoRemaining);
 	
 }
 
@@ -142,13 +135,13 @@ bool AGun::GetReloadKey()
 	
 }
 
-void AGun::AddMod(WeaponModType type)
+void AGun::AddMod(int modNum)
 {
 
 	for (int i = 0; i < Mods.Num(); i++)
 	{
 
-		if (Mods[i].type == type)
+		if (Mods[i].type == (WeaponModType)modNum)
 		{
 			Mods[i].stacks++;
 			UpdateCoreStats();
@@ -158,7 +151,7 @@ void AGun::AddMod(WeaponModType type)
 
 	
 	FWeaponModifier newMod = FWeaponModifier();
-	newMod.type = type;
+	newMod.type = (WeaponModType)modNum;
 	newMod.stacks = 1;
 	Mods.Add(newMod);
 
@@ -204,12 +197,16 @@ void AGun::UpdateCoreStats()
 	}
 
 	reloadTime = defaultReloadTime;
+	for (int j = 0; j < reloadModStacks; j++)
+	{
+		reloadTime *= 0.8;
+	}
 
 	bulletSpeed = defaultBulletSpeed;
 
 
 	UE_LOG(LogTemp, Warning, TEXT("Ammo Count: %d"), ammoCount);
 	UE_LOG(LogTemp, Warning, TEXT("RPM: %d"), rpm);
-	UE_LOG(LogTemp, Warning, TEXT("Reload Time: %d"), reloadTime);
+	UE_LOG(LogTemp, Warning, TEXT("Reload Time: %f"), reloadTime);
 
 }
