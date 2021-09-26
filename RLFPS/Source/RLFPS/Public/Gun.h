@@ -12,9 +12,11 @@
 UENUM()
 enum class WeaponModType
 {
-	WM_INVALID	UMETA(DisplayName = "Invalid"),
-	WM_ROF		UMETA(DisplayName = "Rate Of Fire"),
-	WM_AMMO		UMETA(DisplayName = "Ammo"),
+	WM_INVALID		UMETA(DisplayName = "Invalid"),
+	WM_ROF			UMETA(DisplayName = "Rate Of Fire"),
+	WM_AMMO			UMETA(DisplayName = "Ammo"),
+	WM_RELOAD		UMETA(DisplayName = "Reload"),
+	WM_INVALID_LAST	UMETA(DisplayName = "Invalid Last"),
 	
 
 };
@@ -75,16 +77,26 @@ public:
 	bool reloading = false;
 	 
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
-	float reloadTime = 5;
+	float defaultReloadTime = 5;
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
 	int defaultAmmoCount = 10;
-	int ammoCount;
-	UPROPERTY(EditAnywhere, Category = "Game Stats")
-	float bulletSpeed = 500;
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
 	int defaultRPM = 120;
-	int rpm;
+	UPROPERTY(EditAnywhere, Category = "Game Stats")
+	int defaultBulletSpeed = 120;
 	
+
+
+
+	UPROPERTY(EditAnywhere, Category = "Gun Stats")
+	float reloadTime;
+	UPROPERTY(EditAnywhere, Category = "Gun Stats")
+	int ammoCount;
+	UPROPERTY(EditAnywhere, Category = "Gun Stats")
+	float bulletSpeed;
+	UPROPERTY(EditAnywhere, Category = "Gun stats")
+	int rpm;
+
 	int shotsPerRound = 1;
 	float elapsedTime = 0;
 

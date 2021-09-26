@@ -29,6 +29,12 @@ void AGun::BeginPlay()
 	//set RPM
 	rpm = defaultRPM;
 
+	//set reload time
+	reloadTime = defaultReloadTime;
+
+	//set bullet speed
+	bulletSpeed = defaultBulletSpeed;
+
 }
 
 // Called every frame
@@ -45,6 +51,7 @@ void AGun::Tick(float DeltaTime)
 	
 	if (reloading)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 0.10f, FColor::Yellow, TEXT("Reloading"));
 		if (elapsedTime >= reloadTime)
 		{
 			reloading = false;
@@ -164,6 +171,7 @@ void AGun::UpdateCoreStats()
 {
 	int ammoModStacks = 0;
 	int rofModStacks = 0;
+	int reloadModStacks = 0;
 
 	for (int i = 0; i < Mods.Num(); i++)
 	{
@@ -176,6 +184,10 @@ void AGun::UpdateCoreStats()
 		if (Mods[i].type == WeaponModType::WM_ROF)
 		{
 			rofModStacks += Mods[i].stacks;
+		}
+		if (Mods[i].type == WeaponModType::WM_RELOAD)
+		{
+			reloadModStacks += Mods[i].stacks;
 		}
 	}
 	if (ammoModStacks > 0)
@@ -190,7 +202,14 @@ void AGun::UpdateCoreStats()
 	{
 		rpm += rpm;
 	}
+
+	reloadTime = defaultReloadTime;
+
+	bulletSpeed = defaultBulletSpeed;
+
+
 	UE_LOG(LogTemp, Warning, TEXT("Ammo Count: %d"), ammoCount);
 	UE_LOG(LogTemp, Warning, TEXT("RPM: %d"), rpm);
+	UE_LOG(LogTemp, Warning, TEXT("Reload Time: %d"), reloadTime);
 
 }
