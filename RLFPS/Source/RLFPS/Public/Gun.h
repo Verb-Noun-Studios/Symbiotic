@@ -51,6 +51,8 @@ public:
 	bool GetFireKey();
 	bool GetReloadKey();
 	void AddMod(WeaponModType type);
+	void UpdateCoreStats();
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -75,11 +77,13 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
 	float reloadTime = 5;
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
-	float ammoCount = 35;
+	int defaultAmmoCount = 10;
+	int ammoCount;
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
 	float bulletSpeed = 500;
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
-	int roundsPerMinute = 200;
+	int defaultRPM = 120;
+	int rpm;
 	
 	int shotsPerRound = 1;
 	float elapsedTime = 0;

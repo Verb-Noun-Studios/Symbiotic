@@ -22,8 +22,13 @@ void AGun::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//set ammo
+	ammoCount = defaultAmmoCount;
 	ammoRemaining = ammoCount;
 	
+	//set RPM
+	rpm = defaultRPM;
+
 }
 
 // Called every frame
@@ -35,6 +40,7 @@ void AGun::Tick(float DeltaTime)
 	if (!reloading)
 	{
 		reloading = GetReloadKey();
+		Reload();
 	}
 	
 	if (reloading)
@@ -44,6 +50,7 @@ void AGun::Tick(float DeltaTime)
 			reloading = false;
 			elapsedTime = 0;
 			ammoRemaining = ammoCount;
+			UE_LOG(LogTemp, Warning, TEXT("Finished Reloading"));
 		}
 	}
 	else if(GetFireKey() && ammoRemaining > 0)
@@ -54,7 +61,7 @@ void AGun::Tick(float DeltaTime)
 
 
 	APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	bool makeNewMod = playerController->IsInputKeyDown(EKeys::SpaceBar);
+	bool makeNewMod = playerController->IsInputKeyDown(EKeys::RightMouseButton);
 	
 	if (makeNewMod)
 	{
@@ -66,42 +73,24 @@ void AGun::Tick(float DeltaTime)
 
 void AGun::Fire(float deltaTime)
 {
-	int rofModStacks = 0;
 	
-
-	for (int i = 0; i < Mods.Num(); i++)
-	{
-		if (Mods[i].type == WeaponModType::WM_ROF)
-		{
-			rofModStacks += Mods[i].stacks;
-		}
-	}
-
-	
-	UE_LOG(LogTemp, Warning, TEXT("finished counting mods"));
-
-
-	int additionalRPM = (int)(roundsPerMinute * rofModStacks);
-
-
 	elapsedTime += deltaTime;
 
-	if (elapsedTime >= (60.0 / ((float)roundsPerMinute + additionalRPM)))
+	if (elapsedTime >= (60.0 / rpm))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Spawning round"));
+	
 		elapsedTime = 0;
 		SpawnRound();
+		ammoRemaining--;
 	}
-	
-	ammoRemaining--;
 
-	
+	UE_LOG(LogTemp, Warning, TEXT("Ammo Remaining: %d"), ammoRemaining);
 	
 }
 
 void AGun::Reload()
 {
-
+	//trigger animations here
 }
 
 void AGun::SpawnRound()
@@ -155,6 +144,7 @@ void AGun::AddMod(WeaponModType type)
 		if (Mods[i].type == type)
 		{
 			Mods[i].stacks++;
+			UpdateCoreStats();
 			return;
 		}
 	}
@@ -164,6 +154,43 @@ void AGun::AddMod(WeaponModType type)
 	newMod.type = type;
 	newMod.stacks = 1;
 	Mods.Add(newMod);
+
+	UpdateCoreStats();
+
 	return;
 }
 
+void AGun::UpdateCoreStats()
+{
+	int ammoModStacks = 0;
+	int rofModStacks = 0;
+
+	for (int i = 0; i < Mods.Num(); i++)
+	{
+
+		if (Mods[i].type == WeaponModType::WM_AMMO)
+		{
+			ammoModStacks += Mods[i].stacks;
+		}
+
+		if (Mods[i].type == WeaponModType::WM_ROF)
+		{
+			rofModStacks += Mods[i].stacks;
+		}
+	}
+	if (ammoModStacks > 0)
+	{
+		ammoCount = defaultAmmoCount * 2 * ammoModStacks;
+
+	}
+	
+	
+	rpm = defaultRPM;
+	for (int j = 0; j < rofModStacks; j++)
+	{
+		rpm += rpm;
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Ammo Count: %d"), ammoCount);
+	UE_LOG(LogTemp, Warning, TEXT("RPM: %d"), rpm);
+
+}
