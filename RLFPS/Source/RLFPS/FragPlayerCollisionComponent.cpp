@@ -1,9 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-
-#include "FragPlayer.h"
 #include "FragPlayerCollisionComponent.h"
+#include "FragPlayer.h"
 #include "FragMovementComponent.h"
 #include "Engine.h"
 // Sets default values for this component's properties
