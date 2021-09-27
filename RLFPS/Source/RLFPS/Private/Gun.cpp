@@ -46,7 +46,11 @@ void AGun::Tick(float DeltaTime)
 	if (!reloading)
 	{
 		reloading = GetReloadKey();
-		Reload();
+		if (reloading)
+		{
+			Reload();
+		}
+		
 	}
 	
 	if (reloading)
@@ -66,7 +70,11 @@ void AGun::Tick(float DeltaTime)
 		Fire(DeltaTime);
 	}
 
-
+	if(ammoRemaining <= 0 && !reloading)
+	{
+		Reload();
+		reloading = true;
+	}
 	
 	
 }
@@ -159,6 +167,45 @@ void AGun::AddMod(int modNum)
 
 	return;
 }
+
+
+void AGun::GainEXP(int exp)
+{
+	currentEXP += exp;
+
+	if (currentEXP > expToNextLevel)
+	{
+		LevelUp();
+	}
+}
+
+
+void AGun::LevelUp()
+{
+	int mod = FMath::RandRange(1, 3);
+
+	AddMod(mod);
+
+	expToNextLevel *= 2;
+
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("LEVEL UP!"), true, FVector2D(2,2));
+
+
+	switch (mod)
+	{
+	case 1:
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Adding Rate of Fire Mod"), false, FVector2D(2, 2));
+		break;
+	case 2:
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Adding Ammo Mod"), false, FVector2D(2, 2));
+		break;
+	case 3:
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Adding Reload Mod"), false, FVector2D(2, 2));
+		break;
+	}
+
+}
+
 
 void AGun::UpdateCoreStats()
 {

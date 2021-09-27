@@ -16,7 +16,6 @@ enum class WeaponModType
 	WM_ROF			UMETA(DisplayName = "Rate Of Fire"),
 	WM_AMMO			UMETA(DisplayName = "Ammo"),
 	WM_RELOAD		UMETA(DisplayName = "Reload"),
-	WM_TEST			UMETA(DisplayName = "TEST"),
 	WM_INVALID_LAST	UMETA(DisplayName = "Invalid Last"),
 	
 
@@ -55,6 +54,9 @@ public:
 	bool GetReloadKey();
 	UFUNCTION(BlueprintCallable)
 	void AddMod(int modNum);
+	UFUNCTION(BlueprintCallable)
+	void GainEXP(int exp);
+	void LevelUp();
 	void UpdateCoreStats();
 
 
@@ -87,7 +89,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
 	int defaultBulletSpeed = 120;
 	
-
+	int expToNextLevel=5;
+	int currentEXP;
 
 
 	UPROPERTY(EditAnywhere, Category = "Gun Stats")
