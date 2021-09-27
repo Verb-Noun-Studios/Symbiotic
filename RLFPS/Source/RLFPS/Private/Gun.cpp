@@ -48,6 +48,7 @@ void AGun::Tick(float DeltaTime)
 		reloading = GetReloadKey();
 		if (reloading)
 		{
+			firing = false;
 			Reload();
 		}
 		
@@ -69,9 +70,14 @@ void AGun::Tick(float DeltaTime)
 		//UE_LOG(LogTemp, Warning, TEXT("Calling Fire"));
 		Fire(DeltaTime);
 	}
+	else
+	{
+		firing = false;
+	}
 
 	if(ammoRemaining <= 0 && !reloading)
 	{
+		firing = false;
 		Reload();
 		reloading = true;
 	}
@@ -90,6 +96,7 @@ void AGun::Fire(float deltaTime)
 		elapsedTime = 0;
 		SpawnRound();
 		ammoRemaining--;
+		firing = true;
 	}
 
 	//UE_LOG(LogTemp, Warning, TEXT("Ammo Remaining: %d"), ammoRemaining);

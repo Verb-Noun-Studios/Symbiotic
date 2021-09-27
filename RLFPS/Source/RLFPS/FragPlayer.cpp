@@ -84,6 +84,7 @@ void AFragPlayer::BeginPlay()
 // Called every frame
 void AFragPlayer::Tick(float DeltaTime)
 {
+	Super::Tick(DeltaTime);
 	// Handles the input from mouse to control the camera
 	UpdateViewingAngles();
 	// After we decide where the player is facing, we get the forward vector
