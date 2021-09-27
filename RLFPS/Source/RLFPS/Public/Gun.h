@@ -50,6 +50,7 @@ public:
 	void Fire(float deltaTime);
 	void SpawnRound();
 	void Reload();
+	UFUNCTION(BlueprintCallable)
 	bool GetFireKey();
 	bool GetReloadKey();
 	UFUNCTION(BlueprintCallable)

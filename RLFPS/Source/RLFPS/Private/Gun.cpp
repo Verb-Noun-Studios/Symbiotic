@@ -83,7 +83,7 @@ void AGun::Fire(float deltaTime)
 {
 	
 	elapsedTime += deltaTime;
-
+	firing = false;
 	if (elapsedTime >= (60.0 / rpm))
 	{
 	
@@ -103,6 +103,7 @@ void AGun::Reload()
 
 void AGun::SpawnRound()
 {
+	firing = true;
 	UWorld* World = GetWorld();
 
 	FActorSpawnParameters SpawnParams;
