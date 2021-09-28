@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "FragMovementComponent.h"
 #include "FragPlayer.h"
 #include "FragPlayerCollisionComponent.h"
-#include "FragMovementComponent.h"
 #include "Engine.h"
 UFragMovementComponent::UFragMovementComponent(const FObjectInitializer& ObjectInitializer)
 {
