@@ -117,6 +117,7 @@ void AFragPlayer::SetRotation(FQuat NewRotation)
 	// We only need the pitch of the camera since
 	// the camera is attached to the player's body
 	// and the body does the Z rotation
+	
 	FRotator NewCameraRotation(NewRotation);
 	NewCameraRotation.Roll = 0.f;
 	NewCameraRotation.Yaw = 0.f;
