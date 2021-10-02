@@ -120,6 +120,20 @@ public:
 	UPROPERTY(Category = "Camera ", EditAnywhere, BlueprintReadWrite)
 		float pitchMinY;
 
+	//Health Pieces
+public:
+	UPROPERTY(Category = "Health ", EditAnywhere, BlueprintReadWrite)
+		float maxHealth;
+
+	UPROPERTY(Category = "Health ", EditAnywhere, BlueprintReadOnly)
+		float currentHealth;
+
+
+	/* Deal Damage to Player */
+	UFUNCTION(BlueprintCallable, Category = "fragCharacter|Health")
+		void dealDamage(float damage);
+
+
 
 	//Camera Pieces
 public:
