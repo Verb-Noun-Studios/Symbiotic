@@ -96,12 +96,13 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Gun Stats")
 	float reloadTime;
-	UPROPERTY(EditAnywhere, Category = "Gun Stats")
+	UPROPERTY(EditAnywhere, Category = "Gun Stats", BlueprintReadWrite)
 	int ammoCount;
 	UPROPERTY(EditAnywhere, Category = "Gun Stats")
 	float bulletSpeed;
 	UPROPERTY(EditAnywhere, Category = "Gun stats")
 	int rpm;
+
 
 	int shotsPerRound = 1;
 	float elapsedTime = 0;

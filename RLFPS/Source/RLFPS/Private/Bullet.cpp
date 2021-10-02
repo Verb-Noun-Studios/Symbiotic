@@ -28,8 +28,8 @@ ABullet::ABullet()
 		// Use this component to drive this projectile's movement.
 		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
-		ProjectileMovementComponent->InitialSpeed = 3000.0f;
-		ProjectileMovementComponent->MaxSpeed = 3000.0f;
+		ProjectileMovementComponent->InitialSpeed = 30000.0f;
+		ProjectileMovementComponent->MaxSpeed = 30000.0f;
 		ProjectileMovementComponent->bRotationFollowsVelocity = true;
 		ProjectileMovementComponent->bShouldBounce = true;
 		ProjectileMovementComponent->Bounciness = 0.3f;
@@ -60,7 +60,7 @@ void ABullet::Tick(float DeltaTime)
 
 void ABullet::SetInitialDirection(FVector dir)
 {
-	ProjectileMovementComponent->Velocity = dir * ProjectileMovementComponent->InitialSpeed;
+	ProjectileMovementComponent->Velocity = dir * ProjectileMovementComponent->InitialSpeed * fireSpeedMultipler;
 }
 
 void ABullet::SetInitialSpeed(float speed)

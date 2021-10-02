@@ -128,6 +128,16 @@ void AFragPlayer::SetRotation(FQuat NewRotation)
 	NewPlayerRotation.Pitch = 0.f;
 	PlayerForwardRefComponent->SetWorldRotation(NewPlayerRotation);
 }
+
+void AFragPlayer::AddRotation()
+{
+	
+	FQuat newQuat(FMath::RandRange(xMin, xMax), FMath::FRandRange(yMin, yMax), FMath::FRandRange(zMin, zMax), 1.0f);
+	FRotator RotationToAdd(newQuat);
+
+	FirstPersonCameraComponent->AddLocalRotation(RotationToAdd);
+}
+
 FRotator AFragPlayer::GetRotation()
 {
 	return FirstPersonCameraComponent->GetComponentRotation();
