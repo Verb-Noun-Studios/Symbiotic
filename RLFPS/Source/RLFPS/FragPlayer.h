@@ -113,6 +113,14 @@ public:
 	UPROPERTY(Category = "Weapon ", EditAnywhere, BlueprintReadWrite)
 		float zMax;
 
+	/** Set the Max Pitch For Camera */
+	UPROPERTY(Category = "Camera ", EditAnywhere, BlueprintReadWrite)
+		float pitchMaxY;
+	/** Set the Min Pitch For Camera */
+	UPROPERTY(Category = "Camera ", EditAnywhere, BlueprintReadWrite)
+		float pitchMinY;
+
+
 	//Camera Pieces
 public:
 	/** Takes mouse input and converts it into camera rotational movements */

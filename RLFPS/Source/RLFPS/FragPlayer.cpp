@@ -120,6 +120,9 @@ void AFragPlayer::SetRotation(FQuat NewRotation)
 	
 	FRotator NewCameraRotation(NewRotation);
 	NewCameraRotation.Roll = 0.f;
+	NewCameraRotation.Pitch = FMath::Clamp(NewCameraRotation.Pitch, -0.0f, 0.0f);
+	FString pitchString = FString::SanitizeFloat(NewCameraRotation.Pitch);
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Test"));
 	NewCameraRotation.Yaw = 0.f;
 	FirstPersonCameraComponent->SetRelativeRotation(NewCameraRotation);
 	// Squash the roll and pitch of the rotation for the Z
@@ -162,6 +165,16 @@ void AFragPlayer::UpdateViewingAngles()
 	{
 		FVector v(0.f, -MouseVelocity.Y, 0.f);
 		FirstPersonCameraComponent->AddLocalRotation(FQuat::MakeFromEuler(v));
+		FMinimalViewInfo cameraViewInfo;
+		FirstPersonCameraComponent->GetCameraView(1.0f, cameraViewInfo);
+		if (cameraViewInfo.Rotation.Pitch > pitchMaxY) {
+			FRotator temp(pitchMaxY, cameraViewInfo.Rotation.Yaw, cameraViewInfo.Rotation.Roll);
+			FirstPersonCameraComponent->SetWorldRotation(temp);
+		}
+		if (cameraViewInfo.Rotation.Pitch < pitchMinY) {
+			FRotator temp(pitchMinY, cameraViewInfo.Rotation.Yaw, cameraViewInfo.Rotation.Roll);
+			FirstPersonCameraComponent->SetWorldRotation(temp);
+		}
 	}
 	// Rotate the reference point component
 	if (PlayerForwardRefComponent)
