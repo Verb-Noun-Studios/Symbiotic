@@ -45,6 +45,11 @@ public:
 	/* Sets the player's viewing angles */
 	UFUNCTION(BlueprintCallable, Category = "fragCharacter")
 		void SetRotation(FQuat NewRotation);
+	
+	/* Add rotation to player */
+	UFUNCTION(BluePrintCallable, Category = "fragCharacter")
+		void AddRotation();
+
 	/* Gets the player's viewing angles */
 	UFUNCTION(BlueprintCallable, Category = "fragCharacter")
 		FRotator GetRotation();
@@ -89,6 +94,47 @@ public:
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		UCameraComponent* FirstPersonCameraComponent;
+
+	/** Control xMin and xMax */
+	UPROPERTY(Category = "Weapon ", EditAnywhere, BlueprintReadWrite)
+		float xMin;
+	UPROPERTY(Category = "Weapon ", EditAnywhere, BlueprintReadWrite)
+		float xMax;
+
+	/** Control yMin and yMax */
+	UPROPERTY(Category = "Weapon ", EditAnywhere, BlueprintReadWrite)
+		float yMin;
+	UPROPERTY(Category = "Weapon ", EditAnywhere, BlueprintReadWrite)
+		float yMax;
+
+	/** Control yMin and yMax */
+	UPROPERTY(Category = "Weapon ", EditAnywhere, BlueprintReadWrite)
+		float zMin;
+	UPROPERTY(Category = "Weapon ", EditAnywhere, BlueprintReadWrite)
+		float zMax;
+
+	/** Set the Max Pitch For Camera */
+	UPROPERTY(Category = "Camera ", EditAnywhere, BlueprintReadWrite)
+		float pitchMaxY;
+	/** Set the Min Pitch For Camera */
+	UPROPERTY(Category = "Camera ", EditAnywhere, BlueprintReadWrite)
+		float pitchMinY;
+
+	//Health Pieces
+public:
+	UPROPERTY(Category = "Health ", EditAnywhere, BlueprintReadWrite)
+		float maxHealth;
+
+	UPROPERTY(Category = "Health ", EditAnywhere, BlueprintReadOnly)
+		float currentHealth;
+
+
+	/* Deal Damage to Player */
+	UFUNCTION(BlueprintCallable, Category = "fragCharacter|Health")
+		void dealDamage(float damage);
+
+
+
 	//Camera Pieces
 public:
 	/** Takes mouse input and converts it into camera rotational movements */

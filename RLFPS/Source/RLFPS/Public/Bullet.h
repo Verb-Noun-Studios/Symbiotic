@@ -42,4 +42,8 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
+	// Used to increase the speed, 1 is normal
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
+		float fireSpeedMultipler;
+
 };
