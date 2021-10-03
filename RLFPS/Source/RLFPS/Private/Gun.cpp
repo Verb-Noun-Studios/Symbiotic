@@ -82,6 +82,17 @@ void AGun::Tick(float DeltaTime)
 		reloading = true;
 	}
 	
+	if (readyToLevelUp)
+	{
+		if (GetOptionOneKey())
+		{
+			LevelUp(ModOptions[0]);
+		}
+		else if (GetOptionTwoKey())
+		{
+			LevelUp(ModOptions[1]);
+		}
+	}
 	
 }
 
@@ -151,13 +162,31 @@ bool AGun::GetReloadKey()
 	
 }
 
-void AGun::AddMod(int modNum)
+bool AGun::GetOptionOneKey()
+{
+	APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	bool reloadState = playerController->IsInputKeyDown(OptionOneKey);
+
+	return reloadState;
+
+}
+
+bool AGun::GetOptionTwoKey()
+{
+	APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	bool reloadState = playerController->IsInputKeyDown(OptionTwoKey);
+
+	return reloadState;
+
+}
+
+void AGun::AddMod(WeaponModType modType)
 {
 
 	for (int i = 0; i < Mods.Num(); i++)
 	{
 
-		if (Mods[i].type == (WeaponModType)modNum)
+		if (Mods[i].type == modType)
 		{
 			Mods[i].stacks++;
 			UpdateCoreStats();
@@ -167,7 +196,7 @@ void AGun::AddMod(int modNum)
 
 	
 	FWeaponModifier newMod = FWeaponModifier();
-	newMod.type = (WeaponModType)modNum;
+	newMod.type = modType;
 	newMod.stacks = 1;
 	Mods.Add(newMod);
 
@@ -179,38 +208,61 @@ void AGun::AddMod(int modNum)
 
 void AGun::GainEXP(int exp)
 {
+	if (readyToLevelUp)
+	{
+		currentEXP += exp;
+		return;
+	}
+
 	currentEXP += exp;
 
 	if (currentEXP > expToNextLevel)
 	{
-		LevelUp();
+		readyToLevelUp = true;
+		ModOptions = GetNewModOptions();
+		currentEXP = currentEXP - expToNextLevel;
 	}
 }
 
 
-void AGun::LevelUp()
+float AGun::GetLevelPercentage()
 {
-	int mod = FMath::RandRange(1, 3);
+	return (float)currentEXP / (float)expToNextLevel;
+}
 
-	AddMod(mod);
+TArray<WeaponModType> AGun::GetNewModOptions()
+{
+	int modOne = FMath::RandRange((int)WeaponModType::WM_ROF, (int)WeaponModType::WM_RELOAD);
+	int modTwo = FMath::RandRange((int)WeaponModType::WM_ROF, (int)WeaponModType::WM_RELOAD);
+	while (modTwo == modOne)
+	{
+		modTwo = FMath::RandRange((int)WeaponModType::WM_ROF, (int)WeaponModType::WM_RELOAD);
+	}
 
+	return TArray<WeaponModType>{(WeaponModType)modOne, (WeaponModType)modTwo};
+}
+
+TArray<WeaponModType> AGun::GetModOptions()
+{
+	TArray<int> options;
+	for (WeaponModType type : ModOptions)
+	{
+		options.Add((int)type);
+	}
+	return ModOptions;
+}
+
+
+void AGun::LevelUp(WeaponModType newModType)
+{
+	AddMod(newModType);
 	expToNextLevel *= 2;
+	if (GetLevelPercentage() != 1)
+	{
+		readyToLevelUp = false;
+	}
 
 	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("LEVEL UP!"), true, FVector2D(2,2));
-
-
-	switch (mod)
-	{
-	case 1:
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Adding Rate of Fire Mod"), false, FVector2D(2, 2));
-		break;
-	case 2:
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Adding Ammo Mod"), false, FVector2D(2, 2));
-		break;
-	case 3:
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Adding Reload Mod"), false, FVector2D(2, 2));
-		break;
-	}
 
 }
 

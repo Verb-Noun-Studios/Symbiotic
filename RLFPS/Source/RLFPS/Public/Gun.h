@@ -10,7 +10,7 @@
 #include "Gun.generated.h"
 
 UENUM()
-enum class WeaponModType
+enum class WeaponModType : uint8
 {
 	WM_INVALID		UMETA(DisplayName = "Invalid"),
 	WM_ROF			UMETA(DisplayName = "Rate Of Fire"),
@@ -41,6 +41,7 @@ class RLFPS_API AGun : public AActor
 
 	UPROPERTY(EditAnywhere)
 	TArray<FWeaponModifier> Mods;
+	
 
 public:	
 	// Sets default values for this actor's properties
@@ -53,11 +54,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool GetFireKey();
 	bool GetReloadKey();
+	bool GetOptionOneKey();
+	bool GetOptionTwoKey();
 	UFUNCTION(BlueprintCallable)
-	void AddMod(int modNum);
+	void AddMod(WeaponModType type);
 	UFUNCTION(BlueprintCallable)
 	void GainEXP(int exp);
-	void LevelUp();
+	UFUNCTION(BlueprintCallable)
+	float GetLevelPercentage();
+	TArray<WeaponModType> GetNewModOptions();
+	UFUNCTION(BlueprintCallable)
+	TArray<WeaponModType> GetModOptions();
+	void LevelUp(WeaponModType newModType);
 	void UpdateCoreStats();
 
 
@@ -90,9 +98,14 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
 	int defaultBulletSpeed = 120;
 	
+	UPROPERTY(BlueprintReadWrite)
 	int expToNextLevel=5;
+	UPROPERTY(BlueprintReadWrite)
 	int currentEXP;
-
+	UPROPERTY(BlueprintReadWrite)
+	bool readyToLevelUp = false;
+	UPROPERTY(BlueprintReadWrite)
+	TArray<WeaponModType> ModOptions;
 
 	UPROPERTY(EditAnywhere, Category = "Gun Stats")
 	float reloadTime;
@@ -111,5 +124,9 @@ public:
 	FKey FireKey;
 	UPROPERTY(EditAnywhere, Category = "Controls")
 	FKey ReloadKey;
+	UPROPERTY(EditAnywhere, Category = "Controls")
+	FKey OptionOneKey;
+	UPROPERTY(EditAnywhere, Category = "Controls")
+	FKey OptionTwoKey;
 
 };
