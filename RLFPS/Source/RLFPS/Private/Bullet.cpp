@@ -67,3 +67,8 @@ void ABullet::SetInitialSpeed(float speed)
 {
 	ProjectileMovementComponent->InitialSpeed = speed;
 }
+
+void ABullet::SetGun(AGun* newGun) 
+{ 
+	gun = newGun; 
+}

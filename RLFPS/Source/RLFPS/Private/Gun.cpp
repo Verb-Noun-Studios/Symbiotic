@@ -3,6 +3,7 @@
 
 #include "Gun.h"
 #include "Kismet/GameplayStatics.h"
+#include"IncreasedMagMod.h"
 #include "CoreMinimal.h"
 #include "Bullet.h"
 
@@ -20,12 +21,13 @@ AGun::AGun()
 // Called when the game starts or when spawned
 void AGun::BeginPlay()
 {
+	
 	Super::BeginPlay();
 
 	//set ammo
 	ammoCount = defaultAmmoCount;
 	ammoRemaining = ammoCount;
-	
+
 	//set RPM
 	rpm = defaultRPM;
 
@@ -34,26 +36,26 @@ void AGun::BeginPlay()
 
 	//set bullet speed
 	bulletSpeed = defaultBulletSpeed;
-
 }
 
 // Called every frame
 void AGun::Tick(float DeltaTime)
 {
+	
 	Super::Tick(DeltaTime);
 	elapsedTime += DeltaTime;
-	
+
 	if (!reloading)
 	{
 		reloading = GetReloadKey();
 		if (reloading)
 		{
 			firing = false;
-			Reload();
+			//Reload();
 		}
-		
+
 	}
-	
+
 	if (reloading)
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 0.10f, FColor::Yellow, TEXT("Reloading"));
@@ -65,7 +67,7 @@ void AGun::Tick(float DeltaTime)
 			UE_LOG(LogTemp, Warning, TEXT("Finished Reloading"));
 		}
 	}
-	else if(GetFireKey() && ammoRemaining > 0)
+	else if (GetFireKey() && ammoRemaining > 0)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("Calling Fire"));
 		Fire(DeltaTime);
@@ -75,35 +77,35 @@ void AGun::Tick(float DeltaTime)
 		firing = false;
 	}
 
-	if(ammoRemaining <= 0 && !reloading)
+	if (ammoRemaining <= 0 && !reloading)
 	{
 		firing = false;
-		Reload();
+		//Reload();
 		reloading = true;
 	}
-	
-	if (readyToLevelUp)
-	{
-		if (GetOptionOneKey())
-		{
-			LevelUp(ModOptions[0]);
-		}
-		else if (GetOptionTwoKey())
-		{
-			LevelUp(ModOptions[1]);
-		}
-	}
+
+	//if (readyToLevelUp)
+	//{
+	//	if (GetOptionOneKey())
+	//	{
+	//		//LevelUp(ModOptions[0]);
+	//	}
+	//	else if (GetOptionTwoKey())
+	//	{
+	//		//LevelUp(ModOptions[1]);
+	//	}
+	//}
 	
 }
 
 void AGun::Fire(float deltaTime)
 {
-	
+
 	elapsedTime += deltaTime;
 	firing = false;
 	if (elapsedTime >= (60.0 / rpm))
 	{
-	
+
 		elapsedTime = 0;
 		SpawnRound();
 		ammoRemaining--;
@@ -111,12 +113,7 @@ void AGun::Fire(float deltaTime)
 	}
 
 	//UE_LOG(LogTemp, Warning, TEXT("Ammo Remaining: %d"), ammoRemaining);
-	
-}
 
-void AGun::Reload()
-{
-	//trigger animations here
 }
 
 void AGun::SpawnRound()
@@ -139,11 +136,52 @@ void AGun::SpawnRound()
 			bullets.Add(bullet);
 			bullets[i]->SetInitialSpeed(bulletSpeed);
 			bullets[i]->SetInitialDirection(GetActorForwardVector());
+			bullets[i]->SetGun(this);
 
 		}
 
 	}
 }
+
+
+void AGun::AddGunMod(TWeakObjectPtr<UGunModBase> newMod)
+{
+	for (TWeakObjectPtr<UGunModBase> mod : gunMods)
+	{
+		if (newMod->gunModType == mod->gunModType)
+		{
+			mod->stacks++;
+			//mod->OnApply(reloadTime, ammoCount, bulletSpeed, rpm);
+			return;
+		}
+	}
+	
+	int index = gunMods.Add(newMod);
+	//gunMods[index]->OnApply(reloadTime, ammoCount, bulletSpeed, rpm);
+
+	UE_LOG(LogTemp, Warning, TEXT("Ammo Count: %d"), ammoCount);
+	UE_LOG(LogTemp, Warning, TEXT("RPM: %d"), rpm);
+	UE_LOG(LogTemp, Warning, TEXT("Reload Time: %f"), reloadTime);
+
+}
+
+void AGun::AddAmmoMod(TWeakObjectPtr<UAmmoModBase> newMod)
+{
+	for (TWeakObjectPtr<UAmmoModBase> mod : ammoMods)
+	{
+		if (newMod->ammoModType == mod->ammoModType)
+		{
+			mod->stacks++;
+			return;
+		}
+	}
+
+	ammoMods.Add(newMod);
+	
+}
+
+
+
 
 bool AGun::GetFireKey()
 {
@@ -180,140 +218,12 @@ bool AGun::GetOptionTwoKey()
 
 }
 
-void AGun::AddMod(WeaponModType modType)
+
+void AGun::OnHitCallback(AActor* actor)
 {
-
-	for (int i = 0; i < Mods.Num(); i++)
+	for(TWeakObjectPtr<UAmmoModBase> mod : ammoMods)
 	{
-
-		if (Mods[i].type == modType)
-		{
-			Mods[i].stacks++;
-			UpdateCoreStats();
-			return;
-		}
-	}
-
-	
-	FWeaponModifier newMod = FWeaponModifier();
-	newMod.type = modType;
-	newMod.stacks = 1;
-	Mods.Add(newMod);
-
-	UpdateCoreStats();
-
-	return;
-}
-
-
-void AGun::GainEXP(int exp)
-{
-	if (readyToLevelUp)
-	{
-		currentEXP += exp;
-		return;
-	}
-
-	currentEXP += exp;
-
-	if (currentEXP > expToNextLevel)
-	{
-		readyToLevelUp = true;
-		ModOptions = GetNewModOptions();
-		currentEXP = currentEXP - expToNextLevel;
+		mod->OnHit();
 	}
 }
 
-
-float AGun::GetLevelPercentage()
-{
-	return (float)currentEXP / (float)expToNextLevel;
-}
-
-TArray<WeaponModType> AGun::GetNewModOptions()
-{
-	int modOne = FMath::RandRange((int)WeaponModType::WM_ROF, (int)WeaponModType::WM_RELOAD);
-	int modTwo = FMath::RandRange((int)WeaponModType::WM_ROF, (int)WeaponModType::WM_RELOAD);
-	while (modTwo == modOne)
-	{
-		modTwo = FMath::RandRange((int)WeaponModType::WM_ROF, (int)WeaponModType::WM_RELOAD);
-	}
-
-	return TArray<WeaponModType>{(WeaponModType)modOne, (WeaponModType)modTwo};
-}
-
-TArray<WeaponModType> AGun::GetModOptions()
-{
-	TArray<int> options;
-	for (WeaponModType type : ModOptions)
-	{
-		options.Add((int)type);
-	}
-	return ModOptions;
-}
-
-
-void AGun::LevelUp(WeaponModType newModType)
-{
-	AddMod(newModType);
-	expToNextLevel *= 2;
-	if (GetLevelPercentage() != 1)
-	{
-		readyToLevelUp = false;
-	}
-
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("LEVEL UP!"), true, FVector2D(2,2));
-
-}
-
-
-void AGun::UpdateCoreStats()
-{
-	int ammoModStacks = 0;
-	int rofModStacks = 0;
-	int reloadModStacks = 0;
-
-	for (int i = 0; i < Mods.Num(); i++)
-	{
-
-		if (Mods[i].type == WeaponModType::WM_AMMO)
-		{
-			ammoModStacks += Mods[i].stacks;
-		}
-
-		if (Mods[i].type == WeaponModType::WM_ROF)
-		{
-			rofModStacks += Mods[i].stacks;
-		}
-		if (Mods[i].type == WeaponModType::WM_RELOAD)
-		{
-			reloadModStacks += Mods[i].stacks;
-		}
-	}
-	if (ammoModStacks > 0)
-	{
-		ammoCount = defaultAmmoCount * 2 * ammoModStacks;
-
-	}
-	
-	
-	rpm = defaultRPM;
-	for (int j = 0; j < rofModStacks; j++)
-	{
-		rpm += rpm;
-	}
-
-	reloadTime = defaultReloadTime;
-	for (int j = 0; j < reloadModStacks; j++)
-	{
-		reloadTime *= 0.8;
-	}
-
-	bulletSpeed = defaultBulletSpeed;
-
-
-	UE_LOG(LogTemp, Warning, TEXT("Ammo Count: %d"), ammoCount);
-	UE_LOG(LogTemp, Warning, TEXT("RPM: %d"), rpm);
-	UE_LOG(LogTemp, Warning, TEXT("Reload Time: %f"), reloadTime);
-
-}
