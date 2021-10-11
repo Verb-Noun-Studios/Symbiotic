@@ -10,3 +10,9 @@ UModBase::UModBase()
 UModBase::~UModBase()
 {
 }
+
+
+void UModBase::OnApply()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Calling Base Mod On Apply"));
+}

@@ -22,5 +22,5 @@ public:
 
 
 	GunModType gunModType = GunModType::MOD_GUN_AMMO;
-	void OnApply(float& reloadTime, int& ammoCount, float& bulletSpeed, int& rpm);
+	void OnApply();
 };

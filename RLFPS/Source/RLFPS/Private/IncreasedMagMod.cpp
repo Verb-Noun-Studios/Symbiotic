@@ -13,7 +13,11 @@ UIncreasedMagMod::~UIncreasedMagMod()
 
 }
 
-void UIncreasedMagMod::OnApply(float& reloadTime, int& ammoCount, float& bulletSpeed, int& rpm)
+
+
+//float& reloadTime, int& ammoCount, float& bulletSpeed, int& rpm
+void UIncreasedMagMod::OnApply()
 {
-	ammoCount *= 2;
+	UE_LOG(LogTemp, Warning, TEXT("Calling Mag Mod On Apply"));
+	//ammoCount *= 2;
 }

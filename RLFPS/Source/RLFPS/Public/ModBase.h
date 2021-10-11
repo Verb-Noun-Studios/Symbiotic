@@ -29,6 +29,8 @@ public:
 	UModBase();
 	~UModBase();
 
+	virtual void OnApply();
+
 	ModType type;
 	int stacks = 1;
 

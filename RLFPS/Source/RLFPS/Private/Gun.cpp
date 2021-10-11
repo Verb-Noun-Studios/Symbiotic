@@ -4,7 +4,9 @@
 #include "Gun.h"
 #include "Kismet/GameplayStatics.h"
 #include"IncreasedMagMod.h"
+#include "TestAmmoMod.h"
 #include "CoreMinimal.h"
+#include "UObject/UObjectGlobals.h"
 #include "Bullet.h"
 
 
@@ -21,7 +23,7 @@ AGun::AGun()
 // Called when the game starts or when spawned
 void AGun::BeginPlay()
 {
-	
+
 	Super::BeginPlay();
 
 	//set ammo
@@ -36,6 +38,10 @@ void AGun::BeginPlay()
 
 	//set bullet speed
 	bulletSpeed = defaultBulletSpeed;
+
+	UTestAmmoMod* mod = NewObject<UTestAmmoMod>();
+
+	AddAmmoMod(mod);
 }
 
 // Called every frame
@@ -144,13 +150,13 @@ void AGun::SpawnRound()
 }
 
 
-void AGun::AddGunMod(TWeakObjectPtr<UGunModBase> newMod)
+void AGun::AddGunMod(UGunModBase* newMod)
 {
-	for (TWeakObjectPtr<UGunModBase> mod : gunMods)
+	for (int i = 0; i < gunMods.Num(); i++)
 	{
-		if (newMod->gunModType == mod->gunModType)
+		if (newMod->gunModType == gunMods[i]->gunModType)
 		{
-			mod->stacks++;
+			gunMods[i]->stacks++;
 			//mod->OnApply(reloadTime, ammoCount, bulletSpeed, rpm);
 			return;
 		}
@@ -165,18 +171,20 @@ void AGun::AddGunMod(TWeakObjectPtr<UGunModBase> newMod)
 
 }
 
-void AGun::AddAmmoMod(TWeakObjectPtr<UAmmoModBase> newMod)
+void AGun::AddAmmoMod(UAmmoModBase* newMod)
 {
-	for (TWeakObjectPtr<UAmmoModBase> mod : ammoMods)
+	for (int i= 0; i < ammoMods.Num(); i++)
 	{
-		if (newMod->ammoModType == mod->ammoModType)
+		if (newMod->ammoModType == ammoMods[i]->ammoModType)
 		{
-			mod->stacks++;
+			ammoMods[i]->stacks++;
+			ammoMods[i]->OnApply();
 			return;
 		}
 	}
 
 	ammoMods.Add(newMod);
+	ammoMods[ammoMods.Num()-1]->OnApply();
 	
 }
 
@@ -221,9 +229,13 @@ bool AGun::GetOptionTwoKey()
 
 void AGun::OnHitCallback(AActor* actor)
 {
-	for(TWeakObjectPtr<UAmmoModBase> mod : ammoMods)
-	{
-		mod->OnHit();
+	if (ammoMods.Num()){
+		for (int i = 0; i < ammoMods.Num(); i ++)
+		{
+			ammoMods[i]->OnHit(actor);
+		}
 	}
+
+	
 }
 

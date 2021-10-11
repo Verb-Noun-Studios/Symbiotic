@@ -12,3 +12,8 @@ UGunModBase::~UGunModBase()
 {
 
 }
+
+void UGunModBase::OnApply()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Calling Base Gun Mod On Apply"));
+}

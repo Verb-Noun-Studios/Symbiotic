@@ -32,7 +32,7 @@ public:
 	ModType type = ModType::MOD_GUN;
 	GunModType gunModType;
 
-
-	//virtual void OnApply(float& reloadTime, int& ammoCount, float& bulletSpeed, int& rpm);
+	//float& reloadTime, int& ammoCount, float& bulletSpeed, int& rpm
+	void OnApply();
 		
 };

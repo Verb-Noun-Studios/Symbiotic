@@ -6,6 +6,7 @@
 #include "ModBase.h"
 #include "GunModBase.h"
 #include "AmmoModBase.h"
+#include <vector>
 #include "Gun.generated.h"
 
 
@@ -31,14 +32,15 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void AddGunMod(TWeakObjectPtr<UGunModBase> mod);
-	void AddAmmoMod(TWeakObjectPtr<UAmmoModBase> mod);
+	void AddGunMod(UGunModBase* mod);
+	void AddAmmoMod(UAmmoModBase* mod);
 
 	bool GetFireKey();
 	bool GetReloadKey();
 	bool GetOptionOneKey();
 	bool GetOptionTwoKey();
 
+	UFUNCTION(BlueprintCallable)
 	void OnHitCallback(AActor* actor);
 
 	void Fire(float deltaTime);
@@ -49,8 +51,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	TArray<TWeakObjectPtr<UGunModBase>> gunMods;
-	TArray<TWeakObjectPtr<UAmmoModBase>> ammoMods;
+	TArray<UGunModBase*> gunMods;
+	TArray<UAmmoModBase*> ammoMods;
 
 	/*************FUNCTIONAL VARIABLES************/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (MakeEditWidget = true))

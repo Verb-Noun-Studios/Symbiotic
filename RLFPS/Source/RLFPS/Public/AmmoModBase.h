@@ -25,9 +25,10 @@ class RLFPS_API UAmmoModBase : public UModBase
 
 public:
 	AmmoModType ammoModType;
-
-
-	void OnHit();
+	UAmmoModBase();
+	~UAmmoModBase();
+	void OnApply();
+	virtual void OnHit(AActor* actor);
 	
 
 	
