@@ -31,6 +31,7 @@ public:
 	float delta;
 	FVector2D wishMove;
 	bool wishJump;
+	UPROPERTY(BlueprintReadOnly)
 	FVector	playerVelocity;
 	bool isGrounded;
 	FVector origin = FVector::ZeroVector;

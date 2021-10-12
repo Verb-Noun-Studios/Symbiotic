@@ -61,10 +61,10 @@ void UFragMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		groundSpeed = GroundVelocity.Size();
 		Player->Collider->SetWorldLocation(origin);
 		// Logs
-		/*GEngine->AddOnScreenDebugMessage(20, 0.01f, FColor::Red, FString::Printf(TEXT("Position [X: %.6f, Y: %.6f, Z: %.6f]"), GetOrigin().X, GetOrigin().Y, GetOrigin().Z));
+		GEngine->AddOnScreenDebugMessage(20, 0.01f, FColor::Red, FString::Printf(TEXT("Position [X: %.6f, Y: %.6f, Z: %.6f]"), GetOrigin().X, GetOrigin().Y, GetOrigin().Z));
 		GEngine->AddOnScreenDebugMessage(2, 0.01f, FColor::Green, FString::Printf(TEXT("Is Grounded [%d]"), CollisionComponent->IsGrounded));
-		GEngine->AddOnScreenDebugMessage(0, 0.01f, FColor::Green, FString::Printf(TEXT("Desired Velocity [X: %.2f, Y: %.2f, Z: %.2f]"), PlayerVelocity.X, PlayerVelocity.Y, PlayerVelocity.Z));
-		GEngine->AddOnScreenDebugMessage(1, 0.01f, FColor::Green, FString::Printf(TEXT("Desired Linear Speed [%.2fups]"), GroundSpeed));*/
+		GEngine->AddOnScreenDebugMessage(0, 0.01f, FColor::Green, FString::Printf(TEXT("Desired Velocity [X: %.2f, Y: %.2f, Z: %.2f]"), playerVelocity.X, playerVelocity.Y, playerVelocity.Z));
+		GEngine->AddOnScreenDebugMessage(1, 0.01f, FColor::Green, FString::Printf(TEXT("Desired Linear Speed [%.2fups]"), groundSpeed));
 	}
 	else
 	{
@@ -133,8 +133,8 @@ void UFragMovementComponent::AirControl(FVector WishDirection, float WishSpeed)
 {
 	float	zspeed, speed, dot, k;
 	// Can't control movement if not moving forward or backward
-	if (wishMove.X != 0.f || WishSpeed == 0.f)
-		return;
+	//if (wishMove.X != 0.f || WishSpeed == 0.f)
+		//return;
 	zspeed = playerVelocity.Z;
 	playerVelocity.Z = 0;
 	speed = playerVelocity.Size();
@@ -142,13 +142,9 @@ void UFragMovementComponent::AirControl(FVector WishDirection, float WishSpeed)
 	dot = FVector::DotProduct(playerVelocity, WishDirection);
 	k = 32.f;
 	k *= CPMAirControl * dot * dot * delta;
-	// We can't change direction while slowing down
-	if (dot > 0)
-	{
-		playerVelocity.X = playerVelocity.X * speed + WishDirection.X * k;
-		playerVelocity.Y = playerVelocity.Y * speed + WishDirection.Y * k;
-		playerVelocity.Normalize();
-	}
+	playerVelocity.X = playerVelocity.X * speed + WishDirection.X * k;
+	playerVelocity.Y = playerVelocity.Y * speed + WishDirection.Y * k;
+	playerVelocity.Normalize();
 	playerVelocity.X *= speed;
 	playerVelocity.Y *= speed;
 	playerVelocity.Z = zspeed;
