@@ -10,14 +10,19 @@ UIncreasedMagMod::UIncreasedMagMod()
 
 UIncreasedMagMod::~UIncreasedMagMod()
 {
-
+	atribs.Add(ModAdditionalAtrributes::ATRIB_INCREASED_MAG);
 }
 
 
 
-//float& reloadTime, int& ammoCount, float& bulletSpeed, int& rpm
+
 void UIncreasedMagMod::OnApply()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Calling Mag Mod On Apply"));
 	//ammoCount *= 2;
+}
+
+void UIncreasedMagMod::OnHit(AActor* actor)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Calling Test On Hit"));
 }

@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GunModBase.h"
+#include "ModBase.h"
 #include "IncreasedMagMod.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RLFPS_API UIncreasedMagMod : public UGunModBase
+class RLFPS_API UIncreasedMagMod : public UModBase
 {
 	GENERATED_BODY()
 
@@ -19,8 +19,6 @@ class RLFPS_API UIncreasedMagMod : public UGunModBase
 public:
 	UIncreasedMagMod();
 	~UIncreasedMagMod();
-
-
-	GunModType gunModType = GunModType::MOD_GUN_AMMO;
 	void OnApply();
+	void OnHit(AActor* actor);
 };

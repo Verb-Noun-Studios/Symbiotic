@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AmmoModBase.h"
+#include "ModBase.h"
 #include "TestAmmoMod.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RLFPS_API UTestAmmoMod : public UAmmoModBase
+class RLFPS_API UTestAmmoMod : public UModBase
 {
 	GENERATED_BODY()
 public:

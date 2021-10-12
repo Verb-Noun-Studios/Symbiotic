@@ -39,9 +39,8 @@ void AGun::BeginPlay()
 	//set bullet speed
 	bulletSpeed = defaultBulletSpeed;
 
-	UTestAmmoMod* mod = NewObject<UTestAmmoMod>();
 
-	AddAmmoMod(mod);
+
 }
 
 // Called every frame
@@ -90,17 +89,17 @@ void AGun::Tick(float DeltaTime)
 		reloading = true;
 	}
 
-	//if (readyToLevelUp)
-	//{
-	//	if (GetOptionOneKey())
-	//	{
-	//		//LevelUp(ModOptions[0]);
-	//	}
-	//	else if (GetOptionTwoKey())
-	//	{
-	//		//LevelUp(ModOptions[1]);
-	//	}
-	//}
+	if (readyToLevelUp)
+	{
+		if (GetOptionOneKey())
+		{
+			LevelUp(ModOptions[0]);
+		}
+		else if (GetOptionTwoKey())
+		{
+			LevelUp(ModOptions[1]);
+		}
+	}
 	
 }
 
@@ -150,42 +149,21 @@ void AGun::SpawnRound()
 }
 
 
-void AGun::AddGunMod(UGunModBase* newMod)
+void AGun::AddMod(UModBase* mod)
 {
-	for (int i = 0; i < gunMods.Num(); i++)
+	for (int i = 0; i < mods.Num(); i++)
 	{
-		if (newMod->gunModType == gunMods[i]->gunModType)
+		if (mod->StaticClass() == mods[i]->StaticClass())
 		{
-			gunMods[i]->stacks++;
-			//mod->OnApply(reloadTime, ammoCount, bulletSpeed, rpm);
-			return;
-		}
-	}
-	
-	int index = gunMods.Add(newMod);
-	//gunMods[index]->OnApply(reloadTime, ammoCount, bulletSpeed, rpm);
-
-	UE_LOG(LogTemp, Warning, TEXT("Ammo Count: %d"), ammoCount);
-	UE_LOG(LogTemp, Warning, TEXT("RPM: %d"), rpm);
-	UE_LOG(LogTemp, Warning, TEXT("Reload Time: %f"), reloadTime);
-
-}
-
-void AGun::AddAmmoMod(UAmmoModBase* newMod)
-{
-	for (int i= 0; i < ammoMods.Num(); i++)
-	{
-		if (newMod->ammoModType == ammoMods[i]->ammoModType)
-		{
-			ammoMods[i]->stacks++;
-			ammoMods[i]->OnApply();
+			mods[i]->stacks++;
+			UpdateCoreStats();
 			return;
 		}
 	}
 
-	ammoMods.Add(newMod);
-	ammoMods[ammoMods.Num()-1]->OnApply();
-	
+	mods.Add(mod);
+	UpdateCoreStats();
+	return;
 }
 
 
@@ -229,13 +207,141 @@ bool AGun::GetOptionTwoKey()
 
 void AGun::OnHitCallback(AActor* actor)
 {
-	if (ammoMods.Num()){
-		for (int i = 0; i < ammoMods.Num(); i ++)
+	if (mods.Num()){
+		for (int i = 0; i < mods.Num(); i ++)
 		{
-			ammoMods[i]->OnHit(actor);
+			mods[i]->OnHit(actor);
 		}
 	}
 
 	
 }
 
+
+
+
+void AGun::GainEXP(int exp)
+{
+	if (readyToLevelUp)
+	{
+		currentEXP += exp;
+		return;
+	}
+
+	currentEXP += exp;
+
+	if (currentEXP > expToNextLevel)
+	{
+		readyToLevelUp = true;
+		ModOptions = GetNewModOptions();
+		currentEXP = currentEXP - expToNextLevel;
+	}
+}
+
+
+float AGun::GetLevelPercentage()
+{
+	return (float)currentEXP / (float)expToNextLevel;
+}
+
+TArray<UModBase*> AGun::GetNewModOptions()
+{
+	
+	int randOne = FMath::RandHelper(allMods.Num());
+
+	UModBase* modOne = NewObject<UModBase>((UObject*)this, allMods[randOne]);;
+
+	int randTwo = FMath::RandHelper(allMods.Num());
+	//FMath::RandHelper(allMods.Num())
+
+	UModBase* modTwo = NewObject<UModBase>((UObject*)this, allMods[randTwo]);
+	/*UModBase* test = nullptr;  
+	DuplicateObject(allMods[randTwo], test);*/
+
+	return TArray<UModBase*>{modOne, modTwo};
+
+}
+
+TArray<UModBase*> AGun::GetModOptions()
+{
+	TArray<UModBase*> options;
+	for (UModBase* type : ModOptions)
+	{
+		options.Add(type);
+	}
+	return ModOptions;
+}
+
+
+void AGun::LevelUp(UModBase* newModType)
+{
+	AddMod(newModType);
+	expToNextLevel *= 2;
+	if (GetLevelPercentage() != 1)
+	{
+		readyToLevelUp = false;
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("LEVEL UP!"), true, FVector2D(2, 2));
+
+}
+
+
+void AGun::UpdateCoreStats()
+{
+	int ammoModStacks = 0;
+	int rofModStacks = 0;
+	int reloadModStacks = 0;
+
+	for (int i = 0; i < mods.Num(); i++)
+	{
+		for (ModAdditionalAtrributes atrib : mods[i]->atribs)
+		{
+			switch (atrib)
+			{
+
+			case ModAdditionalAtrributes::ATRIB_INCREASED_MAG:
+				ammoModStacks += mods[i]->stacks;
+				break;
+			case ModAdditionalAtrributes::ATRIB_RATE_OF_FIRE:
+				rofModStacks += mods[i]->stacks;
+				break;
+			case ModAdditionalAtrributes::ATRIB_REDUCED_RELOAD_TIME:
+				reloadModStacks += mods[i]->stacks;
+			default:
+				break;
+			}
+
+		}
+
+		
+	}
+
+
+	if (ammoModStacks > 0)
+	{
+		ammoCount = defaultAmmoCount * 2 * ammoModStacks;
+
+	}
+
+
+	rpm = defaultRPM;
+	for (int j = 0; j < rofModStacks; j++)
+	{
+		rpm += rpm;
+	}
+
+	reloadTime = defaultReloadTime;
+	for (int j = 0; j < reloadModStacks; j++)
+	{
+		reloadTime *= 0.8;
+	}
+
+	bulletSpeed = defaultBulletSpeed;
+
+
+	UE_LOG(LogTemp, Warning, TEXT("Ammo Count: %d"), ammoCount);
+	UE_LOG(LogTemp, Warning, TEXT("RPM: %d"), rpm);
+	UE_LOG(LogTemp, Warning, TEXT("Reload Time: %f"), reloadTime);
+
+}

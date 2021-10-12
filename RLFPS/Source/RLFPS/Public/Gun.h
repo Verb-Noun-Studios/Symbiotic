@@ -4,8 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "ModBase.h"
-#include "GunModBase.h"
-#include "AmmoModBase.h"
 #include <vector>
 #include "Gun.generated.h"
 
@@ -32,8 +30,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void AddGunMod(UGunModBase* mod);
-	void AddAmmoMod(UAmmoModBase* mod);
+	void AddMod(UModBase* mod);
+	
 
 	bool GetFireKey();
 	bool GetReloadKey();
@@ -46,13 +44,27 @@ public:
 	void Fire(float deltaTime);
 	void SpawnRound();
 
+
+	UFUNCTION(BlueprintCallable)
+	void GainEXP(int exp);
+	UFUNCTION(BlueprintCallable)
+	float GetLevelPercentage();
+	TArray<UModBase*> GetNewModOptions();
+	UFUNCTION(BlueprintCallable)
+	TArray<UModBase*> GetModOptions();
+	void LevelUp(UModBase* newModType);
+	void UpdateCoreStats();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:
-	TArray<UGunModBase*> gunMods;
-	TArray<UAmmoModBase*> ammoMods;
+	TArray<UModBase*> mods;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<TSubclassOf<UModBase>> allMods;
+
 
 	/*************FUNCTIONAL VARIABLES************/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (MakeEditWidget = true))
@@ -97,5 +109,14 @@ public:
 	FKey OptionOneKey;
 	UPROPERTY(EditAnywhere, Category = "Controls")
 	FKey OptionTwoKey;
+
+	UPROPERTY(BlueprintReadWrite)
+	int expToNextLevel = 5;
+	UPROPERTY(BlueprintReadWrite)
+	int currentEXP;
+	UPROPERTY(BlueprintReadWrite)
+	bool readyToLevelUp = false;
+	UPROPERTY(BlueprintReadWrite)
+	TArray<UModBase*> ModOptions;
 
 };
