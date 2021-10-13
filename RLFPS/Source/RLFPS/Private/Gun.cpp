@@ -3,8 +3,6 @@
 
 #include "Gun.h"
 #include "Kismet/GameplayStatics.h"
-#include"IncreasedMagMod.h"
-#include "TestAmmoMod.h"
 #include "CoreMinimal.h"
 #include "UObject/UObjectGlobals.h"
 #include "Bullet.h"
@@ -39,6 +37,11 @@ void AGun::BeginPlay()
 	//set bullet speed
 	bulletSpeed = defaultBulletSpeed;
 
+	FActorSpawnParameters* SpawnParams = new FActorSpawnParameters;
+	SpawnParams->Owner = this;
+	SpawnParams->Instigator = GetInstigator();
+
+	spawnParams = SpawnParams;
 
 
 }
@@ -112,40 +115,41 @@ void AGun::Fire(float deltaTime)
 	{
 
 		elapsedTime = 0;
-		SpawnRound();
+		SpawnRound(*spawnParams, FVector::ZeroVector);
+	;
+
+		for (UModBase* mod : mods)
+		{
+			mod->OnFire(this);
+		}
+
 		ammoRemaining--;
 		firing = true;
 	}
 
+
+	
 	//UE_LOG(LogTemp, Warning, TEXT("Ammo Remaining: %d"), ammoRemaining);
 
 }
 
-void AGun::SpawnRound()
+void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset)
 {
-	firing = true;
 	UWorld* World = GetWorld();
+	
+	ABullet* bullet = World->SpawnActor<ABullet>(ProjectileClass, (GetActorLocation() + MuzzleLocation * GetActorForwardVector()) + offset, GetActorRotation(), SpawnParams);
 
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = this;
-	SpawnParams.Instigator = GetInstigator();
-
-	//spawn the bullets
-
-	TArray<ABullet*> bullets;
-	for (int i = 0; i < shotsPerRound; i++)
+	if (bullet)
 	{
-		ABullet* bullet = World->SpawnActor<ABullet>(ProjectileClass, GetActorLocation() + MuzzleLocation * GetActorForwardVector(), GetActorRotation(), SpawnParams);
-		if (bullet)
-		{
-			bullets.Add(bullet);
-			bullets[i]->SetInitialSpeed(bulletSpeed);
-			bullets[i]->SetInitialDirection(GetActorForwardVector());
-			bullets[i]->SetGun(this);
-
-		}
-
+		bullet->SetInitialSpeed(bulletSpeed);
+		bullet->SetInitialDirection(GetActorForwardVector());
+		bullet->SetGun(this);
 	}
+	else
+	{
+		SpawnRound(SpawnParams, offset);
+	}
+	
 }
 
 

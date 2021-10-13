@@ -33,6 +33,9 @@ enum class ModAdditionalAtrributes : uint8
 
 };
 
+
+class ABullet;
+class AGun;
 /**
  * 
  */
@@ -45,8 +48,8 @@ public:
 	UModBase();
 	~UModBase();
 
-	
 	virtual void OnApply();
+	virtual void OnFire(AGun* gun);
 	virtual void OnHit(AActor* actor);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
