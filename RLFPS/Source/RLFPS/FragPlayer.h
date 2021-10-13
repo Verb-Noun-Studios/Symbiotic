@@ -11,6 +11,7 @@ class UFragPlayerCollisionComponent;
 class UBoxComponent;
 class UArrowComponent;
 class UCameraComponent;
+class UHealthComponent;
 
 UCLASS(config = Game, BlueprintType, hideCategories = ("Pawn|fragCharacter|InternalEvents"), meta = (ShortTooltip = "Custom character specifically built for Q3 movement."))
 class RLFPS_API AFragPlayer : public APawn
@@ -85,6 +86,9 @@ public:
 		UFragMovementComponent* MovementComponent;
 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		UFragPlayerCollisionComponent* CollisionComponent;
+	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		UHealthComponent* HealthComponent;
+
 	USceneComponent* PlayerForwardRefComponent;
 	/** Helper object to see which direction is forward */
 #if WITH_EDITORONLY_DATA
