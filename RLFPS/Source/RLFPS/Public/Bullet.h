@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Gun.h"
 #include "Bullet.generated.h"
 
 UCLASS()
@@ -22,13 +23,14 @@ public:
 	ABullet();
 	void SetInitialDirection(FVector dir);
 	void SetInitialSpeed(float Speed);
+	void SetGun(AGun* newGun);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	float lifeTime = 5.0;
-	
+	AGun* gun;
 
 public:	
 	// Called every frame
