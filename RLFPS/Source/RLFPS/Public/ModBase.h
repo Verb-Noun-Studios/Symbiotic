@@ -36,7 +36,7 @@ enum class ModAdditionalAtrributes : uint8
 /**
  * 
  */
-UCLASS(BlueprintType)
+UCLASS(Blueprintable)
 class RLFPS_API UModBase : public UObject
 {
 
@@ -52,7 +52,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ModType type;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTexture2D* ButtonBG;
+	UTexture2D* image;
 	int stacks = 1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<ModAdditionalAtrributes> atribs;
