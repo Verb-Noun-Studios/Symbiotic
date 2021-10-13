@@ -42,7 +42,8 @@ public:
 	void OnHitCallback(AActor* actor);
 
 	void Fire(float deltaTime);
-	void SpawnRound();
+	void SpawnRound(FActorSpawnParameters spawnParams, FVector offset);
+	FActorSpawnParameters* spawnParams;
 
 
 	UFUNCTION(BlueprintCallable)
@@ -60,6 +61,7 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<UModBase*> mods;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
