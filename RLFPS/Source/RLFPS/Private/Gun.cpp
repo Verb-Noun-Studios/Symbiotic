@@ -40,7 +40,7 @@ void AGun::BeginPlay()
 	FActorSpawnParameters* SpawnParams = new FActorSpawnParameters;
 	SpawnParams->Owner = this;
 	SpawnParams->Instigator = GetInstigator();
-
+	SpawnParams->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	spawnParams = SpawnParams;
 
 
@@ -115,7 +115,7 @@ void AGun::Fire(float deltaTime)
 	{
 
 		elapsedTime = 0;
-		SpawnRound(*spawnParams, FVector::ZeroVector);
+		SpawnRound(*spawnParams);
 	;
 
 		for (UModBase* mod : mods)
@@ -133,11 +133,11 @@ void AGun::Fire(float deltaTime)
 
 }
 
-void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset)
+void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 {
 	UWorld* World = GetWorld();
 	
-	ABullet* bullet = World->SpawnActor<ABullet>(ProjectileClass, (GetActorLocation() + MuzzleLocation * GetActorForwardVector()) + offset, GetActorRotation(), SpawnParams);
+	ABullet* bullet = World->SpawnActor<ABullet>(ProjectileClass, (GetActorLocation() + MuzzleLocation * GetActorForwardVector()), GetActorRotation(), SpawnParams);
 
 	if (bullet)
 	{
@@ -145,11 +145,22 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset)
 		bullet->SetInitialDirection(GetActorForwardVector());
 		bullet->SetGun(this);
 	}
-	else
-	{
-		SpawnRound(SpawnParams, offset);
-	}
 	
+}
+
+void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector dir)
+{
+	UWorld* World = GetWorld();
+
+	ABullet* bullet = World->SpawnActor<ABullet>(ProjectileClass, (GetActorLocation() + MuzzleLocation * GetActorForwardVector()) + offset, GetActorRotation(), SpawnParams);
+
+	if (bullet)
+	{
+		bullet->SetInitialSpeed(bulletSpeed);
+		bullet->SetInitialDirection(dir);
+		bullet->SetGun(this);
+	}
+
 }
 
 
@@ -167,6 +178,8 @@ void AGun::AddMod(UModBase* mod)
 
 	mods.Add(mod);
 	UpdateCoreStats();
+
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *mod->GetClass()->GetFullName() );
 	return;
 }
 
