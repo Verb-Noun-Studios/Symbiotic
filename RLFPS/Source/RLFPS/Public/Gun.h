@@ -91,6 +91,8 @@ public:
 		int defaultRPM = 120;
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
 		int defaultBulletSpeed = 120;
+	UPROPERTY(EditAnywhere, Category = "Game Stats")
+		float defaultDamage = 25;
 
 	/****************RUNTIME GUN STATS***************/
 	UPROPERTY(EditAnywhere, Category = "Gun Stats")
@@ -101,6 +103,8 @@ public:
 		float bulletSpeed;
 	UPROPERTY(EditAnywhere, Category = "Gun stats")
 		int rpm;
+	UPROPERTY(BlueprintReadWrite, Category = "Game Stats")
+		float Damage = 25;
 	int shotsPerRound = 1;
 
 

@@ -27,6 +27,7 @@ void AGun::BeginPlay()
 	//set ammo
 	ammoCount = defaultAmmoCount;
 	ammoRemaining = ammoCount;
+	Damage = defaultDamage;
 
 	//set RPM
 	rpm = defaultRPM;
