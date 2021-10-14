@@ -22,7 +22,7 @@ public:
 	~UShotgunMod();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float offsetMultiplier = 2;
+	float offsetMultiplier = 100;
 
 	void OnApply();
 	void OnFire( AGun* gun);
