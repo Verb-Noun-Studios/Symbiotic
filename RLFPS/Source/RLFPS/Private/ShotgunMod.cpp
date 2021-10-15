@@ -33,7 +33,7 @@ void UShotgunMod::OnFire(AGun* gun)
 
 		newPoint += gun->GetActorForwardVector();
 		FVector dir = newPoint - startingPoint;
-		dir.Normalize();
+		dir;
 		gun->SpawnRound(*gun->spawnParams, FVector::ZeroVector, dir);
 	}
 

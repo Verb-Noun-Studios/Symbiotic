@@ -143,8 +143,16 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 	if (bullet)
 	{
 		bullet->SetInitialSpeed(bulletSpeed);
-		bullet->SetInitialDirection(GetActorForwardVector());
+
+		FVector dir = GetActorForwardVector();
+		dir.Normalize();
+		bullet->SetInitialDirection(dir);
 		bullet->SetGun(this);
+
+		for (UModBase* mod : mods)
+		{
+			mod->OnSpawn(bullet);
+		}
 	}
 	
 }
@@ -160,6 +168,11 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 		bullet->SetInitialSpeed(bulletSpeed);
 		bullet->SetInitialDirection(dir);
 		bullet->SetGun(this);
+
+		for (UModBase* mod : mods)
+		{
+			mod->OnSpawn(bullet);
+		}
 	}
 
 }
@@ -169,7 +182,7 @@ void AGun::AddMod(UModBase* mod)
 {
 	for (int i = 0; i < mods.Num(); i++)
 	{
-		if (mod->StaticClass() == mods[i]->StaticClass())
+		if (mod->GetClass() == mods[i]->GetClass())
 		{
 			mods[i]->stacks++;
 			UpdateCoreStats();
@@ -251,6 +264,7 @@ void AGun::GainEXP(int exp)
 	if (currentEXP > expToNextLevel)
 	{
 		readyToLevelUp = true;
+		ModOptions.Empty();
 		ModOptions = GetNewModOptions();
 		currentEXP = currentEXP - expToNextLevel;
 	}
@@ -270,12 +284,10 @@ TArray<UModBase*> AGun::GetNewModOptions()
 	UModBase* modOne = NewObject<UModBase>((UObject*)this, allMods[randOne]);;
 
 	int randTwo = FMath::RandHelper(allMods.Num());
-	//FMath::RandHelper(allMods.Num())
+
 
 	UModBase* modTwo = NewObject<UModBase>((UObject*)this, allMods[randTwo]);
-	/*UModBase* test = nullptr;  
-	DuplicateObject(allMods[randTwo], test);*/
-
+	
 	return TArray<UModBase*>{modOne, modTwo};
 
 }
@@ -293,6 +305,12 @@ TArray<UModBase*> AGun::GetModOptions()
 
 void AGun::LevelUp(UModBase* newModType)
 {
+	AddMod(newModType);
+	AddMod(newModType);
+	AddMod(newModType);
+	AddMod(newModType);
+	AddMod(newModType);
+	AddMod(newModType);
 	AddMod(newModType);
 	expToNextLevel *= 2;
 	if (GetLevelPercentage() != 1)
