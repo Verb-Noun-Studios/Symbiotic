@@ -307,11 +307,6 @@ void AGun::LevelUp(UModBase* newModType)
 {
 	AddMod(newModType);
 	AddMod(newModType);
-	AddMod(newModType);
-	AddMod(newModType);
-	AddMod(newModType);
-	AddMod(newModType);
-	AddMod(newModType);
 	expToNextLevel *= 2;
 	if (GetLevelPercentage() != 1)
 	{
