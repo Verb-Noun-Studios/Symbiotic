@@ -49,6 +49,7 @@ public:
 	~UModBase();
 
 	virtual void OnApply();
+	virtual void OnSpawn(ABullet* bullet);
 	virtual void OnFire(AGun* gun);
 	virtual void OnHit(AActor* actor);
 
