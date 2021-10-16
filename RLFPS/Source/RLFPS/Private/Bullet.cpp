@@ -2,6 +2,8 @@
 
 
 #include "Bullet.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABullet::ABullet()
@@ -28,8 +30,8 @@ ABullet::ABullet()
 		// Use this component to drive this projectile's movement.
 		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
-		ProjectileMovementComponent->InitialSpeed = 3000.0f;
-		ProjectileMovementComponent->MaxSpeed = 3000.0f;
+		ProjectileMovementComponent->InitialSpeed = 30000.0f;
+		ProjectileMovementComponent->MaxSpeed = 30000.0f;
 		ProjectileMovementComponent->bRotationFollowsVelocity = true;
 		ProjectileMovementComponent->bShouldBounce = true;
 		ProjectileMovementComponent->Bounciness = 0.3f;
@@ -49,6 +51,22 @@ void ABullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+
+	if (ProjectileMovementComponent->bIsHomingProjectile)
+	{
+		//|| target->IsActorBeingDestroyed() || !target->IsValidLowLevel()
+		if (target == nullptr)
+		{
+			target = GetClosestActor();
+			if (target)
+			{
+				ProjectileMovementComponent->HomingTargetComponent = target->GetRootComponent();
+			}
+			
+		}
+		
+	}
+
 	lifeTime = lifeTime - DeltaTime;
 
 	if (lifeTime <= 0)
@@ -60,10 +78,70 @@ void ABullet::Tick(float DeltaTime)
 
 void ABullet::SetInitialDirection(FVector dir)
 {
-	ProjectileMovementComponent->Velocity = dir * ProjectileMovementComponent->InitialSpeed;
+	ProjectileMovementComponent->Velocity = dir * ProjectileMovementComponent->InitialSpeed * fireSpeedMultipler;
+	DirectionOfFire = dir;
 }
 
 void ABullet::SetInitialSpeed(float speed)
 {
 	ProjectileMovementComponent->InitialSpeed = speed;
+}
+
+void ABullet::SetGun(AGun* newGun) 
+{ 
+	gun = newGun; 
+}
+
+AActor* ABullet::GetClosestActor()
+{
+
+	TArray<AActor*> enemies;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), targetClass, enemies);
+	AActor* closestPlayer = nullptr;
+	float distance = INT_MAX;
+
+	//log all actors found for debugging
+	for (AActor* actor : enemies)
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("Names: %s"), *actor->GetName());
+	}
+
+	for (AActor* actor : enemies)
+	{
+		if (actor != this)
+		{
+			FVector dir = actor->GetActorLocation() - this->GetActorLocation();
+
+			float dot = FVector::DotProduct(DirectionOfFire, dir);
+			float sizeA = DirectionOfFire.Size();
+			float sizeB = dir.Size();
+
+			float denomenator = sizeA * sizeB;
+
+			float angle = UKismetMathLibrary::Acos(dot / denomenator);
+			UE_LOG(LogTemp, Warning, TEXT("Angle: %f"), angle);
+
+			if (angle < 1 && dir.Size() < homingRange)
+			{
+				if (closestPlayer == nullptr)
+				{
+					closestPlayer = actor;
+					distance = dir.Size();
+				}
+				else
+				{
+								
+					if (dir.Size() < distance)//potentially rework to use sizesquared
+					{
+						closestPlayer = actor;
+						distance = dir.Size();
+					}				
+				
+				}
+			}
+		}
+	}
+
+	return closestPlayer;
+
 }

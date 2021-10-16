@@ -4,6 +4,7 @@
 #include "Gun.h"
 #include "Kismet/GameplayStatics.h"
 #include "CoreMinimal.h"
+#include "UObject/UObjectGlobals.h"
 #include "Bullet.h"
 
 
@@ -20,12 +21,14 @@ AGun::AGun()
 // Called when the game starts or when spawned
 void AGun::BeginPlay()
 {
+
 	Super::BeginPlay();
 
 	//set ammo
 	ammoCount = defaultAmmoCount;
 	ammoRemaining = ammoCount;
-	
+	Damage = defaultDamage;
+
 	//set RPM
 	rpm = defaultRPM;
 
@@ -35,25 +38,33 @@ void AGun::BeginPlay()
 	//set bullet speed
 	bulletSpeed = defaultBulletSpeed;
 
+	FActorSpawnParameters* SpawnParams = new FActorSpawnParameters;
+	SpawnParams->Owner = this;
+	SpawnParams->Instigator = GetInstigator();
+	SpawnParams->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	spawnParams = SpawnParams;
+
+
 }
 
 // Called every frame
 void AGun::Tick(float DeltaTime)
 {
+	
 	Super::Tick(DeltaTime);
 	elapsedTime += DeltaTime;
-	
+
 	if (!reloading)
 	{
 		reloading = GetReloadKey();
 		if (reloading)
 		{
 			firing = false;
-			Reload();
+			//Reload();
 		}
-		
+
 	}
-	
+
 	if (reloading)
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 0.10f, FColor::Yellow, TEXT("Reloading"));
@@ -65,7 +76,7 @@ void AGun::Tick(float DeltaTime)
 			UE_LOG(LogTemp, Warning, TEXT("Finished Reloading"));
 		}
 	}
-	else if(GetFireKey() && ammoRemaining > 0)
+	else if (GetFireKey() && ammoRemaining > 0)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("Calling Fire"));
 		Fire(DeltaTime);
@@ -75,64 +86,119 @@ void AGun::Tick(float DeltaTime)
 		firing = false;
 	}
 
-	if(ammoRemaining <= 0 && !reloading)
+	if (ammoRemaining <= 0 && !reloading)
 	{
 		firing = false;
-		Reload();
+		//Reload();
 		reloading = true;
 	}
-	
+
+	if (readyToLevelUp)
+	{
+		if (GetOptionOneKey())
+		{
+			LevelUp(ModOptions[0]);
+		}
+		else if (GetOptionTwoKey())
+		{
+			LevelUp(ModOptions[1]);
+		}
+	}
 	
 }
 
 void AGun::Fire(float deltaTime)
 {
-	
+
 	elapsedTime += deltaTime;
 	firing = false;
 	if (elapsedTime >= (60.0 / rpm))
 	{
-	
+
 		elapsedTime = 0;
-		SpawnRound();
+		SpawnRound(*spawnParams);
+	;
+
+		for (UModBase* mod : mods)
+		{
+			mod->OnFire(this);
+		}
+
 		ammoRemaining--;
 		firing = true;
 	}
 
+
+	
 	//UE_LOG(LogTemp, Warning, TEXT("Ammo Remaining: %d"), ammoRemaining);
+
+}
+
+void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
+{
+	UWorld* World = GetWorld();
+	
+	ABullet* bullet = World->SpawnActor<ABullet>(ProjectileClass, (GetActorLocation() + MuzzleLocation * GetActorForwardVector()), GetActorRotation(), SpawnParams);
+
+	if (bullet)
+	{
+		bullet->SetInitialSpeed(bulletSpeed);
+
+		FVector dir = GetActorForwardVector();
+		dir.Normalize();
+		bullet->SetInitialDirection(dir);
+		bullet->SetGun(this);
+
+		for (UModBase* mod : mods)
+		{
+			mod->OnSpawn(bullet);
+		}
+	}
 	
 }
 
-void AGun::Reload()
+void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector dir)
 {
-	//trigger animations here
-}
-
-void AGun::SpawnRound()
-{
-	firing = true;
 	UWorld* World = GetWorld();
 
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = this;
-	SpawnParams.Instigator = GetInstigator();
+	ABullet* bullet = World->SpawnActor<ABullet>(ProjectileClass, (GetActorLocation() + MuzzleLocation * GetActorForwardVector()) + offset, GetActorRotation(), SpawnParams);
 
-	//spawn the bullets
-
-	TArray<ABullet*> bullets;
-	for (int i = 0; i < shotsPerRound; i++)
+	if (bullet)
 	{
-		ABullet* bullet = World->SpawnActor<ABullet>(ProjectileClass, GetActorLocation() + MuzzleLocation * GetActorForwardVector(), GetActorRotation(), SpawnParams);
-		if (bullet)
+		bullet->SetInitialSpeed(bulletSpeed);
+		bullet->SetInitialDirection(dir);
+		bullet->SetGun(this);
+
+		for (UModBase* mod : mods)
 		{
-			bullets.Add(bullet);
-			bullets[i]->SetInitialSpeed(bulletSpeed);
-			bullets[i]->SetInitialDirection(GetActorForwardVector());
-
+			mod->OnSpawn(bullet);
 		}
-
 	}
+
 }
+
+
+void AGun::AddMod(UModBase* mod)
+{
+	for (int i = 0; i < mods.Num(); i++)
+	{
+		if (mod->GetClass() == mods[i]->GetClass())
+		{
+			mods[i]->stacks++;
+			UpdateCoreStats();
+			return;
+		}
+	}
+
+	mods.Add(mod);
+	UpdateCoreStats();
+
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *mod->GetClass()->GetFullName() );
+	return;
+}
+
+
+
 
 bool AGun::GetFireKey()
 {
@@ -151,66 +217,103 @@ bool AGun::GetReloadKey()
 	
 }
 
-void AGun::AddMod(int modNum)
+bool AGun::GetOptionOneKey()
 {
+	APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	bool reloadState = playerController->IsInputKeyDown(OptionOneKey);
 
-	for (int i = 0; i < Mods.Num(); i++)
-	{
+	return reloadState;
 
-		if (Mods[i].type == (WeaponModType)modNum)
+}
+
+bool AGun::GetOptionTwoKey()
+{
+	APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	bool reloadState = playerController->IsInputKeyDown(OptionTwoKey);
+
+	return reloadState;
+
+}
+
+
+void AGun::OnHitCallback(AActor* actor)
+{
+	if (mods.Num()){
+		for (int i = 0; i < mods.Num(); i ++)
 		{
-			Mods[i].stacks++;
-			UpdateCoreStats();
-			return;
+			mods[i]->OnHit(actor);
 		}
 	}
 
 	
-	FWeaponModifier newMod = FWeaponModifier();
-	newMod.type = (WeaponModType)modNum;
-	newMod.stacks = 1;
-	Mods.Add(newMod);
-
-	UpdateCoreStats();
-
-	return;
 }
+
+
 
 
 void AGun::GainEXP(int exp)
 {
+	if (readyToLevelUp)
+	{
+		currentEXP += exp;
+		return;
+	}
+
 	currentEXP += exp;
 
 	if (currentEXP > expToNextLevel)
 	{
-		LevelUp();
+		readyToLevelUp = true;
+		ModOptions.Empty();
+		ModOptions = GetNewModOptions();
+		currentEXP = currentEXP - expToNextLevel;
 	}
 }
 
 
-void AGun::LevelUp()
+float AGun::GetLevelPercentage()
 {
-	int mod = FMath::RandRange(1, 3);
+	return (float)currentEXP / (float)expToNextLevel;
+}
 
-	AddMod(mod);
+TArray<UModBase*> AGun::GetNewModOptions()
+{
+	
+	int randOne = FMath::RandHelper(allMods.Num());
 
-	expToNextLevel *= 2;
+	UModBase* modOne = NewObject<UModBase>((UObject*)this, allMods[randOne]);;
 
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("LEVEL UP!"), true, FVector2D(2,2));
+	int randTwo = FMath::RandHelper(allMods.Num());
 
 
-	switch (mod)
+	UModBase* modTwo = NewObject<UModBase>((UObject*)this, allMods[randTwo]);
+	
+	return TArray<UModBase*>{modOne, modTwo};
+
+}
+
+TArray<UModBase*> AGun::GetModOptions()
+{
+	TArray<UModBase*> options;
+	for (UModBase* type : ModOptions)
 	{
-	case 1:
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Adding Rate of Fire Mod"), false, FVector2D(2, 2));
-		break;
-	case 2:
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Adding Ammo Mod"), false, FVector2D(2, 2));
-		break;
-	case 3:
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Adding Reload Mod"), false, FVector2D(2, 2));
-		break;
+		options.Add(type);
 	}
+	return ModOptions;
+}
+
+
+void AGun::LevelUp(UModBase* newModType)
+{
+	AddMod(newModType);
+	AddMod(newModType);
+	expToNextLevel *= 2;
+	if (GetLevelPercentage() != 1)
+	{
+		readyToLevelUp = false;
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("LEVEL UP!"), true, FVector2D(2, 2));
 
 }
 
@@ -221,30 +324,38 @@ void AGun::UpdateCoreStats()
 	int rofModStacks = 0;
 	int reloadModStacks = 0;
 
-	for (int i = 0; i < Mods.Num(); i++)
+	for (int i = 0; i < mods.Num(); i++)
 	{
+		for (ModAdditionalAtrributes atrib : mods[i]->atribs)
+		{
+			switch (atrib)
+			{
 
-		if (Mods[i].type == WeaponModType::WM_AMMO)
-		{
-			ammoModStacks += Mods[i].stacks;
+			case ModAdditionalAtrributes::ATRIB_INCREASED_MAG:
+				ammoModStacks += mods[i]->stacks;
+				break;
+			case ModAdditionalAtrributes::ATRIB_RATE_OF_FIRE:
+				rofModStacks += mods[i]->stacks;
+				break;
+			case ModAdditionalAtrributes::ATRIB_REDUCED_RELOAD_TIME:
+				reloadModStacks += mods[i]->stacks;
+			default:
+				break;
+			}
+
 		}
 
-		if (Mods[i].type == WeaponModType::WM_ROF)
-		{
-			rofModStacks += Mods[i].stacks;
-		}
-		if (Mods[i].type == WeaponModType::WM_RELOAD)
-		{
-			reloadModStacks += Mods[i].stacks;
-		}
+		
 	}
+
+
 	if (ammoModStacks > 0)
 	{
 		ammoCount = defaultAmmoCount * 2 * ammoModStacks;
 
 	}
-	
-	
+
+
 	rpm = defaultRPM;
 	for (int j = 0; j < rofModStacks; j++)
 	{

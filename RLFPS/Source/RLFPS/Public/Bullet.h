@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Gun.h"
 #include "Bullet.generated.h"
 
 UCLASS()
@@ -22,13 +23,14 @@ public:
 	ABullet();
 	void SetInitialDirection(FVector dir);
 	void SetInitialSpeed(float Speed);
+	void SetGun(AGun* newGun);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	float lifeTime = 5.0;
 	
+	AGun* gun;
 
 public:	
 	// Called every frame
@@ -41,5 +43,36 @@ public:
 	// Projectile movement component.
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 	UProjectileMovementComponent* ProjectileMovementComponent;
+
+	// Used to increase the speed, 1 is normal
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
+	float fireSpeedMultipler;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Homing)
+	TSubclassOf<AActor> playerClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Homing)
+	TSubclassOf<AActor> targetClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Homing)
+	AActor* target;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Homing)
+	float initialHomingStrength = 1000.0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Homing)
+	float HomingStackingStrength = 500.0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Homing)
+	float homingRange;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Homing)
+	float initialHomingRange = 500.0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Homing)
+	float HomingRangeStackingStrength = 250.0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Homing)
+		float lifeTime = 5.0;
+
+	FVector DirectionOfFire;
+	AActor* GetClosestActor();
+
 
 };

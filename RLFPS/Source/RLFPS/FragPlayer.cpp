@@ -4,6 +4,7 @@
 #include "FragPlayer.h"
 #include "FragPlayerCollisionComponent.h"
 #include "FragMovementComponent.h"
+#include "HealthComponent.h"
 #include "Engine.h"
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
@@ -49,6 +50,7 @@ AFragPlayer::AFragPlayer()
 	// Add the character collision and movement component
 	CollisionComponent = CreateDefaultSubobject<UFragPlayerCollisionComponent>(TEXT("Defragr Character Collision"));
 	MovementComponent = CreateDefaultSubobject<UFragMovementComponent>(TEXT("Defragr Character Movement"));
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Defragr Health Component"));
 	if (CollisionComponent)
 	{
 		CollisionComponent->Player = this;
@@ -117,8 +119,12 @@ void AFragPlayer::SetRotation(FQuat NewRotation)
 	// We only need the pitch of the camera since
 	// the camera is attached to the player's body
 	// and the body does the Z rotation
+	
 	FRotator NewCameraRotation(NewRotation);
 	NewCameraRotation.Roll = 0.f;
+	NewCameraRotation.Pitch = FMath::Clamp(NewCameraRotation.Pitch, -0.0f, 0.0f);
+	FString pitchString = FString::SanitizeFloat(NewCameraRotation.Pitch);
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Test"));
 	NewCameraRotation.Yaw = 0.f;
 	FirstPersonCameraComponent->SetRelativeRotation(NewCameraRotation);
 	// Squash the roll and pitch of the rotation for the Z
@@ -128,6 +134,16 @@ void AFragPlayer::SetRotation(FQuat NewRotation)
 	NewPlayerRotation.Pitch = 0.f;
 	PlayerForwardRefComponent->SetWorldRotation(NewPlayerRotation);
 }
+
+void AFragPlayer::AddRotation()
+{
+	
+	FQuat newQuat(FMath::RandRange(xMin, xMax), FMath::FRandRange(yMin, yMax), FMath::FRandRange(zMin, zMax), 1.0f);
+	FRotator RotationToAdd(newQuat);
+
+	FirstPersonCameraComponent->AddLocalRotation(RotationToAdd);
+}
+
 FRotator AFragPlayer::GetRotation()
 {
 	return FirstPersonCameraComponent->GetComponentRotation();
@@ -151,6 +167,16 @@ void AFragPlayer::UpdateViewingAngles()
 	{
 		FVector v(0.f, -MouseVelocity.Y, 0.f);
 		FirstPersonCameraComponent->AddLocalRotation(FQuat::MakeFromEuler(v));
+		FMinimalViewInfo cameraViewInfo;
+		FirstPersonCameraComponent->GetCameraView(1.0f, cameraViewInfo);
+		if (cameraViewInfo.Rotation.Pitch > pitchMaxY) {
+			FRotator temp(pitchMaxY, cameraViewInfo.Rotation.Yaw, cameraViewInfo.Rotation.Roll);
+			FirstPersonCameraComponent->SetWorldRotation(temp);
+		}
+		if (cameraViewInfo.Rotation.Pitch < pitchMinY) {
+			FRotator temp(pitchMinY, cameraViewInfo.Rotation.Yaw, cameraViewInfo.Rotation.Roll);
+			FirstPersonCameraComponent->SetWorldRotation(temp);
+		}
 	}
 	// Rotate the reference point component
 	if (PlayerForwardRefComponent)
@@ -188,4 +214,11 @@ FVector2D AFragPlayer::ConsumeMouseInput()
 	FVector2D LastRelationalMousePos = MouseVelocity;
 	MouseVelocity = FVector2D::ZeroVector;
 	return MouseVelocity;
+}
+
+
+void AFragPlayer::dealDamage(float damage)
+{
+	currentHealth -= damage;
+	if (currentHealth < 0.0f) currentHealth = 0.0f;
 }
