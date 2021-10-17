@@ -212,6 +212,7 @@ bool UFragMovementComponent::CheckJump()
 	if (JumpCount != 0) {
 		playerVelocity.Z = JumpForce;
 		AirMove();
+		JumpCount--;
 	}
 	if (wishJump)
 	{
