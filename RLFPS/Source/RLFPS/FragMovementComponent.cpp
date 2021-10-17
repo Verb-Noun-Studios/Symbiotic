@@ -117,7 +117,7 @@ void UFragMovementComponent::AirMove()
 	float wishSpeed2 = wishSpeed;
 	if (FVector::DotProduct(playerVelocity, wishDirection) < 0)
 		dynamicAcceleration = AirStopAccelerate;
-	if (wishMove.X == 0.f && wishMove.Y != 0.0f)
+	if (wishMove.X == 0.f || wishMove.Y != 0.0f)
 	{
 		if (wishSpeed > AirStrafeSpeed)
 			wishSpeed = AirStrafeSpeed;
