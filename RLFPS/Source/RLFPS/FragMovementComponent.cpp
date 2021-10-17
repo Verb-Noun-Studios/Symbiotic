@@ -48,10 +48,12 @@ void UFragMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 			Player->Collider->SetWorldLocation(origin);
 			return;
 		}
-		QueueJump();
+		//QueueJump();
 		CollisionComponent->TraceGround();
-		if (CollisionComponent->CanGroundMove)
+		if (CollisionComponent->CanGroundMove) {
 			GroundMove();
+			JumpCount = 2;
+		}
 		else
 			AirMove();
 		CollisionComponent->TraceGround();
@@ -73,11 +75,7 @@ void UFragMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 }
 void UFragMovementComponent::GroundMove()
 {
-	if (CheckJump())
-	{
-		AirMove();
-		return;
-	}
+	
 	ApplyFriction();
 	FVector wishDirection;
 	FVector wishvel = FVector::ZeroVector;
@@ -102,6 +100,7 @@ void UFragMovementComponent::GroundMove()
 }
 void UFragMovementComponent::AirMove()
 {
+	GEngine->AddOnScreenDebugMessage(25, 0.01f, FColor::Red, FString::Printf(TEXT("AirBorn")));
 	FVector wishDirection;
 	FVector currentVelocity;
 	float dynamicAcceleration;
@@ -117,7 +116,7 @@ void UFragMovementComponent::AirMove()
 	float wishSpeed2 = wishSpeed;
 	if (FVector::DotProduct(playerVelocity, wishDirection) < 0)
 		dynamicAcceleration = AirStopAccelerate;
-	if (wishMove.X == 0.f || wishMove.Y != 0.0f)
+	if (wishMove.X == 0.f && wishMove.Y != 0.0f)
 	{
 		if (wishSpeed > AirStrafeSpeed)
 			wishSpeed = AirStrafeSpeed;
@@ -133,8 +132,6 @@ void UFragMovementComponent::AirControl(FVector WishDirection, float WishSpeed)
 {
 	float	zspeed, speed, dot, k;
 	// Can't control movement if not moving forward or backward
-	//if (wishMove.X != 0.f || WishSpeed == 0.f)
-		//return;
 	zspeed = playerVelocity.Z;
 	playerVelocity.Z = 0;
 	speed = playerVelocity.Size();
@@ -208,14 +205,16 @@ void UFragMovementComponent::FlyMove()
 	ApplyAcceleration(wishdir, wishspeed, SpectatorAccelerate);
 	// move
 	Player->CollisionComponent->VectorMA(GetOrigin(), delta, playerVelocity, origin);
-	origin.Z = 0.f;
+	//origin.Z = 0.f;
 }
 bool UFragMovementComponent::CheckJump()
 {
+	if (JumpCount != 0) {
+		playerVelocity.Z = JumpForce;
+		AirMove();
+	}
 	if (wishJump)
 	{
-		playerVelocity.Z = JumpForce;
-
 		//Set Up Sounds		
 		//Player->PlayJumpSound();
 		wishJump = false;
@@ -225,10 +224,11 @@ bool UFragMovementComponent::CheckJump()
 }
 void UFragMovementComponent::QueueJump()
 {
-	if (Player->JumpInput && !wishJump)
+	if (JumpCount != 0) 
+	{
 		wishJump = true;
-	if (!Player->JumpInput)
-		wishJump = false;
+		JumpCount--;
+	}
 }
 float UFragMovementComponent::CmdScale()
 {

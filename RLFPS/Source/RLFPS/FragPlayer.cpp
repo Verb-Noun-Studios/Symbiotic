@@ -154,7 +154,7 @@ float AFragPlayer::GetGroundSpeed()
 }
 void AFragPlayer::DoJump()
 {
-	JumpInput = true;
+	MovementComponent->CheckJump();
 }
 void AFragPlayer::StopJump()
 {
@@ -187,12 +187,10 @@ void AFragPlayer::UpdateViewingAngles()
 }
 void AFragPlayer::MoveForward(float Value)
 {
-	if (Value != 0.0f)
 		MovementInput.X = Value;
 }
 void AFragPlayer::MoveRight(float Value)
 {
-	if (Value != 0.0f)
 		MovementInput.Y = Value;
 }
 void AFragPlayer::MouseX(float Value)
