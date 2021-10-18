@@ -170,7 +170,7 @@ bool ABullet::CheckTargetAngle()
 	float angle = UKismetMathLibrary::Acos(dot / denomenator);
 
 
-	if (angle > HomingAngle|| dir.Size() > homingRange)
+	if (angle > HomingAngle || dir.Size() > homingRange)
 	{
 		return true;
 	}
