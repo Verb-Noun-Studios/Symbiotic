@@ -58,6 +58,8 @@ public:
 	AActor* target;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Homing)
+		float HomingStrength = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Homing)
 	float initialHomingStrength = 1000.0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Homing)
 	float HomingStackingStrength = 500.0;
@@ -67,12 +69,17 @@ public:
 	float initialHomingRange = 500.0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Homing)
 	float HomingRangeStackingStrength = 250.0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Homing)
+		float HomingAngle = 0.1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Homing)
 		float lifeTime = 5.0;
 
 	FVector DirectionOfFire;
 	AActor* GetClosestActor();
+	bool CheckTargetAngle();
+	UFUNCTION(BlueprintCallable)
+	float GetDistanceToTarget();
 
 
 };
