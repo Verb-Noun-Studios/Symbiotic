@@ -306,7 +306,7 @@ TArray<UModBase*> AGun::GetModOptions()
 void AGun::LevelUp(UModBase* newModType)
 {
 	AddMod(newModType);
-	AddMod(newModType);
+	//AddMod(newModType);
 
 	expToNextLevel *= 2;
 	if (GetLevelPercentage() != 1)
@@ -352,7 +352,7 @@ void AGun::UpdateCoreStats()
 
 	if (ammoModStacks > 0)
 	{
-		ammoCount = defaultAmmoCount * 2 * ammoModStacks;
+		ammoCount = defaultAmmoCount * ammoModStacks * 1.5;
 
 	}
 
