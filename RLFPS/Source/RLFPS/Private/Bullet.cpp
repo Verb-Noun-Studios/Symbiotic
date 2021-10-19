@@ -51,32 +51,36 @@ void ABullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	
 
-	if (ProjectileMovementComponent->bIsHomingProjectile)
-	{
-		//|| target->IsActorBeingDestroyed() || !target->IsValidLowLevel()
-		if (target == nullptr || CheckTargetAngle())
-		{
-			target = GetClosestActor();
-			if (target)
-			{
+	//if (ProjectileMovementComponent->bIsHomingProjectile)
+	//{
+	//	//|| target->IsActorBeingDestroyed() || !target->IsValidLowLevel()
+	//	if (target == nullptr )
+	//	{
+	//		target = GetClosestActor();
+	//		if (target)
+	//		{
 
-				ProjectileMovementComponent->HomingTargetComponent = target->GetRootComponent();
+	//			ProjectileMovementComponent->HomingTargetComponent = target->GetRootComponent();
 
-			}
-			
-		}
-		else 
-		{
+	//		}
+	//		
+	//	}
+	//	else
+	//	{
 
-			float multiplier = (1 + (1 - (GetDistanceToTarget() / homingRange)));
+	//		if (CheckTargetAngle())
+	//		{
+	//			target = nullptr;
+	//			ProjectileMovementComponent->HomingTargetComponent = nullptr;
+	//		}
 
-			UE_LOG(LogTemp, Warning, TEXT("Multiplier: %f"), multiplier);
-			ProjectileMovementComponent->HomingAccelerationMagnitude = HomingStrength * multiplier;
+	//		ProjectileMovementComponent->HomingAccelerationMagnitude = HomingStrength;// *multiplier;
 
-		}
-		
-	}
+	//	}
+	//	
+	//}
 
 	lifeTime = lifeTime - DeltaTime;
 
@@ -122,30 +126,38 @@ AActor* ABullet::GetClosestActor()
 		if (actor != this)
 		{
 			FVector dir = actor->GetActorLocation() - this->GetActorLocation();
+			FVector currentFightDir = this->ProjectileMovementComponent->Velocity;
 
-			float dot = FVector::DotProduct(DirectionOfFire, dir);
-			float sizeA = DirectionOfFire.Size();
+			float length = dir.Size();
+			currentFightDir.Normalize();
+			dir.Normalize();
+
+			float dot = FVector::DotProduct(currentFightDir, dir);
+			float sizeA = currentFightDir.Size();
 			float sizeB = dir.Size();
 
 			float denomenator = sizeA * sizeB;
 
 			float angle = UKismetMathLibrary::Acos(dot / denomenator);
 			
-			UE_LOG(LogTemp, Warning, TEXT("Angle: %f"), angle);
-			if (angle > 0 && angle < HomingAngle && dir.Size() < homingRange)
+			angle = angle * (180 / 3.14159);
+
+			
+			
+			if (angle > 0 && angle < HomingAngle && length < homingRange)
 			{
 				if (closestPlayer == nullptr)
 				{
 					closestPlayer = actor;
-					distance = dir.Size();
+					distance = length;
 				}
 				else
 				{
 								
-					if (dir.Size() < distance)//potentially rework to use sizesquared
+					if (length < distance)//potentially rework to use sizesquared
 					{
 						closestPlayer = actor;
-						distance = dir.Size();
+						distance = length;
 					}				
 				
 				}
@@ -159,18 +171,26 @@ AActor* ABullet::GetClosestActor()
 
 bool ABullet::CheckTargetAngle() 
 {
-	FVector dir = target->GetActorLocation() - this->GetActorLocation();
 
-	float dot = FVector::DotProduct(DirectionOfFire, dir);
-	float sizeA = DirectionOfFire.Size();
+	FVector dir = target->GetActorLocation() - this->GetActorLocation();
+	FVector currentFightDir = this->ProjectileMovementComponent->Velocity;
+
+	float length = dir.Size();
+	currentFightDir.Normalize();
+	dir.Normalize();
+
+	float dot = FVector::DotProduct(currentFightDir, dir);
+	float sizeA = currentFightDir.Size();
 	float sizeB = dir.Size();
 
 	float denomenator = sizeA * sizeB;
 
 	float angle = UKismetMathLibrary::Acos(dot / denomenator);
 
+	angle = angle * (180 / 3.14159);
 
-	if (angle > HomingAngle || dir.Size() > homingRange)
+	//UE_LOG(LogTemp, Warning, TEXT("Length: %f    Range: %f   Angle: %f"), length, homingRange, angle);
+	if (angle > HomingAngle || length > homingRange)
 	{
 		return true;
 	}
