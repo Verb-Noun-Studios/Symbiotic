@@ -42,51 +42,70 @@ void UHomingMod::OnSpawn(ABullet* bullet)
 	for (AActor* actor : enemies)
 	{
 		
-		FVector dir = actor->GetActorLocation() - bullet->GetActorLocation();
-		FVector currentFightDir = bullet->ProjectileMovementComponent->Velocity;
+		FHitResult OutHit;
 
-		float length = dir.Size();
-		currentFightDir.Normalize();
-		dir.Normalize();
+		FCollisionQueryParams CollisionParams;
+		GetWorld()->LineTraceSingleByChannel(OutHit, bullet->GetActorLocation(), actor->GetActorLocation(), ECC_Visibility, CollisionParams);
 
-		float dot = FVector::DotProduct(currentFightDir, dir);
-		float sizeA = currentFightDir.Size();
-		float sizeB = dir.Size();
-
-		float denomenator = sizeA * sizeB;
-
-		float angle = UKismetMathLibrary::Acos(dot / denomenator);
-
-		angle = angle * (180 / 3.14159);
-
-
-
-		if (angle > 0 && angle < bullet->HomingAngle)
+		if (OutHit.Actor != actor)
 		{
-			if (closestPlayer == nullptr)
-			{
-				closestPlayer = actor;
-				distance = length;
-			}
-			else
-			{
 
-				if (length < distance)//potentially rework to use sizesquared
+		}
+		else
+		{
+
+			FVector dir = actor->GetActorLocation() - bullet->GetActorLocation();
+			FVector currentFightDir = bullet->ProjectileMovementComponent->Velocity;
+
+			float length = dir.Size();
+			currentFightDir.Normalize();
+			dir.Normalize();
+
+			float dot = FVector::DotProduct(currentFightDir, dir);
+			float sizeA = currentFightDir.Size();
+			float sizeB = dir.Size();
+
+			float denomenator = sizeA * sizeB;
+
+			float angle = UKismetMathLibrary::Acos(dot / denomenator);
+
+			angle = angle * (180 / 3.14159);
+
+
+
+			if (angle > 0 && angle < bullet->HomingAngle)
+			{
+				if (closestPlayer == nullptr)
 				{
 					closestPlayer = actor;
 					distance = length;
 				}
+				else
+				{
 
+					if (length < distance)//potentially rework to use sizesquared
+					{
+						closestPlayer = actor;
+						distance = length;
+					}
+
+				}
 			}
+
 		}
+
+
+		if (closestPlayer)
+		{
+
+			bullet->ProjectileMovementComponent->HomingTargetComponent = closestPlayer->GetRootComponent();
+
+		}
+
+		}
+
+
 		
-	}
-
-
-	if (closestPlayer)
-	{
-		bullet->ProjectileMovementComponent->HomingTargetComponent = closestPlayer->GetRootComponent();
-	}
 	
 
 	
