@@ -57,6 +57,9 @@ public:
 	ModType type;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* image;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString infoText;
+
 	int stacks = 1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<ModAdditionalAtrributes> atribs;
