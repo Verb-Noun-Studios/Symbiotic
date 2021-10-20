@@ -99,10 +99,14 @@ void UHomingMod::OnSpawn(ABullet* bullet)
 		{
 
 			bullet->ProjectileMovementComponent->HomingTargetComponent = closestPlayer->GetRootComponent();
-
+			UE_LOG(LogTemp, Warning, TEXT("Enemy Found"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No Enemy Found"));
 		}
 
-		}
+	}
 
 
 		
