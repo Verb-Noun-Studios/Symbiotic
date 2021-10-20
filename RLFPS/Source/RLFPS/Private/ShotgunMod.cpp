@@ -20,13 +20,15 @@ void UShotgunMod::OnApply()
 
 void UShotgunMod::OnFire(AGun* gun)
 {
+	FVector startingPoint = gun->GetActorLocation() + gun->MuzzleLocation * gun->GetActorForwardVector();
+
 	for (int i = 0; i < stacks; i++)
 	{
-		FVector vector(FMath::Rand(), FMath::Rand(), FMath::Rand());
+		FVector vector(FMath::RandRange(-1,1), FMath::RandRange(-1, 1), FMath::RandRange(-1, 1));
 
 		vector.Normalize();
-		vector = vector * offsetMultiplier;
-		FVector startingPoint = gun->GetActorLocation() + gun->MuzzleLocation * gun->GetActorForwardVector();
+		vector = vector * offsetMultiplier * ((float)(i + 1)/(float)(stacks + 1));
+		
 		FVector newPoint = startingPoint + vector;
 
 		
