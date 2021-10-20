@@ -48,10 +48,12 @@ void UFragMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 			Player->Collider->SetWorldLocation(origin);
 			return;
 		}
-		QueueJump();
+		//QueueJump();
 		CollisionComponent->TraceGround();
-		if (CollisionComponent->CanGroundMove)
+		if (CollisionComponent->CanGroundMove) {
 			GroundMove();
+			JumpCount = 2;
+		}
 		else
 			AirMove();
 		CollisionComponent->TraceGround();
@@ -61,10 +63,10 @@ void UFragMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		groundSpeed = GroundVelocity.Size();
 		Player->Collider->SetWorldLocation(origin);
 		// Logs
-		/*GEngine->AddOnScreenDebugMessage(20, 0.01f, FColor::Red, FString::Printf(TEXT("Position [X: %.6f, Y: %.6f, Z: %.6f]"), GetOrigin().X, GetOrigin().Y, GetOrigin().Z));
+		GEngine->AddOnScreenDebugMessage(20, 0.01f, FColor::Red, FString::Printf(TEXT("Position [X: %.6f, Y: %.6f, Z: %.6f]"), GetOrigin().X, GetOrigin().Y, GetOrigin().Z));
 		GEngine->AddOnScreenDebugMessage(2, 0.01f, FColor::Green, FString::Printf(TEXT("Is Grounded [%d]"), CollisionComponent->IsGrounded));
-		GEngine->AddOnScreenDebugMessage(0, 0.01f, FColor::Green, FString::Printf(TEXT("Desired Velocity [X: %.2f, Y: %.2f, Z: %.2f]"), PlayerVelocity.X, PlayerVelocity.Y, PlayerVelocity.Z));
-		GEngine->AddOnScreenDebugMessage(1, 0.01f, FColor::Green, FString::Printf(TEXT("Desired Linear Speed [%.2fups]"), GroundSpeed));*/
+		GEngine->AddOnScreenDebugMessage(0, 0.01f, FColor::Green, FString::Printf(TEXT("Desired Velocity [X: %.2f, Y: %.2f, Z: %.2f]"), playerVelocity.X, playerVelocity.Y, playerVelocity.Z));
+		GEngine->AddOnScreenDebugMessage(1, 0.01f, FColor::Green, FString::Printf(TEXT("Desired Linear Speed [%.2fups]"), groundSpeed));
 	}
 	else
 	{
@@ -73,11 +75,7 @@ void UFragMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 }
 void UFragMovementComponent::GroundMove()
 {
-	if (CheckJump())
-	{
-		AirMove();
-		return;
-	}
+	
 	ApplyFriction();
 	FVector wishDirection;
 	FVector wishvel = FVector::ZeroVector;
@@ -102,6 +100,7 @@ void UFragMovementComponent::GroundMove()
 }
 void UFragMovementComponent::AirMove()
 {
+	GEngine->AddOnScreenDebugMessage(25, 0.01f, FColor::Red, FString::Printf(TEXT("AirBorn")));
 	FVector wishDirection;
 	FVector currentVelocity;
 	float dynamicAcceleration;
@@ -117,12 +116,10 @@ void UFragMovementComponent::AirMove()
 	float wishSpeed2 = wishSpeed;
 	if (FVector::DotProduct(playerVelocity, wishDirection) < 0)
 		dynamicAcceleration = AirStopAccelerate;
-	if (wishMove.X == 0.f && wishMove.Y != 0.0f)
-	{
-		if (wishSpeed > AirStrafeSpeed)
-			wishSpeed = AirStrafeSpeed;
-		dynamicAcceleration = AirStrafeAcceleration;
-	}
+	if (wishSpeed > AirStrafeSpeed)
+		wishSpeed = AirStrafeSpeed;
+		
+	dynamicAcceleration = AirStrafeAcceleration;
 	ApplyAcceleration(wishDirection, wishSpeed, dynamicAcceleration);
 	AirControl(wishDirection, wishSpeed);
 	// Apply gravity
@@ -133,8 +130,6 @@ void UFragMovementComponent::AirControl(FVector WishDirection, float WishSpeed)
 {
 	float	zspeed, speed, dot, k;
 	// Can't control movement if not moving forward or backward
-	if (wishMove.X != 0.f || WishSpeed == 0.f)
-		return;
 	zspeed = playerVelocity.Z;
 	playerVelocity.Z = 0;
 	speed = playerVelocity.Size();
@@ -142,13 +137,9 @@ void UFragMovementComponent::AirControl(FVector WishDirection, float WishSpeed)
 	dot = FVector::DotProduct(playerVelocity, WishDirection);
 	k = 32.f;
 	k *= CPMAirControl * dot * dot * delta;
-	// We can't change direction while slowing down
-	if (dot > 0)
-	{
-		playerVelocity.X = playerVelocity.X * speed + WishDirection.X * k;
-		playerVelocity.Y = playerVelocity.Y * speed + WishDirection.Y * k;
-		playerVelocity.Normalize();
-	}
+	playerVelocity.X = playerVelocity.X * speed + WishDirection.X * k;
+	playerVelocity.Y = playerVelocity.Y * speed + WishDirection.Y * k;
+	playerVelocity.Normalize();
 	playerVelocity.X *= speed;
 	playerVelocity.Y *= speed;
 	playerVelocity.Z = zspeed;
@@ -212,14 +203,17 @@ void UFragMovementComponent::FlyMove()
 	ApplyAcceleration(wishdir, wishspeed, SpectatorAccelerate);
 	// move
 	Player->CollisionComponent->VectorMA(GetOrigin(), delta, playerVelocity, origin);
-	origin.Z = 0.f;
+	//origin.Z = 0.f;
 }
 bool UFragMovementComponent::CheckJump()
 {
+	if (JumpCount != 0) {
+		playerVelocity.Z = JumpForce;
+		AirMove();
+		JumpCount--;
+	}
 	if (wishJump)
 	{
-		playerVelocity.Z = JumpForce;
-
 		//Set Up Sounds		
 		//Player->PlayJumpSound();
 		wishJump = false;
@@ -229,10 +223,11 @@ bool UFragMovementComponent::CheckJump()
 }
 void UFragMovementComponent::QueueJump()
 {
-	if (Player->JumpInput && !wishJump)
+	if (JumpCount != 0) 
+	{
 		wishJump = true;
-	if (!Player->JumpInput)
-		wishJump = false;
+		JumpCount--;
+	}
 }
 float UFragMovementComponent::CmdScale()
 {

@@ -4,6 +4,7 @@
 #include "FragPlayer.h"
 #include "FragPlayerCollisionComponent.h"
 #include "FragMovementComponent.h"
+#include "HealthComponent.h"
 #include "Engine.h"
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
@@ -49,6 +50,7 @@ AFragPlayer::AFragPlayer()
 	// Add the character collision and movement component
 	CollisionComponent = CreateDefaultSubobject<UFragPlayerCollisionComponent>(TEXT("Defragr Character Collision"));
 	MovementComponent = CreateDefaultSubobject<UFragMovementComponent>(TEXT("Defragr Character Movement"));
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Defragr Health Component"));
 	if (CollisionComponent)
 	{
 		CollisionComponent->Player = this;
@@ -152,7 +154,7 @@ float AFragPlayer::GetGroundSpeed()
 }
 void AFragPlayer::DoJump()
 {
-	JumpInput = true;
+	MovementComponent->CheckJump();
 }
 void AFragPlayer::StopJump()
 {
@@ -185,12 +187,10 @@ void AFragPlayer::UpdateViewingAngles()
 }
 void AFragPlayer::MoveForward(float Value)
 {
-	if (Value != 0.0f)
 		MovementInput.X = Value;
 }
 void AFragPlayer::MoveRight(float Value)
 {
-	if (Value != 0.0f)
 		MovementInput.Y = Value;
 }
 void AFragPlayer::MouseX(float Value)

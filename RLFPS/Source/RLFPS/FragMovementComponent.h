@@ -31,6 +31,7 @@ public:
 	float delta;
 	FVector2D wishMove;
 	bool wishJump;
+	UPROPERTY(BlueprintReadOnly)
 	FVector	playerVelocity;
 	bool isGrounded;
 	FVector origin = FVector::ZeroVector;
@@ -59,6 +60,11 @@ public:
 	/** The rate at which the player loses speed while on the ground */
 	UPROPERTY(Category = "Ground Movement", EditAnywhere, BlueprintReadWrite)
 		float GroundDampening = 8.f;
+
+	/** How Many times the player can jump before having to be grouned again*/
+	UPROPERTY(Category = "Air Movement", EditAnywhere, BlueprintReadWrite)
+		int JumpCount = 2;
+
 	/** The maximum speed the player can achieve while not strafe jumping */
 	UPROPERTY(Category = "Air Movement", EditAnywhere, BlueprintReadWrite)
 		float AirMaxSpeed = 7.f;

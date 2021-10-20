@@ -3,32 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "Components/BoxComponent.h"
-#include "../FragPlayer.h"
-#include "InputCoreTypes.h"
+#include "ModBase.h"
+#include <vector>
 #include "Gun.generated.h"
 
-UENUM()
-enum class WeaponModType : uint8
-{
-	WM_INVALID		UMETA(DisplayName = "Invalid"),
-	WM_ROF			UMETA(DisplayName = "Rate Of Fire"),
-	WM_AMMO			UMETA(DisplayName = "Ammo"),
-	WM_RELOAD		UMETA(DisplayName = "Reload"),
-	WM_INVALID_LAST	UMETA(DisplayName = "Invalid Last"),
-	
 
-};
 
-USTRUCT()
-struct FWeaponModifier
-{
-	GENERATED_BODY()
-
-	WeaponModType type;
-	int stacks = 0;
-};
 
 UCLASS()
 class RLFPS_API AGun : public AActor
@@ -36,89 +16,98 @@ class RLFPS_API AGun : public AActor
 	GENERATED_BODY()
 
 
+
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> ProjectileClass;
 
-	UPROPERTY(EditAnywhere)
-	TArray<FWeaponModifier> Mods;
+	
 	
 
 public:	
 	// Sets default values for this actor's properties
 	AGun();
 
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
-	void Fire(float deltaTime);
-	void SpawnRound();
-	void Reload();
-	UFUNCTION(BlueprintCallable)
+	void AddMod(UModBase* mod);
+	
+
 	bool GetFireKey();
 	bool GetReloadKey();
 	bool GetOptionOneKey();
 	bool GetOptionTwoKey();
+
 	UFUNCTION(BlueprintCallable)
-	void AddMod(WeaponModType type);
+	void OnHitCallback(AActor* actor);
+
+	void Fire(float deltaTime);
+	void SpawnRound(FActorSpawnParameters spawnParams);
+	void SpawnRound(FActorSpawnParameters spawnParams, FVector offset, FVector dir);
+
+	FActorSpawnParameters* spawnParams;
+
+
 	UFUNCTION(BlueprintCallable)
 	void GainEXP(int exp);
 	UFUNCTION(BlueprintCallable)
 	float GetLevelPercentage();
-	TArray<WeaponModType> GetNewModOptions();
+	TArray<UModBase*> GetNewModOptions();
 	UFUNCTION(BlueprintCallable)
-	TArray<WeaponModType> GetModOptions();
-	void LevelUp(WeaponModType newModType);
+	TArray<UModBase*> GetModOptions();
+	void LevelUp(UModBase* newModType);
 	void UpdateCoreStats();
-
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-	
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UModBase*> mods;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<TSubclassOf<UModBase>> allMods;
+
+
+	/*************FUNCTIONAL VARIABLES************/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (MakeEditWidget = true))
 	float MuzzleLocation;
-
 	UPROPERTY(BlueprintReadWrite)
 	bool firing = false;
-
 	UPROPERTY(BlueprintReadWrite)
 	int ammoRemaining;
-
 	UPROPERTY(BlueprintReadWrite)
 	bool reloading = false;
-	 
-	UPROPERTY(EditAnywhere, Category = "Game Stats")
-	float defaultReloadTime = 5;
-	UPROPERTY(EditAnywhere, Category = "Game Stats")
-	int defaultAmmoCount = 10;
-	UPROPERTY(EditAnywhere, Category = "Game Stats")
-	int defaultRPM = 120;
-	UPROPERTY(EditAnywhere, Category = "Game Stats")
-	int defaultBulletSpeed = 120;
-	
-	UPROPERTY(BlueprintReadWrite)
-	int expToNextLevel=5;
-	UPROPERTY(BlueprintReadWrite)
-	int currentEXP;
-	UPROPERTY(BlueprintReadWrite)
-	bool readyToLevelUp = false;
-	UPROPERTY(BlueprintReadWrite)
-	TArray<WeaponModType> ModOptions;
-
-	UPROPERTY(EditAnywhere, Category = "Gun Stats")
-	float reloadTime;
-	UPROPERTY(EditAnywhere, Category = "Gun Stats", BlueprintReadWrite)
-	int ammoCount;
-	UPROPERTY(EditAnywhere, Category = "Gun Stats")
-	float bulletSpeed;
-	UPROPERTY(EditAnywhere, Category = "Gun stats")
-	int rpm;
-
-
-	int shotsPerRound = 1;
 	float elapsedTime = 0;
+
+	
+	/*************DEFAULT VALUES*************/
+	UPROPERTY(EditAnywhere, Category = "Game Stats")
+		float defaultReloadTime = 5;
+	UPROPERTY(EditAnywhere, Category = "Game Stats")
+		int defaultAmmoCount = 10;
+	UPROPERTY(EditAnywhere, Category = "Game Stats")
+		int defaultRPM = 120;
+	UPROPERTY(EditAnywhere, Category = "Game Stats")
+		int defaultBulletSpeed = 120;
+	UPROPERTY(EditAnywhere, Category = "Game Stats")
+		float defaultDamage = 25;
+
+	/****************RUNTIME GUN STATS***************/
+	UPROPERTY(EditAnywhere, Category = "Gun Stats")
+		float reloadTime;
+	UPROPERTY(EditAnywhere, Category = "Gun Stats", BlueprintReadWrite)
+		int ammoCount;
+	UPROPERTY(EditAnywhere, Category = "Gun Stats")
+		float bulletSpeed;
+	UPROPERTY(EditAnywhere, Category = "Gun stats")
+		int rpm;
+	UPROPERTY(BlueprintReadWrite, Category = "Game Stats")
+		float Damage = 25;
+	int shotsPerRound = 1;
+
+
 
 	UPROPERTY(EditAnywhere, Category = "Controls")
 	FKey FireKey;
@@ -128,5 +117,14 @@ public:
 	FKey OptionOneKey;
 	UPROPERTY(EditAnywhere, Category = "Controls")
 	FKey OptionTwoKey;
+
+	UPROPERTY(BlueprintReadWrite)
+	int expToNextLevel = 5;
+	UPROPERTY(BlueprintReadWrite)
+	int currentEXP;
+	UPROPERTY(BlueprintReadWrite)
+	bool readyToLevelUp = false;
+	UPROPERTY(BlueprintReadWrite)
+	TArray<UModBase*> ModOptions;
 
 };
