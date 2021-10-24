@@ -76,6 +76,10 @@ public:
 		bool JumpInput;
 	/* Stores relational (to last frame) mouse position */
 	FVector2D MouseVelocity;
+
+	UPROPERTY(Category = Input, EditAnywhere, BlueprintReadWrite)
+		float MouseSensitivity;
+
 	//Handles the Collision Component
 public:
 	/** The BoxComponent being used for movement collision. Always treated as being vertically aligned in simple collision check functions */
