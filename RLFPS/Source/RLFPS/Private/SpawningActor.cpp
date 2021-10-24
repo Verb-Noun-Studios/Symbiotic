@@ -34,6 +34,8 @@ void ASpawningActor::Tick(float DeltaTime)
 	if (beaconTime > 0)
 	{
 		beaconTime -= DeltaTime;
+
+		
 		if (elapsedTime > (60.0/ (EPM * beaconMultiplier)) && (enemiesSpawned < maxEnemies || maxEnemies < 1))
 		{
 			SpawnEnemie();

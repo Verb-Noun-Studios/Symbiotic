@@ -44,8 +44,29 @@ void ABeaconActor::GetSpawnPoints()
 
 void ABeaconActor::Activate()
 {
-	for (ASpawningActor* spawnPoint : spawnPoints)
+
+	UE_LOG(LogTemp, Warning, TEXT("Activating"));
+	if (activated)
 	{
-		spawnPoint->ActivateWithBeacon(time, multiplier);
+		for (ASpawningActor* spawnPoint : spawnPoints)
+		{
+			spawnPoint->ActivateWithBeacon(time, multiplier);
+		}
 	}
+	
 }
+
+void ABeaconActor::RecieveOnActivate_Implementation()
+{
+
+}
+
+
+void ABeaconActor::Use()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Using"));
+	activated = true;
+	Activate();
+	RecieveOnActivate();
+}
+
