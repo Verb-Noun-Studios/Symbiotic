@@ -165,23 +165,23 @@ void AFragPlayer::UpdateViewingAngles()
 	// Pitch camera up and down
 	if (FirstPersonCameraComponent)
 	{
-		FVector v(0.f, -MouseVelocity.Y, 0.f);
+		FVector v(0.f, -MouseVelocity.Y * MouseSensitivity, 0.f);
 		FirstPersonCameraComponent->AddLocalRotation(FQuat::MakeFromEuler(v));
 		FMinimalViewInfo cameraViewInfo;
 		FirstPersonCameraComponent->GetCameraView(1.0f, cameraViewInfo);
 		if (cameraViewInfo.Rotation.Pitch > pitchMaxY) {
-			FRotator temp(pitchMaxY, cameraViewInfo.Rotation.Yaw, cameraViewInfo.Rotation.Roll);
+			FRotator temp(pitchMaxY * MouseSensitivity, cameraViewInfo.Rotation.Yaw, cameraViewInfo.Rotation.Roll);
 			FirstPersonCameraComponent->SetWorldRotation(temp);
 		}
 		if (cameraViewInfo.Rotation.Pitch < pitchMinY) {
-			FRotator temp(pitchMinY, cameraViewInfo.Rotation.Yaw, cameraViewInfo.Rotation.Roll);
+			FRotator temp(pitchMinY * MouseSensitivity, cameraViewInfo.Rotation.Yaw, cameraViewInfo.Rotation.Roll);
 			FirstPersonCameraComponent->SetWorldRotation(temp);
 		}
 	}
 	// Rotate the reference point component
 	if (PlayerForwardRefComponent)
 	{
-		FVector v(0.f, 0.f, MouseVelocity.X);
+		FVector v(0.f, 0.f, MouseVelocity.X * MouseSensitivity);
 		PlayerForwardRefComponent->AddWorldRotation(FQuat::MakeFromEuler(v));
 	}
 }
