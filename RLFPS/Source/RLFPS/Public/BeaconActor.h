@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "InteractableInterface.h"
+#include "ModBase.h"
 #include "BeaconActor.generated.h"
 
 class ASpawningActor;
@@ -19,8 +20,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	TArray<ASpawningActor*> spawnPoints;
-	bool activated = false;
-
+	float timeRemaining;
+	UPROPERTY(BlueprintReadOnly)
+	bool eventComplete = false;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -29,11 +31,15 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool activated = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float radius;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float multiplier = 1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float time;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UModBase> newMod;
 	
 	void GetSpawnPoints();
 	UFUNCTION(BlueprintCallable)

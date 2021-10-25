@@ -51,37 +51,6 @@ void ABullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	
-
-	//if (ProjectileMovementComponent->bIsHomingProjectile)
-	//{
-	//	//|| target->IsActorBeingDestroyed() || !target->IsValidLowLevel()
-	//	if (target == nullptr )
-	//	{
-	//		target = GetClosestActor();
-	//		if (target)
-	//		{
-
-	//			ProjectileMovementComponent->HomingTargetComponent = target->GetRootComponent();
-
-	//		}
-	//		
-	//	}
-	//	else
-	//	{
-
-	//		if (CheckTargetAngle())
-	//		{
-	//			target = nullptr;
-	//			ProjectileMovementComponent->HomingTargetComponent = nullptr;
-	//		}
-
-	//		ProjectileMovementComponent->HomingAccelerationMagnitude = HomingStrength;// *multiplier;
-
-	//	}
-	//	
-	//}
-
 	lifeTime = lifeTime - DeltaTime;
 
 	if (lifeTime <= 0)

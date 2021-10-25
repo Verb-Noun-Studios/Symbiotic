@@ -31,6 +31,7 @@ void ASpawningActor::Tick(float DeltaTime)
 
 	elapsedTime += DeltaTime;
 
+	
 	if (beaconTime > 0)
 	{
 		beaconTime -= DeltaTime;
@@ -41,6 +42,7 @@ void ASpawningActor::Tick(float DeltaTime)
 			SpawnEnemie();
 			elapsedTime = 0;
 		}
+		
 	}
 	else
 	{
@@ -70,7 +72,7 @@ void ASpawningActor::SpawnEnemie()
 	else
 	{
 		enemiesSpawned++;
-		UE_LOG(LogTemp, Warning, TEXT("Enemy Spawned"));
+		
 	}
 		
 	

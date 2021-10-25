@@ -19,13 +19,25 @@ void ABeaconActor::BeginPlay()
 {
 	Super::BeginPlay();
 	GetSpawnPoints();
+	timeRemaining = time;
 }
 
 // Called every frame
 void ABeaconActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if (activated)
+	{
+		timeRemaining -= DeltaTime;
+		
+		if (timeRemaining < 0)
+		{
+			eventComplete = true;
+		}
+	}
+	
+	
+	
 }
 
 void ABeaconActor::GetSpawnPoints()
@@ -44,9 +56,10 @@ void ABeaconActor::GetSpawnPoints()
 
 void ABeaconActor::Activate()
 {
+	
 
 	UE_LOG(LogTemp, Warning, TEXT("Activating"));
-	if (activated)
+	if (activated && !eventComplete)
 	{
 		for (ASpawningActor* spawnPoint : spawnPoints)
 		{
