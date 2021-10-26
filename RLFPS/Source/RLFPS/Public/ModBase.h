@@ -52,6 +52,7 @@ public:
 	virtual void OnSpawn(ABullet* bullet);
 	virtual void OnFire(AGun* gun);
 	virtual void OnHit(AActor* actor);
+	virtual void OnReload(AActor* actor);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ModType type;

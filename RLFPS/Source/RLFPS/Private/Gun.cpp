@@ -60,7 +60,7 @@ void AGun::Tick(float DeltaTime)
 		if (reloading)
 		{
 			firing = false;
-			//Reload();
+			Reload();
 		}
 
 	}
@@ -89,7 +89,7 @@ void AGun::Tick(float DeltaTime)
 	if (ammoRemaining <= 0 && !reloading)
 	{
 		firing = false;
-		//Reload();
+		Reload();
 		reloading = true;
 	}
 
@@ -132,6 +132,14 @@ void AGun::Fire(float deltaTime)
 	
 	//UE_LOG(LogTemp, Warning, TEXT("Ammo Remaining: %d"), ammoRemaining);
 
+}
+
+void AGun::Reload()
+{
+	for (UModBase* mod : mods)
+	{
+		mod->OnReload(this);
+	}
 }
 
 void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
