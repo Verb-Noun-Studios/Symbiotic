@@ -34,10 +34,7 @@ void UReloadKnockBackMod::OnReload(AActor* actor)
 		if (distance < range + additionalRangePerStack * stacks)
 		{
 			AGruntCharacter* character = Cast<AGruntCharacter>(enemy);
-
 			character->LaunchCharacter(dir * (strength + additionalStrengthPerStack * stacks), true, true);
-			
-			
 		}
 
 
