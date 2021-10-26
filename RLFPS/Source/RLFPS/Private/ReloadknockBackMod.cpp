@@ -35,10 +35,8 @@ void UReloadKnockBackMod::OnReload(AActor* actor)
 		{
 			AGruntCharacter* character = Cast<AGruntCharacter>(enemy);
 
-			character->GetMovementComponent()->Velocity += dir * (strength + additionalStrengthPerStack * stacks);
-			//character->GetMesh()->AddForce(dir * (strength + additionalStrengthPerStack * stacks) * character->GetMesh()->GetMass());
-			//UE_LOG(LogTemp, Warning, TEXT("Reload knockback: adding Force to enemy, Distance: %f"), strength + additionalStrengthPerStack * stacks);
-
+			character->LaunchCharacter(dir * (strength + additionalStrengthPerStack * stacks), true, true);
+			
 			
 		}
 
