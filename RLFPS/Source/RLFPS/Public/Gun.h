@@ -43,6 +43,7 @@ public:
 	void OnHitCallback(AActor* actor);
 
 	void Fire(float deltaTime);
+	void Reload();
 	void SpawnRound(FActorSpawnParameters spawnParams);
 	void SpawnRound(FActorSpawnParameters spawnParams, FVector offset, FVector dir);
 
