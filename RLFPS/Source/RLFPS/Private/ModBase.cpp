@@ -32,3 +32,8 @@ void UModBase::OnHit(AActor* actor)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Calling Test On Hit"));
 }
+
+void UModBase::OnReload(AActor* actor)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Calling Test On Reload"));
+}
