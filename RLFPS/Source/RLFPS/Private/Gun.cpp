@@ -124,7 +124,7 @@ void AGun::Fire(float deltaTime)
 			mod->OnFire(this);
 		}
 
-		ammoRemaining--;
+		
 		firing = true;
 	}
 
@@ -162,6 +162,8 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 			mod->OnSpawn(bullet);
 		}
 	}
+
+	ammoRemaining--;
 	
 }
 
@@ -182,6 +184,8 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 			mod->OnSpawn(bullet);
 		}
 	}
+
+	ammoRemaining--;
 
 }
 

@@ -2,6 +2,7 @@
 
 
 #include "AcidMod.h"
+#include "Acid.h"
 
 UAcidMod::UAcidMod()
 {
@@ -27,7 +28,16 @@ void UAcidMod::OnHit(AActor* actor)
 
 	if (tempChance < chance + additionalchancePerStack * stacks)
 	{
-		AActor* acid = World->SpawnActor<AActor>(acidActorClass, actor->GetActorLocation(), actor->GetActorRotation(), *SpawnParams);
+		AActor* acidActor = World->SpawnActor<AActor>(acidActorClass, actor->GetActorLocation(), actor->GetActorRotation(), *SpawnParams);
+
+		AAcid* acid = Cast<AAcid>(acidActor);
+
+		acid->damage = damage;
+		acid->duration = duration;
+		acid->interval = interval;
+
 	}
+
+
 	
 }

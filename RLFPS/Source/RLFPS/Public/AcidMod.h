@@ -31,6 +31,14 @@ public:
 		float additionalStrengthPerStack;
 
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float damage = 100;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float duration = 2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float interval = 0.3;
+
+
 
 	void OnHit(AActor* actor);
 
