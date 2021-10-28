@@ -2,6 +2,8 @@
 
 
 #include "SpawningActor.h"
+#include "GruntCharacter.h"
+#include "EngineUtils.h"
 
 // Sets default values
 ASpawningActor::ASpawningActor()
@@ -59,11 +61,32 @@ void ASpawningActor::Tick(float DeltaTime)
 
 void ASpawningActor::SpawnEnemie()
 {
-
-	FVector spawnOffset(FMath::RandPointInCircle(spawnRadius),0);
-
 	UWorld* World = GetWorld();
-	AActor* enemie = World->SpawnActor<AActor>(classToSpawn, GetActorLocation() + spawnOffset, GetActorRotation(), *spawnParams);
+	FHitResult result;
+	FVector start = GetActorLocation();
+	FCollisionQueryParams CollisionParameters;
+	FVector end;
+
+	for (TActorIterator<AGruntCharacter> it(GetWorld()); it; ++it)
+	{
+		CollisionParameters.AddIgnoredActor(*it);
+		
+	}
+
+	
+	do
+	{
+
+		FVector spawnOffset(FMath::RandPointInCircle(spawnRadius), 0);
+
+		end = start + spawnOffset;
+		World->LineTraceSingleByChannel(result, start, end, ECollisionChannel::ECC_Visibility);
+
+	} while (result.Actor != nullptr);
+	
+
+	
+	AActor* enemie = World->SpawnActor<AActor>(classToSpawn, end, GetActorRotation(), *spawnParams);
 
 	if (!enemie)
 	{
