@@ -3,6 +3,9 @@
 
 #include "SpawningActor.h"
 #include "GruntCharacter.h"
+#include "CustomgameMode.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/GameModeBase.h"
 #include "EngineUtils.h"
 
 // Sets default values
@@ -61,42 +64,51 @@ void ASpawningActor::Tick(float DeltaTime)
 
 void ASpawningActor::SpawnEnemie()
 {
-	UWorld* World = GetWorld();
-	FHitResult result;
-	FVector start = GetActorLocation();
-	FCollisionQueryParams CollisionParameters;
-	FVector end;
+	AGameModeBase* gameMode = UGameplayStatics::GetGameMode(GetWorld());
+	ACustomGameMode* customGameMode = Cast<ACustomGameMode>(gameMode);
 
-	for (TActorIterator<AGruntCharacter> it(GetWorld()); it; ++it)
+	if (customGameMode->enemiesLeftToSpawn > 0) 
 	{
-		CollisionParameters.AddIgnoredActor(*it);
-		
+		UWorld* World = GetWorld();
+		FHitResult result;
+		FVector start = GetActorLocation();
+		FCollisionQueryParams CollisionParameters;
+		FVector end;
+
+		for (TActorIterator<AGruntCharacter> it(GetWorld()); it; ++it)
+		{
+			CollisionParameters.AddIgnoredActor(*it);
+
+		}
+
+
+		do
+		{
+
+			FVector spawnOffset(FMath::RandPointInCircle(spawnRadius), 0);
+
+			end = start + spawnOffset;
+			World->LineTraceSingleByChannel(result, start, end, ECollisionChannel::ECC_Visibility);
+
+		} while (result.Actor != nullptr);
+
+
+
+		AActor* enemie = World->SpawnActor<AActor>(classToSpawn, end, GetActorRotation(), *spawnParams);
+
+		if (!enemie)
+		{
+			SpawnEnemie();
+		}
+		else
+		{
+			enemiesSpawned++;
+			customGameMode->enemiesLeftToSpawn--;
+		}
 	}
 
-	
-	do
-	{
-
-		FVector spawnOffset(FMath::RandPointInCircle(spawnRadius), 0);
-
-		end = start + spawnOffset;
-		World->LineTraceSingleByChannel(result, start, end, ECollisionChannel::ECC_Visibility);
-
-	} while (result.Actor != nullptr);
-	
 
 	
-	AActor* enemie = World->SpawnActor<AActor>(classToSpawn, end, GetActorRotation(), *spawnParams);
-
-	if (!enemie)
-	{
-		SpawnEnemie();
-	}
-	else
-	{
-		enemiesSpawned++;
-		
-	}
 		
 	
 }
