@@ -24,6 +24,12 @@ void UShotgunMod::OnFire(AGun* gun)
 
 	for (int i = 0; i < stacks; i++)
 	{
+	
+		if (gun->ammoRemaining <= 0)
+		{
+			return;
+		}
+		
 		FVector vector(FMath::RandRange(-1,1), FMath::RandRange(-1, 1), FMath::RandRange(-1, 1));
 
 		vector.Normalize();

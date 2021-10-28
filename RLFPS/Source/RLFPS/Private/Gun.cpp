@@ -54,7 +54,7 @@ void AGun::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	elapsedTime += DeltaTime;
 
-	if (!reloading)
+	if (!reloading && ammoRemaining != ammoCount)
 	{
 		reloading = GetReloadKey();
 		if (reloading)
