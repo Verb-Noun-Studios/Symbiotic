@@ -17,6 +17,9 @@ protected:
 	virtual void BeginPlay() override;
 	float elapsedTime = 0;
 	bool activated = true;
+	AActor* player;
+	float distanceToPlayer;
+	FVector location;
 	
 
 public:	
@@ -24,7 +27,8 @@ public:
 	ASpawningActor();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AActor> playerClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AActor> classToSpawn;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -34,6 +38,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int maxEnemies;
 	int enemiesSpawned = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float distanceToPlayerThreshold = 4000;
+
 	FActorSpawnParameters* spawnParams;
 
 

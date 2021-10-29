@@ -6,6 +6,7 @@
 #include "CustomgameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/GameModeBase.h"
+#include "DrawDebugHelpers.h"
 #include "EngineUtils.h"
 
 // Sets default values
@@ -27,6 +28,12 @@ void ASpawningActor::BeginPlay()
 	SpawnParams->Instigator = GetInstigator();
 	SpawnParams->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 	spawnParams = SpawnParams;
+
+
+
+	player = UGameplayStatics::GetActorOfClass(GetWorld(), playerClass);
+	location = GetActorLocation();
+
 }
 
 // Called every frame
@@ -36,34 +43,45 @@ void ASpawningActor::Tick(float DeltaTime)
 
 	elapsedTime += DeltaTime;
 
-	
-	if (beaconTime > 0)
+	if (player)
 	{
-		beaconTime -= DeltaTime;
+		if (distanceToPlayer < distanceToPlayerThreshold)
+		{
+			if (beaconTime > 0)
+			{
+				beaconTime -= DeltaTime;
 
-		
-		if (elapsedTime > (60.0/ (EPM * beaconMultiplier)) && (enemiesSpawned < maxEnemies || maxEnemies < 1))
-		{
-			SpawnEnemie();
-			elapsedTime = 0;
+
+				if (elapsedTime > (60.0 / (EPM * beaconMultiplier)) && (enemiesSpawned < maxEnemies || maxEnemies < 1))
+				{
+					SpawnEnemie();
+					elapsedTime = 0;
+				}
+
+			}
+			else
+			{
+				if (elapsedTime > (60.0 / EPM) && (enemiesSpawned < maxEnemies || maxEnemies < 1))
+				{
+					SpawnEnemie();
+					elapsedTime = 0;
+				}
+			}
+			//DrawDebugSphere(GetWorld(), location, distanceToPlayerThreshold, 8, FColor::Blue, false, 1.0f, 0, 4);
 		}
+
+
+		distanceToPlayer = (location - player->GetActorLocation()).Size();
+		//DrawDebugSphere(const UWorld* InWorld, FVector const& Center, float Radius, int32 Segments, FColor const& Color, bool bPersistentLines = false, float LifeTime = -1.f, uint8 DepthPriority = 0, float Thickness = 0.f)
 		
 	}
-	else
-	{
-		if (elapsedTime > (60.0/EPM) && (enemiesSpawned < maxEnemies || maxEnemies < 1))
-		{
-			SpawnEnemie();
-			elapsedTime = 0;
-		}
-	}
-	
 	
 
 }
 
 void ASpawningActor::SpawnEnemie()
 {
+
 	AGameModeBase* gameMode = UGameplayStatics::GetGameMode(GetWorld());
 	ACustomGameMode* customGameMode = Cast<ACustomGameMode>(gameMode);
 
