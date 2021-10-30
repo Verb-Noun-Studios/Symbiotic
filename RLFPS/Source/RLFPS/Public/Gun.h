@@ -121,6 +121,8 @@ public:
 	FKey OptionTwoKey;
 
 	UPROPERTY(BlueprintReadWrite)
+	int totalEXP;
+	UPROPERTY(BlueprintReadWrite)
 	int expToNextLevel = 5;
 	UPROPERTY(BlueprintReadWrite)
 	int currentEXP;
@@ -128,5 +130,6 @@ public:
 	bool readyToLevelUp = false;
 	UPROPERTY(BlueprintReadWrite)
 	TArray<UModBase*> ModOptions;
+	
 
 };
