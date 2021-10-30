@@ -265,9 +265,12 @@ void AGun::OnHitCallback(AActor* actor)
 
 void AGun::GainEXP(int exp)
 {
+	totalEXP += exp;
+
 	if (readyToLevelUp)
 	{
 		currentEXP += exp;
+		
 		return;
 	}
 
