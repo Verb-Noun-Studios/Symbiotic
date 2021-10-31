@@ -30,6 +30,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable)
 	void AddMod(UModBase* mod);
 	
 
@@ -42,6 +43,7 @@ public:
 	void OnHitCallback(AActor* actor);
 
 	void Fire(float deltaTime);
+	void Reload();
 	void SpawnRound(FActorSpawnParameters spawnParams);
 	void SpawnRound(FActorSpawnParameters spawnParams, FVector offset, FVector dir);
 
@@ -119,6 +121,8 @@ public:
 	FKey OptionTwoKey;
 
 	UPROPERTY(BlueprintReadWrite)
+	int totalEXP;
+	UPROPERTY(BlueprintReadWrite)
 	int expToNextLevel = 5;
 	UPROPERTY(BlueprintReadWrite)
 	int currentEXP;
@@ -126,5 +130,6 @@ public:
 	bool readyToLevelUp = false;
 	UPROPERTY(BlueprintReadWrite)
 	TArray<UModBase*> ModOptions;
+	
 
 };

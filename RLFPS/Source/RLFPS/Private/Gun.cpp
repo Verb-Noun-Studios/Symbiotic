@@ -54,13 +54,13 @@ void AGun::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	elapsedTime += DeltaTime;
 
-	if (!reloading)
+	if (!reloading && ammoRemaining != ammoCount)
 	{
 		reloading = GetReloadKey();
 		if (reloading)
 		{
 			firing = false;
-			//Reload();
+			Reload();
 		}
 
 	}
@@ -89,7 +89,7 @@ void AGun::Tick(float DeltaTime)
 	if (ammoRemaining <= 0 && !reloading)
 	{
 		firing = false;
-		//Reload();
+		Reload();
 		reloading = true;
 	}
 
@@ -124,7 +124,7 @@ void AGun::Fire(float deltaTime)
 			mod->OnFire(this);
 		}
 
-		ammoRemaining--;
+		
 		firing = true;
 	}
 
@@ -132,6 +132,14 @@ void AGun::Fire(float deltaTime)
 	
 	//UE_LOG(LogTemp, Warning, TEXT("Ammo Remaining: %d"), ammoRemaining);
 
+}
+
+void AGun::Reload()
+{
+	for (UModBase* mod : mods)
+	{
+		mod->OnReload(this);
+	}
 }
 
 void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
@@ -154,6 +162,8 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 			mod->OnSpawn(bullet);
 		}
 	}
+
+	ammoRemaining--;
 	
 }
 
@@ -174,6 +184,8 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 			mod->OnSpawn(bullet);
 		}
 	}
+
+	ammoRemaining--;
 
 }
 
@@ -253,9 +265,12 @@ void AGun::OnHitCallback(AActor* actor)
 
 void AGun::GainEXP(int exp)
 {
+	totalEXP += exp;
+
 	if (readyToLevelUp)
 	{
 		currentEXP += exp;
+		
 		return;
 	}
 
