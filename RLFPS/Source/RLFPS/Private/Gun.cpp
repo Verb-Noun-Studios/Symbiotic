@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "CoreMinimal.h"
 #include "UObject/UObjectGlobals.h"
+#include "Camera/CameraComponent.h"
 #include "Bullet.h"
 
 
@@ -107,6 +108,10 @@ void AGun::Tick(float DeltaTime)
 	
 }
 
+
+
+
+
 void AGun::Fire(float deltaTime)
 {
 
@@ -152,7 +157,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 	{
 		bullet->SetInitialSpeed(bulletSpeed);
 
-		FVector dir = GetActorForwardVector();
+		FVector dir = RaycastFromCamera2() - MuzzleLocation;
 		dir.Normalize();
 		bullet->SetInitialDirection(dir);
 		bullet->SetGun(this);
@@ -390,5 +395,32 @@ void AGun::UpdateCoreStats()
 	UE_LOG(LogTemp, Warning, TEXT("Ammo Count: %d"), ammoCount);
 	UE_LOG(LogTemp, Warning, TEXT("RPM: %d"), rpm);
 	UE_LOG(LogTemp, Warning, TEXT("Reload Time: %f"), reloadTime);
+
+}
+
+
+FVector AGun::RaycastFromCamera2()
+{
+	FVector cameraForward = camera->GetForwardVector();
+	FVector cameraLoc = camera->GetComponentLocation();
+
+
+	UWorld* World = GetWorld();
+	FHitResult result;
+	FVector start = cameraLoc + cameraForward * minRaycastDistance;
+	FCollisionQueryParams CollisionParameters;
+	FVector end = cameraLoc + cameraForward * maxRaycastDistance;
+
+	World->LineTraceSingleByChannel(result, start, end, ECollisionChannel::ECC_Visibility);
+
+	if (result.Actor != NULL)
+	{
+		return result.ImpactPoint;
+	}
+	else
+	{
+		return cameraLoc + cameraForward * maxRaycastDistance;
+	}
+
 
 }

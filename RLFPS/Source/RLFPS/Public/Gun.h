@@ -5,10 +5,12 @@
 #include "CoreMinimal.h"
 #include "ModBase.h"
 #include <vector>
+
 #include "Gun.generated.h"
 
 
 
+class UCameraComponent; 
 
 UCLASS()
 class RLFPS_API AGun : public AActor
@@ -130,6 +132,17 @@ public:
 	bool readyToLevelUp = false;
 	UPROPERTY(BlueprintReadWrite)
 	TArray<UModBase*> ModOptions;
-	
 
+
+
+
+	/*RETICLE RELATED THINGS*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UCameraComponent* camera;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float maxRaycastDistance = 2000;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float minRaycastDistance = 300;
+	UFUNCTION()
+	FVector RaycastFromCamera2();
 };
