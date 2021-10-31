@@ -157,7 +157,8 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 	{
 		bullet->SetInitialSpeed(bulletSpeed);
 
-		FVector dir = RaycastFromCamera2() - MuzzleLocation;
+		FVector dir = RaycastFromCamera() - (GetActorLocation());
+		//LogFVector(dir);
 		dir.Normalize();
 		bullet->SetInitialDirection(dir);
 		bullet->SetGun(this);
@@ -399,10 +400,12 @@ void AGun::UpdateCoreStats()
 }
 
 
-FVector AGun::RaycastFromCamera2()
+FVector AGun::RaycastFromCamera()
 {
 	FVector cameraForward = camera->GetForwardVector();
 	FVector cameraLoc = camera->GetComponentLocation();
+
+	LogFVector(cameraForward);
 
 
 	UWorld* World = GetWorld();
@@ -415,10 +418,14 @@ FVector AGun::RaycastFromCamera2()
 
 	if (result.Actor != NULL)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Impact Point"));
+		//LogFVector(result.ImpactPoint);
 		return result.ImpactPoint;
 	}
 	else
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Max Point"));
+		//LogFVector(cameraLoc + cameraForward * maxRaycastDistance);
 		return cameraLoc + cameraForward * maxRaycastDistance;
 	}
 

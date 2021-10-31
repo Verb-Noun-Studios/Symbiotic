@@ -144,5 +144,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float minRaycastDistance = 300;
 	UFUNCTION()
-	FVector RaycastFromCamera2();
+	FVector RaycastFromCamera();
+
+	void LogFVector(FVector vector)  { UE_LOG(LogTemp, Warning, TEXT("X: %f  Y: %f  Z: %f"), vector.X, vector.Y, vector.Z); };
 };
