@@ -18,7 +18,7 @@ UReloadKnockBackMod::~UReloadKnockBackMod()
 
 }
 
-void UReloadKnockBackMod::OnReload(AActor* actor)
+void UReloadKnockBackMod::OnReload_Implementation(AActor* player)
 {
 	TArray<AActor*> enemies;
 
@@ -26,7 +26,7 @@ void UReloadKnockBackMod::OnReload(AActor* actor)
 
 	for (AActor* enemy : enemies)
 	{
-		FVector dir =  enemy->GetActorLocation() - actor->GetActorLocation();
+		FVector dir =  enemy->GetActorLocation() - player->GetActorLocation();
 		float distance = dir.Size();
 		dir.Normalize();
 		UE_LOG(LogTemp, Warning, TEXT("Reload knockback: TestingDistance to Enemy, Distance: %f"), distance);

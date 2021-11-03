@@ -9,6 +9,9 @@
 /**
  * 
  */
+
+class AGun;
+
 UCLASS()
 class RLFPS_API UAcidMod : public UModBase
 {
@@ -40,6 +43,6 @@ public:
 
 
 
-	void OnHit(AActor* actor);
+	void OnHit_Implementation(AActor* hitActor, UWorld* world);
 
 };

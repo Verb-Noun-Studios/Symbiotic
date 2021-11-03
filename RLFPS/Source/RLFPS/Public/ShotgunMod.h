@@ -20,12 +20,12 @@ class RLFPS_API UShotgunMod : public UModBase
 public:
 	UShotgunMod();
 	~UShotgunMod();
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float offsetMultiplier = 100;
 
-	void OnApply();
-	void OnFire( AGun* gun);
-	void OnHit(AActor* actor);
+
+	void OnApply_Implementation();
+	void OnFire_Implementation( AGun* gun);
+	
 	
 };

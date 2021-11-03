@@ -32,5 +32,5 @@ public:
 	float additionalStrengthPerStack;
 
 
-	void OnReload(AActor* actor);
+	void OnReload_Implementation(AActor* player);
 };

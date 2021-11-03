@@ -126,7 +126,7 @@ void AGun::Fire(float deltaTime)
 
 		for (UModBase* mod : mods)
 		{
-			mod->OnFire(this);
+			mod->OnFire_Implementation(this);
 		}
 
 		
@@ -143,7 +143,7 @@ void AGun::Reload()
 {
 	for (UModBase* mod : mods)
 	{
-		mod->OnReload(this);
+		mod->OnReload_Implementation(this);
 	}
 }
 
@@ -165,7 +165,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 
 		for (UModBase* mod : mods)
 		{
-			mod->OnSpawn(bullet);
+			mod->OnSpawn_Implementation(bullet);
 		}
 	}
 
@@ -187,7 +187,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 
 		for (UModBase* mod : mods)
 		{
-			mod->OnSpawn(bullet);
+			mod->OnSpawn_Implementation(bullet);
 		}
 	}
 
@@ -259,7 +259,7 @@ void AGun::OnHitCallback(AActor* actor)
 	if (mods.Num()){
 		for (int i = 0; i < mods.Num(); i ++)
 		{
-			mods[i]->OnHit(actor);
+			mods[i]->OnHit_Implementation(actor, GetWorld());
 		}
 	}
 
@@ -373,7 +373,7 @@ void AGun::UpdateCoreStats()
 
 	if (ammoModStacks > 0)
 	{
-		ammoCount = defaultAmmoCount * ammoModStacks * 1.5;
+		ammoCount = defaultAmmoCount * ammoModStacks * ammoModifierRate;
 
 	}
 
@@ -381,13 +381,13 @@ void AGun::UpdateCoreStats()
 	rpm = defaultRPM;
 	for (int j = 0; j < rofModStacks; j++)
 	{
-		rpm += rpm;
+		rpm *= rpmModifierRate;
 	}
 
 	reloadTime = defaultReloadTime;
 	for (int j = 0; j < reloadModStacks; j++)
 	{
-		reloadTime *= 0.8;
+		reloadTime *= reloadTimeModifierRate;
 	}
 
 	bulletSpeed = defaultBulletSpeed;
@@ -418,13 +418,13 @@ FVector AGun::RaycastFromCamera()
 
 	if (result.Actor != NULL)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Impact Point"));
+		//UE_LOG(LogTemp, Warning, TEXT("Impact Point"));
 		//LogFVector(result.ImpactPoint);
 		return result.ImpactPoint;
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Max Point"));
+		//UE_LOG(LogTemp, Warning, TEXT("Max Point"));
 		//LogFVector(cameraLoc + cameraForward * maxRaycastDistance);
 		return cameraLoc + cameraForward * maxRaycastDistance;
 	}

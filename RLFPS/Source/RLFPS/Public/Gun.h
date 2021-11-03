@@ -88,28 +88,35 @@ public:
 	
 	/*************DEFAULT VALUES*************/
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
-		float defaultReloadTime = 5;
+	float defaultReloadTime = 5;
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
-		int defaultAmmoCount = 10;
+	int defaultAmmoCount = 10;
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
-		int defaultRPM = 120;
+	int defaultRPM = 120;
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
-		int defaultBulletSpeed = 120;
+	int defaultBulletSpeed = 120;
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
-		float defaultDamage = 25;
+	float defaultDamage = 25;
+	UPROPERTY(EditAnywhere, Category = "Game Stats")
+	float reloadTimeModifierRate = 0.8;
+	UPROPERTY(EditAnywhere, Category = "Game Stats")
+	float rpmModifierRate = 1.5;
+	UPROPERTY(EditAnywhere, Category = "Game Stats")
+	float ammoModifierRate = 0.8;
 
 	/****************RUNTIME GUN STATS***************/
 	UPROPERTY(EditAnywhere, Category = "Gun Stats")
-		float reloadTime;
+	float reloadTime;
 	UPROPERTY(EditAnywhere, Category = "Gun Stats", BlueprintReadWrite)
-		int ammoCount;
+	int ammoCount;
 	UPROPERTY(EditAnywhere, Category = "Gun Stats")
-		float bulletSpeed;
+	float bulletSpeed;
 	UPROPERTY(EditAnywhere, Category = "Gun stats")
-		int rpm;
+	int rpm;
 	UPROPERTY(BlueprintReadWrite, Category = "Game Stats")
-		float Damage = 25;
-	int shotsPerRound = 1;
+	float Damage = 25;
+	//int shotsPerRound = 1;
+
 
 
 
