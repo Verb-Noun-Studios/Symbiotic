@@ -25,7 +25,7 @@ void UAcidMod::OnHit_Implementation(AActor* hitActor, UWorld* world)
 	SpawnParams->Instigator = hitActor->GetInstigator();
 	SpawnParams->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	
-	float tempChance = FMath::RandRange(0.0f, 0.01f);
+	float tempChance = FMath::RandRange(0.0f, 1.0f);
 
 	if (tempChance < chance + additionalchancePerStack * stacks)
 	{
