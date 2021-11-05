@@ -307,7 +307,13 @@ TArray<UModBase*> AGun::GetNewModOptions()
 	int randTwo = FMath::RandHelper(allMods.Num());
 
 
-	UModBase* modTwo = NewObject<UModBase>((UObject*)this, allMods[randTwo]);
+	UModBase* modTwo;
+	do
+	{
+		randTwo = FMath::RandHelper(allMods.Num());
+		modTwo = NewObject<UModBase>((UObject*)this, allMods[randTwo]);
+	
+	} while (modTwo == modOne);
 	
 	return TArray<UModBase*>{modOne, modTwo};
 
