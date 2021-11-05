@@ -13,12 +13,12 @@ UShotgunMod::~UShotgunMod()
 
 }
 
-void UShotgunMod::OnApply()
+void UShotgunMod::OnApply_Implementation()
 {
 
 }
 
-void UShotgunMod::OnFire(AGun* gun)
+void UShotgunMod::OnFire_Implementation(AGun* gun)
 {
 	FVector startingPoint = gun->GetActorLocation() + gun->MuzzleLocation * gun->GetActorForwardVector();
 
@@ -48,7 +48,3 @@ void UShotgunMod::OnFire(AGun* gun)
 	UE_LOG(LogTemp, Warning, TEXT("Calling Shotgun Mod On Fire"));
 }
 
-void UShotgunMod::OnHit(AActor* actor)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Calling Shotgun Mod On Apply"));
-}

@@ -63,10 +63,10 @@ void UFragMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		groundSpeed = GroundVelocity.Size();
 		Player->Collider->SetWorldLocation(origin);
 		// Logs
-		GEngine->AddOnScreenDebugMessage(20, 0.01f, FColor::Red, FString::Printf(TEXT("Position [X: %.6f, Y: %.6f, Z: %.6f]"), GetOrigin().X, GetOrigin().Y, GetOrigin().Z));
-		GEngine->AddOnScreenDebugMessage(2, 0.01f, FColor::Green, FString::Printf(TEXT("Is Grounded [%d]"), CollisionComponent->IsGrounded));
-		GEngine->AddOnScreenDebugMessage(0, 0.01f, FColor::Green, FString::Printf(TEXT("Desired Velocity [X: %.2f, Y: %.2f, Z: %.2f]"), playerVelocity.X, playerVelocity.Y, playerVelocity.Z));
-		GEngine->AddOnScreenDebugMessage(1, 0.01f, FColor::Green, FString::Printf(TEXT("Desired Linear Speed [%.2fups]"), groundSpeed));
+		//GEngine->AddOnScreenDebugMessage(20, 0.01f, FColor::Red, FString::Printf(TEXT("Position [X: %.6f, Y: %.6f, Z: %.6f]"), GetOrigin().X, GetOrigin().Y, GetOrigin().Z));
+		//GEngine->AddOnScreenDebugMessage(2, 0.01f, FColor::Green, FString::Printf(TEXT("Is Grounded [%d]"), CollisionComponent->IsGrounded));
+		//GEngine->AddOnScreenDebugMessage(0, 0.01f, FColor::Green, FString::Printf(TEXT("Desired Velocity [X: %.2f, Y: %.2f, Z: %.2f]"), playerVelocity.X, playerVelocity.Y, playerVelocity.Z));
+		//GEngine->AddOnScreenDebugMessage(1, 0.01f, FColor::Green, FString::Printf(TEXT("Desired Linear Speed [%.2fups]"), groundSpeed));
 	}
 	else
 	{

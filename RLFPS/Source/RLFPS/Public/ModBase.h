@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Kismet/GameplayStatics.h"
 #include "ModBase.generated.h"
 
 UENUM()
@@ -48,11 +49,21 @@ public:
 	UModBase();
 	~UModBase();
 
-	virtual void OnApply();
-	virtual void OnSpawn(ABullet* bullet);
-	virtual void OnFire(AGun* gun);
-	virtual void OnHit(AActor* actor);
-	virtual void OnReload(AActor* actor);
+	UFUNCTION(BlueprintNativeEvent)
+	void OnApply();
+	
+	UFUNCTION(BlueprintNativeEvent)
+	 void OnSpawn(ABullet* bullet);
+	
+	UFUNCTION(BlueprintNativeEvent)
+	void OnFire(AGun* gun);
+	
+	UFUNCTION(BlueprintNativeEvent)
+	void OnHit(AActor* hitActor, UWorld* world);
+	UFUNCTION(BlueprintNativeEvent)
+	void OnReload(AActor* player);
+	UFUNCTION(BlueprintCallable)
+	AActor* GetActorOfClass_Internal(TSubclassOf<AActor> actorClass);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ModType type;

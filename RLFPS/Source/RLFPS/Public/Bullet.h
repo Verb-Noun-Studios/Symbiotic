@@ -21,8 +21,11 @@ class RLFPS_API ABullet : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ABullet();
+	UFUNCTION(BlueprintCallable)
 	void SetInitialDirection(FVector dir);
+	UFUNCTION(BlueprintCallable)
 	void SetInitialSpeed(float Speed);
+	UFUNCTION(BlueprintCallable)
 	void SetGun(AGun* newGun);
 
 protected:

@@ -4,7 +4,7 @@
 #include "HomingMod.h"
 #include "Bullet.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Kismet/GameplayStatics.h"
+
 
 
 UHomingMod::UHomingMod()
@@ -19,7 +19,7 @@ UHomingMod::~UHomingMod()
 }
 
 
-void UHomingMod::OnSpawn(ABullet* bullet)
+void UHomingMod::OnSpawn_Implementation(ABullet* bullet)
 {
 	bullet->ProjectileMovementComponent->bIsHomingProjectile = true;
 	bullet->HomingStrength = bullet->initialHomingStrength + (bullet->HomingStackingStrength * stacks);
