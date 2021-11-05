@@ -72,6 +72,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString infoText;
 
+	UPROPERTY(BlueprintReadOnly)
 	int stacks = 1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<ModAdditionalAtrributes> atribs;
