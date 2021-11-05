@@ -5,6 +5,8 @@
 #include "GruntCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "NiagaraFunctionLibrary.h"
+
 
 
 UReloadBombMod::UReloadBombMod()
@@ -16,8 +18,12 @@ UReloadBombMod::~UReloadBombMod()
 
 }
 
-void UReloadBombMod::OnReload(AActor* actor)
+void UReloadBombMod::OnReload_Implementation(AActor* actor)
 {
+
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation( actor->GetWorld(), NiagaraMuzzleEffect, actor->GetActorLocation(), actor->GetActorRotation(), FVector(particleSystemScale));
+	UE_LOG(LogTemp, Warning, TEXT("Spawning System"));
+	
 	TArray<AActor*> enemies;
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), classToFind, enemies);
@@ -37,7 +43,7 @@ void UReloadBombMod::OnReload(AActor* actor)
 			FDamageEvent damageEvent;
 			character->TakeDamage(damage + additionalDamagePerStack * stacks, damageEvent, UGameplayStatics::GetPlayerController(GetWorld(), 0), UGameplayStatics::GetActorOfClass(GetWorld(), playerClass));
 
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), particleSystem, actor->GetActorLocation(), actor->GetActorRotation(), true, EPSCPoolMethod::AutoRelease, true);
+			//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), particleSystem, actor->GetActorLocation(), actor->GetActorRotation(), true, EPSCPoolMethod::AutoRelease, true);
 			
 		}
 
