@@ -21,7 +21,7 @@ UReloadBombMod::~UReloadBombMod()
 void UReloadBombMod::OnReload_Implementation(AActor* actor)
 {
 
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation( actor->GetWorld(), NiagaraMuzzleEffect, actor->GetActorLocation(), actor->GetActorRotation(), FVector(particleSystemScale));
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation( actor->GetWorld(), reloadBombEffect, actor->GetActorLocation(), actor->GetActorRotation(), FVector(particleSystemScale));
 	UE_LOG(LogTemp, Warning, TEXT("Spawning System"));
 	
 	TArray<AActor*> enemies;

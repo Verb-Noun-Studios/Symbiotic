@@ -2,6 +2,7 @@
 
 
 #include "ShotgunMod.h"
+#include "NiagaraFunctionLibrary.h"
 
 UShotgunMod::UShotgunMod()
 {
@@ -44,7 +45,8 @@ void UShotgunMod::OnFire_Implementation(AGun* gun)
 		dir;
 		gun->SpawnRound(*gun->spawnParams, FVector::ZeroVector, dir);
 	}
-
+	
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), muzzleFlash, gun->GetActorLocation() + gun->MuzzleLocation * gun->GetActorForwardVector(), gun->GetActorRotation(), FVector(1));
 	UE_LOG(LogTemp, Warning, TEXT("Calling Shotgun Mod On Fire"));
 }
 

@@ -39,7 +39,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float additionalDamagePerStack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UNiagaraSystem* NiagaraMuzzleEffect;
+	class UNiagaraSystem* reloadBombEffect;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float particleSystemScale;
 

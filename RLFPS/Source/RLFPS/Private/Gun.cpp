@@ -6,6 +6,9 @@
 #include "CoreMinimal.h"
 #include "UObject/UObjectGlobals.h"
 #include "Camera/CameraComponent.h"
+#include "Particles/ParticleSystem.h"
+#include "Particles/ParticleEmitter.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Bullet.h"
 
 
@@ -46,6 +49,7 @@ void AGun::BeginPlay()
 	spawnParams = SpawnParams;
 
 
+
 }
 
 // Called every frame
@@ -54,6 +58,8 @@ void AGun::Tick(float DeltaTime)
 	
 	Super::Tick(DeltaTime);
 	elapsedTime += DeltaTime;
+
+
 
 	if (!reloading && ammoRemaining != ammoCount)
 	{
@@ -170,6 +176,8 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 	}
 
 	ammoRemaining--;
+
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), muzzleFlash, GetActorLocation() + MuzzleLocation * GetActorForwardVector(), GetActorRotation(), FVector(1));
 	
 }
 
@@ -193,6 +201,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 
 	ammoRemaining--;
 
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), muzzleFlash, GetActorLocation() + MuzzleLocation * GetActorForwardVector(), GetActorRotation(), FVector(1));
 }
 
 
@@ -335,7 +344,7 @@ void AGun::LevelUp(UModBase* newModType)
 	AddMod(newModType);
 	//AddMod(newModType);
 
-	expToNextLevel *= 2;
+	expToNextLevel *= levelingRate;
 	if (GetLevelPercentage() != 1)
 	{
 		readyToLevelUp = false;
