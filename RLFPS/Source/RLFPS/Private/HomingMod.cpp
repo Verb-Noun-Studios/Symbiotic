@@ -4,6 +4,7 @@
 #include "HomingMod.h"
 #include "Bullet.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "DrawDebugHelpers.h"
 
 
 
@@ -25,7 +26,7 @@ void UHomingMod::OnSpawn_Implementation(ABullet* bullet)
 	bullet->HomingStrength = bullet->initialHomingStrength + (bullet->HomingStackingStrength * stacks);
 	bullet->ProjectileMovementComponent->HomingAccelerationMagnitude = bullet->HomingStrength;
 	float range = bullet->initialHomingRange + (bullet->HomingRangeStackingStrength * stacks);
-	UE_LOG(LogTemp, Warning, TEXT("Setting Homing Range: %f "), range);
+	
 	bullet->homingRange = range;
 
 	TArray<AActor*> enemies;
@@ -41,19 +42,29 @@ void UHomingMod::OnSpawn_Implementation(ABullet* bullet)
 
 	for (AActor* actor : enemies)
 	{
-		
+		UE_LOG(LogTemp, Warning, TEXT("Checking Angle & Visibility"));
 		FHitResult OutHit;
 
 		FCollisionQueryParams CollisionParams;
 		GetWorld()->LineTraceSingleByChannel(OutHit, bullet->GetActorLocation(), actor->GetActorLocation(), ECC_Visibility, CollisionParams);
+		//DrawDebugLine(GetWorld(), bullet->GetActorLocation(), actor->GetActorLocation(), FColor::Red, true);
 
 		if (OutHit.Actor != actor)
 		{
-
+			UE_LOG(LogTemp, Warning, TEXT("Names: %s"), *actor->GetName());
+			if (OutHit.Actor != NULL)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Actor hit: %s"), *(OutHit.Actor->GetName()));
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Hit Nothing"));
+			}
 		}
 		else
 		{
-
+			UE_LOG(LogTemp, Warning, TEXT("Names: %s"), *actor->GetName());
+			UE_LOG(LogTemp, Warning, TEXT("Actor Visible"));
 			FVector dir = actor->GetActorLocation() - bullet->GetActorLocation();
 			FVector currentFightDir = bullet->ProjectileMovementComponent->Velocity;
 
@@ -72,9 +83,12 @@ void UHomingMod::OnSpawn_Implementation(ABullet* bullet)
 			angle = angle * (180 / 3.14159);
 
 
+			UE_LOG(LogTemp, Warning, TEXT("Enemy Angle: %f "), angle);
 
 			if (angle > 0 && angle < bullet->HomingAngle)
 			{
+				UE_LOG(LogTemp, Warning, TEXT("Enemy Angle inside Homing Angle: %f "), angle);
+
 				if (closestPlayer == nullptr)
 				{
 					closestPlayer = actor;
@@ -95,20 +109,20 @@ void UHomingMod::OnSpawn_Implementation(ABullet* bullet)
 		}
 
 
-		if (closestPlayer)
-		{
-
-			bullet->ProjectileMovementComponent->HomingTargetComponent = closestPlayer->GetRootComponent();
-			UE_LOG(LogTemp, Warning, TEXT("Enemy Found"));
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("No Enemy Found"));
-		}
+		
 
 	}
 
+	if (closestPlayer)
+	{
 
+		bullet->ProjectileMovementComponent->HomingTargetComponent = closestPlayer->GetRootComponent();
+		UE_LOG(LogTemp, Warning, TEXT("Enemy Found"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No Enemy Found"));
+	}
 		
 	
 
