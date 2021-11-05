@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "ModBase.h"
 #include <vector>
-
+#include "NiagaraSystem.h"
 #include "Gun.generated.h"
 
 
@@ -21,7 +21,6 @@ class RLFPS_API AGun : public AActor
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> ProjectileClass;
-
 	
 	
 
@@ -72,7 +71,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<TSubclassOf<UModBase>> allMods;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UNiagaraSystem* muzzleFlash;
 
 	/*************FUNCTIONAL VARIABLES************/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (MakeEditWidget = true))
@@ -139,6 +139,8 @@ public:
 	bool readyToLevelUp = false;
 	UPROPERTY(BlueprintReadWrite)
 	TArray<UModBase*> ModOptions;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float levelingRate = 1.5;
 
 
 

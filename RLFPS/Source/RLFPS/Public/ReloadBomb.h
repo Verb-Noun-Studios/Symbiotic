@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "ModBase.h"
 #include "Particles/ParticleSystem.h"
+#include "NiagaraSystem.h"
 #include "ReloadBomb.generated.h"
+
 
 /**
  * 
@@ -21,7 +23,8 @@ class RLFPS_API UReloadBombMod : public UModBase
 public:
 	UReloadBombMod();
 	~UReloadBombMod();
-	void OnReload(AActor* actor);
+	
+	void OnReload_Implementation(AActor* actor);
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TSubclassOf<AActor> classToFind;
@@ -34,12 +37,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float damage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float additionalDamagePerStack;
+	float additionalDamagePerStack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UParticleSystem* particleSystem;
+	class UNiagaraSystem* reloadBombEffect;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float particleSystemScale;
 
 
-	
-
-	
 };
