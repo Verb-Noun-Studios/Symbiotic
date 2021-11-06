@@ -46,7 +46,7 @@ void UHomingMod::OnSpawn_Implementation(ABullet* bullet)
 		FHitResult OutHit;
 
 		FCollisionQueryParams CollisionParams;
-		GetWorld()->LineTraceSingleByChannel(OutHit, bullet->GetActorLocation(), actor->GetActorLocation(), ECC_Visibility, CollisionParams);
+		GetWorld()->LineTraceSingleByChannel(OutHit, bullet->GetActorLocation(), actor->GetActorLocation(), ECC_Pawn, CollisionParams);
 		//DrawDebugLine(GetWorld(), bullet->GetActorLocation(), actor->GetActorLocation(), FColor::Red, true);
 
 		if (OutHit.Actor != actor)
