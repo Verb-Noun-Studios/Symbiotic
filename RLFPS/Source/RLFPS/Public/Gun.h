@@ -30,35 +30,77 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	/*
+	* Adds a mod to the list. If the mod is already in the list it adds to its stacks
+	*/
 	UFUNCTION(BlueprintCallable)
 	void AddMod(UModBase* mod);
 	
-
+	/*
+	* Gets the state of the keys
+	*/
 	bool GetFireKey();
 	bool GetReloadKey();
 	bool GetOptionOneKey();
 	bool GetOptionTwoKey();
 
+	/*
+	* Blueprint callable function to call Onhit effects for mods
+	*/
 	UFUNCTION(BlueprintCallable)
 	void OnHitCallback(AActor* actor);
+	
+	UFUNCTION(BlueprintCallable)
+	void OnHitCallbackWithSkip(AActor* actor, FName name);
 
+	/*
+	* Spawns a bullet If enough time has passed to amch the RPM. Calls mods OnFire functions.
+	*/
 	void Fire(float deltaTime);
+	
+	/*
+	* This calls reload effects on mods and will also be used to potentially play animations or sounds
+	*/
 	void Reload();
+
+	/*
+	* These are used to spawn rounds. 
+	* Both call OnSpawn effects but the seccond one is used to modify the direction of the bullet and the location it is spawned.
+	*/
 	void SpawnRound(FActorSpawnParameters spawnParams);
 	void SpawnRound(FActorSpawnParameters spawnParams, FVector offset, FVector dir);
 
-	FActorSpawnParameters* spawnParams;
-
-
+	/*
+	* This is a Blueprint callable function that adds exp to the gun. Preps gun to level up when necessary.
+	*/
 	UFUNCTION(BlueprintCallable)
 	void GainEXP(int exp);
+	
+	/*
+	* This is a Blueprint callable function to get level progress.
+	*/
 	UFUNCTION(BlueprintCallable)
 	float GetLevelPercentage();
+	
+	/*
+	* Gets a new set of two random mods. Sets ModOptions.
+	*/
 	TArray<UModBase*> GetNewModOptions();
+
+	/*
+	* Returns the current Mod Options. Blueprint callable.
+	*/
 	UFUNCTION(BlueprintCallable)
 	TArray<UModBase*> GetModOptions();
+	
+	/*
+	* Levels up the Gun and adds mod based on parameter.
+	*/
 	void LevelUp(UModBase* newModType);
+
+	/*
+	* Updates RPM, reload time, and ammo count based on mods.
+	*/
 	void UpdateCoreStats();
 
 protected:
@@ -84,6 +126,7 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool reloading = false;
 	float elapsedTime = 0;
+	FActorSpawnParameters* spawnParams;
 
 	
 	/*************DEFAULT VALUES*************/
