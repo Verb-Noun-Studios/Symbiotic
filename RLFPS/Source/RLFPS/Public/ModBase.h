@@ -49,6 +49,8 @@ public:
 	UModBase();
 	~UModBase();
 
+
+	/********** FUNCTIONS *************/
 	UFUNCTION(BlueprintNativeEvent)
 	void OnApply();
 	
@@ -60,20 +62,33 @@ public:
 	
 	UFUNCTION(BlueprintNativeEvent)
 	void OnHit(AActor* hitActor, UWorld* world);
+
 	UFUNCTION(BlueprintNativeEvent)
 	void OnReload(AActor* player);
+	
 	UFUNCTION(BlueprintCallable)
 	AActor* GetActorOfClass_Internal(TSubclassOf<AActor> actorClass);
 
+	UFUNCTION(BlueprintCallable)
+	TArray<AActor*> GetActorsOfClass_Internal(TSubclassOf<AActor> actorClass);
+	
+	
+	/********** VARIABLES *************/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName name;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ModType type;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* image;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString infoText;
 
 	UPROPERTY(BlueprintReadOnly)
 	int stacks = 1;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<ModAdditionalAtrributes> atribs;
 
