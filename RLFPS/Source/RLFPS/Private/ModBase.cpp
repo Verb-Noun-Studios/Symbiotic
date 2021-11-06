@@ -47,3 +47,12 @@ AActor* UModBase::GetActorOfClass_Internal(TSubclassOf<AActor> actorClass)
 	return UGameplayStatics::GetActorOfClass(world, actorClass);
 	
 }
+
+TArray<AActor*> UModBase::GetActorsOfClass_Internal(TSubclassOf<AActor> actorClass)
+{
+	UWorld* world = GetWorld();
+	TArray<AActor*> OutActors;
+	UGameplayStatics::GetAllActorsOfClass(world, actorClass, OutActors);
+	return OutActors;
+
+}

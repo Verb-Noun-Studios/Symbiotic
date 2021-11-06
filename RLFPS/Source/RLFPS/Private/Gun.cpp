@@ -66,6 +66,7 @@ void AGun::Tick(float DeltaTime)
 		reloading = GetReloadKey();
 		if (reloading)
 		{
+			elapsedTime = 0;
 			firing = false;
 			Reload();
 		}
@@ -121,7 +122,7 @@ void AGun::Tick(float DeltaTime)
 void AGun::Fire(float deltaTime)
 {
 
-	elapsedTime += deltaTime;
+	//elapsedTime += deltaTime;
 	firing = false;
 	if (elapsedTime >= (60.0 / rpm))
 	{
@@ -132,6 +133,7 @@ void AGun::Fire(float deltaTime)
 
 		for (UModBase* mod : mods)
 		{
+			mod->OnFire(this);
 			mod->OnFire_Implementation(this);
 		}
 
@@ -149,6 +151,7 @@ void AGun::Reload()
 {
 	for (UModBase* mod : mods)
 	{
+		mod->OnReload(this);
 		mod->OnReload_Implementation(this);
 	}
 }
@@ -171,6 +174,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 
 		for (UModBase* mod : mods)
 		{
+			mod->OnSpawn(bullet);
 			mod->OnSpawn_Implementation(bullet);
 		}
 	}
@@ -195,6 +199,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 
 		for (UModBase* mod : mods)
 		{
+			mod->OnSpawn(bullet);
 			mod->OnSpawn_Implementation(bullet);
 		}
 	}
@@ -212,6 +217,7 @@ void AGun::AddMod(UModBase* mod)
 		if (mod->GetClass() == mods[i]->GetClass())
 		{
 			mods[i]->stacks++;
+			mod->ConditionalBeginDestroy();
 			UpdateCoreStats();
 			return;
 		}
@@ -268,6 +274,7 @@ void AGun::OnHitCallback(AActor* actor)
 	if (mods.Num()){
 		for (int i = 0; i < mods.Num(); i ++)
 		{
+			mods[i]->OnHit(actor, GetWorld());
 			mods[i]->OnHit_Implementation(actor, GetWorld());
 		}
 	}
@@ -275,7 +282,23 @@ void AGun::OnHitCallback(AActor* actor)
 	
 }
 
+void AGun::OnHitCallbackWithSkip(AActor* actor, FName name)
+{
+	if (mods.Num())
+	{
+		for (int i = 0; i < mods.Num(); i++)
+		{
+			if (mods[i]->name != name)
+			{
+				mods[i]->OnHit(actor, GetWorld());
+				mods[i]->OnHit_Implementation(actor, GetWorld());
+			}
+			
+		}
+	}
 
+
+}
 
 
 void AGun::GainEXP(int exp)
@@ -420,7 +443,7 @@ FVector AGun::RaycastFromCamera()
 	FVector cameraForward = camera->GetForwardVector();
 	FVector cameraLoc = camera->GetComponentLocation();
 
-	LogFVector(cameraForward);
+	
 
 
 	UWorld* World = GetWorld();
@@ -433,14 +456,10 @@ FVector AGun::RaycastFromCamera()
 
 	if (result.Actor != NULL)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Impact Point"));
-		//LogFVector(result.ImpactPoint);
 		return result.ImpactPoint;
 	}
 	else
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Max Point"));
-		//LogFVector(cameraLoc + cameraForward * maxRaycastDistance);
 		return cameraLoc + cameraForward * maxRaycastDistance;
 	}
 
