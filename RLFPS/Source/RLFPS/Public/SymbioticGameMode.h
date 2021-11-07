@@ -24,6 +24,8 @@ public:
 		int enemiesLeftToSpawn;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int EXPRequiredForBoss = 300;
+		
+	
 
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Boss Sequence")
