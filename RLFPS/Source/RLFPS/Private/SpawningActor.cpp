@@ -8,6 +8,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "DrawDebugHelpers.h"
 #include "EngineUtils.h"
+#include "SymbioticGameMode.h"
 
 // Sets default values
 ASpawningActor::ASpawningActor()
@@ -21,7 +22,7 @@ ASpawningActor::ASpawningActor()
 void ASpawningActor::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("SpawningActor!"));
+	
 
 	FActorSpawnParameters* SpawnParams = new FActorSpawnParameters;
 	SpawnParams->Owner = this;
@@ -43,7 +44,7 @@ void ASpawningActor::Tick(float DeltaTime)
 
 	elapsedTime += DeltaTime;
 
-	if (player)
+	if (player && activated)
 	{
 		if (distanceToPlayer < distanceToPlayerThreshold)
 		{
@@ -83,7 +84,7 @@ void ASpawningActor::SpawnEnemie()
 {
 
 	AGameModeBase* gameMode = UGameplayStatics::GetGameMode(GetWorld());
-	ACustomGameMode* customGameMode = Cast<ACustomGameMode>(gameMode);
+	ASymbioticGameMode* customGameMode = Cast<ASymbioticGameMode>(gameMode);
 
 	if (customGameMode->enemiesLeftToSpawn > 0) 
 	{
@@ -122,6 +123,7 @@ void ASpawningActor::SpawnEnemie()
 		{
 			enemiesSpawned++;
 			customGameMode->enemiesLeftToSpawn--;
+			UE_LOG(LogTemp, Warning, TEXT("SpawningActor!"));
 		}
 	}
 
@@ -136,4 +138,5 @@ void ASpawningActor::ActivateWithBeacon(float BeaconTime, float BeaconMultiplier
 	beaconTime = BeaconTime;
 	beaconMultiplier = BeaconMultiplier;
 	Activate();
+	UE_LOG(LogTemp, Warning, TEXT("Activating with Beacon!"));
 }
