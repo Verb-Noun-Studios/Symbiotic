@@ -49,7 +49,9 @@ public:
 	float beaconMultiplier = 0;
 
 	void SpawnEnemie();
+	UFUNCTION(BlueprintCallable)
 	void Activate() { activated = true; };
+	UFUNCTION(BlueprintCallable)
 	void Deactivate() { activated = false; };
 
 	void ActivateWithBeacon(float BeaconTime, float BeaconMultiplier);
