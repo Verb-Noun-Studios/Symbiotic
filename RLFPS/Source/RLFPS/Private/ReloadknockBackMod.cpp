@@ -6,6 +6,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PawnMovementComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 UReloadKnockBackMod::UReloadKnockBackMod()
 {
@@ -33,8 +34,13 @@ void UReloadKnockBackMod::OnReload_Implementation(AActor* player)
 
 		if (distance < range + additionalRangePerStack * stacks)
 		{
+
+
+			dir.Z = FMath::Clamp(dir.Z, 0.2f, 0.3f);
 			AGruntCharacter* character = Cast<AGruntCharacter>(enemy);
-			character->LaunchCharacter(dir * (strength + additionalStrengthPerStack * stacks), true, true);
+
+			character->GetCharacterMovement()->MovementMode = EMovementMode::MOVE_Flying;
+			character->LaunchCharacter(dir * (strength + additionalStrengthPerStack * stacks + distance), true, true);
 		}
 
 
