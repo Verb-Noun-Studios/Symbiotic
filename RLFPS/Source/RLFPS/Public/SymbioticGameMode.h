@@ -24,6 +24,11 @@ public:
 		int enemiesLeftToSpawn;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int EXPRequiredForBoss = 300;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool firstBeaconFound = false;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool firstBeaconActivated = false;
+		
 		
 	
 
@@ -42,4 +47,6 @@ public:
 		void StartIncreasedSpawnRate();
 		UFUNCTION(BlueprintImplementableEvent)
 		void StartTimer();
+
+
 };

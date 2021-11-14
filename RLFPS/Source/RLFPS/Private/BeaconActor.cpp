@@ -59,17 +59,19 @@ void ABeaconActor::Activate()
 	
 
 	UE_LOG(LogTemp, Warning, TEXT("Activating"));
-	if (activated && !eventComplete)
+	
+	for (ASpawningActor* spawnPoint : spawnPoints)
 	{
-		for (ASpawningActor* spawnPoint : spawnPoints)
-		{
-			spawnPoint->ActivateWithBeacon(time, multiplier);
-		}
+		spawnPoint->ActivateWithBeacon(time, multiplier);
 	}
+
+
+	PlayActivationSound();
+	
 	
 }
 
-void ABeaconActor::RecieveOnActivate_Implementation()
+void ABeaconActor::RecieveOnUse_Implementation()
 {
 
 }
@@ -78,8 +80,13 @@ void ABeaconActor::RecieveOnActivate_Implementation()
 void ABeaconActor::Use()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Using"));
-	activated = true;
-	Activate();
-	RecieveOnActivate();
+
+	if (!activated) 
+	{
+		activated = true;
+		Activate();
+	}
+	
+	RecieveOnUse();
 }
 

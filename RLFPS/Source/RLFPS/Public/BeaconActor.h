@@ -45,9 +45,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Activate();
 	UFUNCTION(BlueprintNativeEvent)
-	void RecieveOnActivate();
-
+	void RecieveOnUse();
 	UFUNCTION(BlueprintCallable)
 	void Use();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayActivationSound();
+
 
 };

@@ -184,6 +184,7 @@ public:
 	TArray<UModBase*> ModOptions;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float levelingRate = 1.5;
+	int level = 0;
 
 
 
@@ -197,6 +198,7 @@ public:
 	float minRaycastDistance = 300;
 	UFUNCTION()
 	FVector RaycastFromCamera();
-
+	UFUNCTION(BlueprintImplementableEvent)
+		void OnFirstUpgrade();
 	void LogFVector(FVector vector)  { UE_LOG(LogTemp, Warning, TEXT("X: %f  Y: %f  Z: %f"), vector.X, vector.Y, vector.Z); };
 };
