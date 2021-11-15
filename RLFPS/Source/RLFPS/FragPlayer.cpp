@@ -69,10 +69,10 @@ void AFragPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 {
 	check(InputComponent);
 	// Set up movement
-	InputComponent->BindAxis("MoveForward", this, &AFragPlayer::MoveForward);
-	InputComponent->BindAxis("MoveRight", this, &AFragPlayer::MoveRight);
-	InputComponent->BindAction("Jump", IE_Pressed, this, &AFragPlayer::DoJump);
-	InputComponent->BindAction("Jump", IE_Released, this, &AFragPlayer::StopJump);
+	//InputComponent->BindAxis("MoveForwardRight", this, &AFragPlayer::MoveForward);
+	//InputComponent->BindAxis("MoveRightRight", this, &AFragPlayer::MoveRight);
+	//InputComponent->BindAction("Jump", IE_Pressed, this, &AFragPlayer::DoJump);
+	//InputComponent->BindAction("Jump", IE_Released, this, &AFragPlayer::StopJump);
 	// Set up mouse inputs
 	InputComponent->BindAxis("Turn", this, &AFragPlayer::MouseX);
 	InputComponent->BindAxis("LookUp", this, &AFragPlayer::MouseY);
@@ -135,6 +135,29 @@ void AFragPlayer::SetRotation(FQuat NewRotation)
 	PlayerForwardRefComponent->SetWorldRotation(NewPlayerRotation);
 }
 
+
+void AFragPlayer::UpdateControls(bool rightHanded)
+{
+	InputComponent = NewObject<UInputComponent>(this);
+	InputComponent->RegisterComponent();
+	// Set up movement
+	if (rightHanded) {
+		InputComponent->BindAxis("MoveForwardRight", this, &AFragPlayer::MoveForward);
+		InputComponent->BindAxis("MoveRightRight", this, &AFragPlayer::MoveRight);
+
+		InputComponent->BindAction("Jump", IE_Pressed, this, &AFragPlayer::DoJump);
+		InputComponent->BindAction("Jump", IE_Released, this, &AFragPlayer::StopJump);
+	}
+	else if (!rightHanded) {
+		InputComponent->BindAxis("MoveForwardLeft", this, &AFragPlayer::MoveForward);
+		InputComponent->BindAxis("MoveRightLeft", this, &AFragPlayer::MoveRight);
+		InputComponent->BindAction("JumpLeft", IE_Pressed, this, &AFragPlayer::DoJump);
+		InputComponent->BindAction("JumpLeft", IE_Released, this, &AFragPlayer::StopJump);
+	}
+	//EnableInput(GetWorld()->GetFirstPlayerController());
+
+}
+
 void AFragPlayer::AddRotation()
 {
 	
@@ -165,23 +188,23 @@ void AFragPlayer::UpdateViewingAngles()
 	// Pitch camera up and down
 	if (FirstPersonCameraComponent)
 	{
-		FVector v(0.f, -MouseVelocity.Y, 0.f);
+		FVector v(0.f, -MouseVelocity.Y * MouseSensitivity, 0.f);
 		FirstPersonCameraComponent->AddLocalRotation(FQuat::MakeFromEuler(v));
 		FMinimalViewInfo cameraViewInfo;
 		FirstPersonCameraComponent->GetCameraView(1.0f, cameraViewInfo);
 		if (cameraViewInfo.Rotation.Pitch > pitchMaxY) {
-			FRotator temp(pitchMaxY, cameraViewInfo.Rotation.Yaw, cameraViewInfo.Rotation.Roll);
+			FRotator temp(pitchMaxY * MouseSensitivity, cameraViewInfo.Rotation.Yaw, cameraViewInfo.Rotation.Roll);
 			FirstPersonCameraComponent->SetWorldRotation(temp);
 		}
 		if (cameraViewInfo.Rotation.Pitch < pitchMinY) {
-			FRotator temp(pitchMinY, cameraViewInfo.Rotation.Yaw, cameraViewInfo.Rotation.Roll);
+			FRotator temp(pitchMinY * MouseSensitivity, cameraViewInfo.Rotation.Yaw, cameraViewInfo.Rotation.Roll);
 			FirstPersonCameraComponent->SetWorldRotation(temp);
 		}
 	}
 	// Rotate the reference point component
 	if (PlayerForwardRefComponent)
 	{
-		FVector v(0.f, 0.f, MouseVelocity.X);
+		FVector v(0.f, 0.f, MouseVelocity.X * MouseSensitivity);
 		PlayerForwardRefComponent->AddWorldRotation(FQuat::MakeFromEuler(v));
 	}
 }

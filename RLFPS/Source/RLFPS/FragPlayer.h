@@ -47,6 +47,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "fragCharacter")
 		void SetRotation(FQuat NewRotation);
 	
+	UFUNCTION(BlueprintCallable, Category = "fragCharacter")
+		void UpdateControls(bool rightHanded);
+
 	/* Add rotation to player */
 	UFUNCTION(BluePrintCallable, Category = "fragCharacter")
 		void AddRotation();
@@ -76,6 +79,12 @@ public:
 		bool JumpInput;
 	/* Stores relational (to last frame) mouse position */
 	FVector2D MouseVelocity;
+
+	UPROPERTY(Category = Input, EditAnywhere, BlueprintReadWrite)
+		float MouseSensitivity;
+	UPROPERTY(Category = Input, EditAnywhere, BlueprintReadWrite)
+		bool LeftHanded;
+
 	//Handles the Collision Component
 public:
 	/** The BoxComponent being used for movement collision. Always treated as being vertically aligned in simple collision check functions */

@@ -5,6 +5,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "CoreMinimal.h"
 #include "UObject/UObjectGlobals.h"
+#include "Camera/CameraComponent.h"
+#include "Particles/ParticleSystem.h"
+#include "Particles/ParticleEmitter.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Bullet.h"
 
 
@@ -45,6 +49,7 @@ void AGun::BeginPlay()
 	spawnParams = SpawnParams;
 
 
+
 }
 
 // Called every frame
@@ -54,13 +59,16 @@ void AGun::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	elapsedTime += DeltaTime;
 
-	if (!reloading)
+
+
+	if (!reloading && ammoRemaining != ammoCount)
 	{
 		reloading = GetReloadKey();
 		if (reloading)
 		{
+			elapsedTime = 0;
 			firing = false;
-			//Reload();
+			Reload();
 		}
 
 	}
@@ -89,7 +97,7 @@ void AGun::Tick(float DeltaTime)
 	if (ammoRemaining <= 0 && !reloading)
 	{
 		firing = false;
-		//Reload();
+		Reload();
 		reloading = true;
 	}
 
@@ -107,10 +115,14 @@ void AGun::Tick(float DeltaTime)
 	
 }
 
+
+
+
+
 void AGun::Fire(float deltaTime)
 {
 
-	elapsedTime += deltaTime;
+	//elapsedTime += deltaTime;
 	firing = false;
 	if (elapsedTime >= (60.0 / rpm))
 	{
@@ -122,9 +134,10 @@ void AGun::Fire(float deltaTime)
 		for (UModBase* mod : mods)
 		{
 			mod->OnFire(this);
+			mod->OnFire_Implementation(this);
 		}
 
-		ammoRemaining--;
+		
 		firing = true;
 	}
 
@@ -132,6 +145,15 @@ void AGun::Fire(float deltaTime)
 	
 	//UE_LOG(LogTemp, Warning, TEXT("Ammo Remaining: %d"), ammoRemaining);
 
+}
+
+void AGun::Reload()
+{
+	for (UModBase* mod : mods)
+	{
+		mod->OnReload(this);
+		mod->OnReload_Implementation(this);
+	}
 }
 
 void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
@@ -144,7 +166,8 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 	{
 		bullet->SetInitialSpeed(bulletSpeed);
 
-		FVector dir = GetActorForwardVector();
+		FVector dir = RaycastFromCamera() - (GetActorLocation());
+		//LogFVector(dir);
 		dir.Normalize();
 		bullet->SetInitialDirection(dir);
 		bullet->SetGun(this);
@@ -152,8 +175,13 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 		for (UModBase* mod : mods)
 		{
 			mod->OnSpawn(bullet);
+			mod->OnSpawn_Implementation(bullet);
 		}
 	}
+
+	ammoRemaining--;
+
+	UNiagaraFunctionLibrary::SpawnSystemAttached(muzzleFlash, this->GetRootComponent(),FName("point"), GetActorLocation() + MuzzleLocation * GetActorForwardVector(), GetActorRotation(), EAttachLocation::KeepWorldPosition, true);
 	
 }
 
@@ -172,9 +200,13 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 		for (UModBase* mod : mods)
 		{
 			mod->OnSpawn(bullet);
+			mod->OnSpawn_Implementation(bullet);
 		}
 	}
 
+	ammoRemaining--;
+
+	UNiagaraFunctionLibrary::SpawnSystemAttached(muzzleFlash, this->GetRootComponent(), FName("point"), GetActorLocation() + MuzzleLocation * GetActorForwardVector(), GetActorRotation(), EAttachLocation::KeepWorldPosition, true);
 }
 
 
@@ -185,6 +217,7 @@ void AGun::AddMod(UModBase* mod)
 		if (mod->GetClass() == mods[i]->GetClass())
 		{
 			mods[i]->stacks++;
+			mod->ConditionalBeginDestroy();
 			UpdateCoreStats();
 			return;
 		}
@@ -241,21 +274,41 @@ void AGun::OnHitCallback(AActor* actor)
 	if (mods.Num()){
 		for (int i = 0; i < mods.Num(); i ++)
 		{
-			mods[i]->OnHit(actor);
+			mods[i]->OnHit(actor, GetWorld());
+			mods[i]->OnHit_Implementation(actor, GetWorld());
 		}
 	}
 
 	
 }
 
+void AGun::OnHitCallbackWithSkip(AActor* actor, FName name)
+{
+	if (mods.Num())
+	{
+		for (int i = 0; i < mods.Num(); i++)
+		{
+			if (mods[i]->name != name)
+			{
+				mods[i]->OnHit(actor, GetWorld());
+				mods[i]->OnHit_Implementation(actor, GetWorld());
+			}
+			
+		}
+	}
 
+
+}
 
 
 void AGun::GainEXP(int exp)
 {
+	totalEXP += exp;
+
 	if (readyToLevelUp)
 	{
 		currentEXP += exp;
+		
 		return;
 	}
 
@@ -283,10 +336,16 @@ TArray<UModBase*> AGun::GetNewModOptions()
 
 	UModBase* modOne = NewObject<UModBase>((UObject*)this, allMods[randOne]);;
 
-	int randTwo = FMath::RandHelper(allMods.Num());
+	int randTwo;
 
 
-	UModBase* modTwo = NewObject<UModBase>((UObject*)this, allMods[randTwo]);
+	UModBase* modTwo;
+	do
+	{
+		randTwo = FMath::RandHelper(allMods.Num());
+		modTwo = NewObject<UModBase>((UObject*)this, allMods[randTwo]);
+	
+	} while (modTwo->name == modOne->name);
 	
 	return TArray<UModBase*>{modOne, modTwo};
 
@@ -305,10 +364,16 @@ TArray<UModBase*> AGun::GetModOptions()
 
 void AGun::LevelUp(UModBase* newModType)
 {
+	if (level == 0) {
+		OnFirstUpgrade();
+	}
+
+	level++;
+
 	AddMod(newModType);
 	//AddMod(newModType);
 
-	expToNextLevel *= 2;
+	expToNextLevel *= levelingRate;
 	if (GetLevelPercentage() != 1)
 	{
 		readyToLevelUp = false;
@@ -352,7 +417,7 @@ void AGun::UpdateCoreStats()
 
 	if (ammoModStacks > 0)
 	{
-		ammoCount = defaultAmmoCount * ammoModStacks * 1.5;
+		ammoCount = defaultAmmoCount * ammoModStacks * ammoModifierRate;
 
 	}
 
@@ -360,13 +425,13 @@ void AGun::UpdateCoreStats()
 	rpm = defaultRPM;
 	for (int j = 0; j < rofModStacks; j++)
 	{
-		rpm += rpm;
+		rpm *= rpmModifierRate;
 	}
 
 	reloadTime = defaultReloadTime;
 	for (int j = 0; j < reloadModStacks; j++)
 	{
-		reloadTime *= 0.8;
+		reloadTime *= reloadTimeModifierRate;
 	}
 
 	bulletSpeed = defaultBulletSpeed;
@@ -375,5 +440,34 @@ void AGun::UpdateCoreStats()
 	UE_LOG(LogTemp, Warning, TEXT("Ammo Count: %d"), ammoCount);
 	UE_LOG(LogTemp, Warning, TEXT("RPM: %d"), rpm);
 	UE_LOG(LogTemp, Warning, TEXT("Reload Time: %f"), reloadTime);
+
+}
+
+
+FVector AGun::RaycastFromCamera()
+{
+	FVector cameraForward = camera->GetForwardVector();
+	FVector cameraLoc = camera->GetComponentLocation();
+
+	
+
+
+	UWorld* World = GetWorld();
+	FHitResult result;
+	FVector start = cameraLoc + cameraForward * minRaycastDistance;
+	FCollisionQueryParams CollisionParameters;
+	FVector end = cameraLoc + cameraForward * maxRaycastDistance;
+
+	World->LineTraceSingleByChannel(result, start, end, ECollisionChannel::ECC_Visibility);
+
+	if (result.Actor != NULL)
+	{
+		return result.ImpactPoint;
+	}
+	else
+	{
+		return cameraLoc + cameraForward * maxRaycastDistance;
+	}
+
 
 }

@@ -17,5 +17,5 @@ class RLFPS_API UHomingMod : public UModBase
 public:
 	UHomingMod();
 	~UHomingMod();
-	void OnSpawn(ABullet* bullet);
+	void OnSpawn_Implementation(ABullet* bullet);
 };

@@ -2,6 +2,7 @@
 
 
 #include "ShotgunMod.h"
+#include "NiagaraFunctionLibrary.h"
 
 UShotgunMod::UShotgunMod()
 {
@@ -13,17 +14,23 @@ UShotgunMod::~UShotgunMod()
 
 }
 
-void UShotgunMod::OnApply()
+void UShotgunMod::OnApply_Implementation()
 {
 
 }
 
-void UShotgunMod::OnFire(AGun* gun)
+void UShotgunMod::OnFire_Implementation(AGun* gun)
 {
 	FVector startingPoint = gun->GetActorLocation() + gun->MuzzleLocation * gun->GetActorForwardVector();
 
 	for (int i = 0; i < stacks; i++)
 	{
+	
+		if (gun->ammoRemaining <= 0)
+		{
+			return;
+		}
+		
 		FVector vector(FMath::RandRange(-1,1), FMath::RandRange(-1, 1), FMath::RandRange(-1, 1));
 
 		vector.Normalize();
@@ -38,11 +45,8 @@ void UShotgunMod::OnFire(AGun* gun)
 		dir;
 		gun->SpawnRound(*gun->spawnParams, FVector::ZeroVector, dir);
 	}
-
+	
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), muzzleFlash, gun->GetActorLocation() + gun->MuzzleLocation * gun->GetActorForwardVector(), gun->GetActorRotation(), FVector(1));
 	UE_LOG(LogTemp, Warning, TEXT("Calling Shotgun Mod On Fire"));
 }
 
-void UShotgunMod::OnHit(AActor* actor)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Calling Shotgun Mod On Apply"));
-}
