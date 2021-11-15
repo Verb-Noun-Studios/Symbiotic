@@ -69,10 +69,10 @@ void AFragPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 {
 	check(InputComponent);
 	// Set up movement
-	InputComponent->BindAxis("MoveForwardRight", this, &AFragPlayer::MoveForward);
-	InputComponent->BindAxis("MoveRightRight", this, &AFragPlayer::MoveRight);
-	InputComponent->BindAction("Jump", IE_Pressed, this, &AFragPlayer::DoJump);
-	InputComponent->BindAction("Jump", IE_Released, this, &AFragPlayer::StopJump);
+	//InputComponent->BindAxis("MoveForwardRight", this, &AFragPlayer::MoveForward);
+	//InputComponent->BindAxis("MoveRightRight", this, &AFragPlayer::MoveRight);
+	//InputComponent->BindAction("Jump", IE_Pressed, this, &AFragPlayer::DoJump);
+	//InputComponent->BindAction("Jump", IE_Released, this, &AFragPlayer::StopJump);
 	// Set up mouse inputs
 	InputComponent->BindAxis("Turn", this, &AFragPlayer::MouseX);
 	InputComponent->BindAxis("LookUp", this, &AFragPlayer::MouseY);
@@ -144,6 +144,7 @@ void AFragPlayer::UpdateControls(bool rightHanded)
 	if (rightHanded) {
 		InputComponent->BindAxis("MoveForwardRight", this, &AFragPlayer::MoveForward);
 		InputComponent->BindAxis("MoveRightRight", this, &AFragPlayer::MoveRight);
+
 		InputComponent->BindAction("Jump", IE_Pressed, this, &AFragPlayer::DoJump);
 		InputComponent->BindAction("Jump", IE_Released, this, &AFragPlayer::StopJump);
 	}
@@ -153,7 +154,7 @@ void AFragPlayer::UpdateControls(bool rightHanded)
 		InputComponent->BindAction("JumpLeft", IE_Pressed, this, &AFragPlayer::DoJump);
 		InputComponent->BindAction("JumpLeft", IE_Released, this, &AFragPlayer::StopJump);
 	}
-	EnableInput(GetWorld()->GetFirstPlayerController());
+	//EnableInput(GetWorld()->GetFirstPlayerController());
 
 }
 
