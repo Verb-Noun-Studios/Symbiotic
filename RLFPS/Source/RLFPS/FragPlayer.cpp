@@ -140,7 +140,9 @@ void AFragPlayer::UpdateControls(bool rightHanded)
 {
 	InputComponent->ClearActionBindings();
 	InputComponent->AxisBindings.Empty();
-	
+	InputComponent->BindAxis("Turn", this, &AFragPlayer::MouseX);
+	InputComponent->BindAxis("LookUp", this, &AFragPlayer::MouseY);
+
 	// Set up movement
 	if (rightHanded) {
 		InputComponent->BindAxis("MoveForwardRight", this, &AFragPlayer::MoveForward);
