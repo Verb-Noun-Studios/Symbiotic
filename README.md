@@ -1,5 +1,5 @@
 ## Verb Noun Studios
-A fast paced roguelike fps called "UUU" Upgrade Upgrading Upgrades(name is wip)
+A fast paced roguelike fps called Symbiotic
 
 ## “main” Branch 
 * Branch meant for stable builds and the finished/polished product. 
