@@ -138,8 +138,11 @@ void AFragPlayer::SetRotation(FQuat NewRotation)
 
 void AFragPlayer::UpdateControls(bool rightHanded)
 {
-	InputComponent = NewObject<UInputComponent>(this);
-	InputComponent->RegisterComponent();
+	InputComponent->ClearActionBindings();
+	InputComponent->AxisBindings.Empty();
+	InputComponent->BindAxis("Turn", this, &AFragPlayer::MouseX);
+	InputComponent->BindAxis("LookUp", this, &AFragPlayer::MouseY);
+
 	// Set up movement
 	if (rightHanded) {
 		InputComponent->BindAxis("MoveForwardRight", this, &AFragPlayer::MoveForward);
@@ -151,10 +154,11 @@ void AFragPlayer::UpdateControls(bool rightHanded)
 	else if (!rightHanded) {
 		InputComponent->BindAxis("MoveForwardLeft", this, &AFragPlayer::MoveForward);
 		InputComponent->BindAxis("MoveRightLeft", this, &AFragPlayer::MoveRight);
+
 		InputComponent->BindAction("JumpLeft", IE_Pressed, this, &AFragPlayer::DoJump);
 		InputComponent->BindAction("JumpLeft", IE_Released, this, &AFragPlayer::StopJump);
 	}
-	//EnableInput(GetWorld()->GetFirstPlayerController());
+	EnableInput(GetWorld()->GetFirstPlayerController());
 
 }
 
