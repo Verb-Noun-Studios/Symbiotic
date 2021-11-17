@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/GameplayStatics.h"
+#include "NiagaraSystem.h"
+#include "Sound/SoundWave.h"
 #include "ModBase.generated.h"
 
 UENUM()
@@ -71,6 +73,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	TArray<AActor*> GetActorsOfClass_Internal(TSubclassOf<AActor> actorClass);
+
+	UFUNCTION(BlueprintCallable)
+	UNiagaraComponent* SpawnSystemAtLocation_Internal( UNiagaraSystem* system, FVector location, FRotator rotation, FVector scale);
+
+	
 	
 	
 	/********** VARIABLES *************/
@@ -92,6 +99,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<ModAdditionalAtrributes> atribs;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UNiagaraSystem* niagaraVFX;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundWave* sound;
+
+
+	
 	
 
 
