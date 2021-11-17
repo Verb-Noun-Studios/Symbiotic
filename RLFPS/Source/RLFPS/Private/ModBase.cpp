@@ -3,6 +3,7 @@
 
 #include "ModBase.h"
 #include "Bullet.h"
+#include "NiagaraFunctionLibrary.h"
 
 
 UModBase::UModBase()
@@ -55,4 +56,10 @@ TArray<AActor*> UModBase::GetActorsOfClass_Internal(TSubclassOf<AActor> actorCla
 	UGameplayStatics::GetAllActorsOfClass(world, actorClass, OutActors);
 	return OutActors;
 
+}
+
+
+UNiagaraComponent* UModBase::SpawnSystemAtLocation_Internal( UNiagaraSystem* system, FVector location, FRotator rotation, FVector scale)
+{
+	return UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), system, location, rotation, scale);
 }

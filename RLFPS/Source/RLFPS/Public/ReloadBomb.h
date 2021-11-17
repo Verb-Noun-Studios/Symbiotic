@@ -31,6 +31,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AActor> playerClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AActor> GunClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float range;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float additionalRangePerStack;
@@ -39,9 +41,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float additionalDamagePerStack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UNiagaraSystem* reloadBombEffect;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float particleSystemScale;
+
 
 
 };
