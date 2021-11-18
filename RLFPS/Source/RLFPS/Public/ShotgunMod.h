@@ -23,13 +23,11 @@ public:
 	~UShotgunMod();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float offsetMultiplier = 100;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UNiagaraSystem* muzzleFlash;
 
+	
 	void OnApply_Implementation();
 	void OnFire_Implementation( AGun* gun);
-	UFUNCTION(BlueprintImplementableEvent)
-	void SpawnEmitter(AGun* gun);
+
 	
 	
 };
