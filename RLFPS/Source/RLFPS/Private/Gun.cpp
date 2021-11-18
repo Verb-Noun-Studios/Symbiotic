@@ -181,7 +181,9 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 
 	ammoRemaining--;
 
-	UNiagaraFunctionLibrary::SpawnSystemAttached(muzzleFlash, this->GetRootComponent(),FName("point"), GetActorLocation() + MuzzleLocation * GetActorForwardVector(), GetActorRotation(), EAttachLocation::KeepWorldPosition, true);
+	PlayMuzzleFlashFX(true);
+
+	//UNiagaraFunctionLibrary::SpawnSystemAttached(muzzleFlash, this->GetRootComponent(),FName("point"), GetActorLocation() + MuzzleLocation * GetActorForwardVector(), GetActorRotation(), EAttachLocation::KeepWorldPosition, true);
 	
 }
 
@@ -205,8 +207,8 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 	}
 
 	ammoRemaining--;
-
-	UNiagaraFunctionLibrary::SpawnSystemAttached(muzzleFlash, this->GetRootComponent(), FName("point"), GetActorLocation() + MuzzleLocation * GetActorForwardVector(), GetActorRotation(), EAttachLocation::KeepWorldPosition, true);
+	PlayMuzzleFlashFX(false);
+	//UNiagaraFunctionLibrary::SpawnSystemAttached(muzzleFlash, this->GetRootComponent(), FName("point"), GetActorLocation() + MuzzleLocation * GetActorForwardVector(), GetActorRotation(), EAttachLocation::KeepWorldPosition, true);
 }
 
 
