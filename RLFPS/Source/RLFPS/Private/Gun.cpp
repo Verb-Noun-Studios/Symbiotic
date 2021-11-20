@@ -238,7 +238,18 @@ void AGun::AddMod(UModBase* mod)
 bool AGun::GetFireKey()
 {
 	APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	bool fireState = playerController->IsInputKeyDown(FireKey);
+	bool fireState;
+	
+	if (!LeftHanded)
+	{
+		fireState = playerController->IsInputKeyDown(RightFireKey);
+	}
+	else
+	{
+		fireState = playerController->IsInputKeyDown(LeftFireKey);
+	}
+
+	
 	
 	return fireState;
 }
@@ -246,7 +257,16 @@ bool AGun::GetFireKey()
 bool AGun::GetReloadKey()
 {
 	APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	bool reloadState = playerController->IsInputKeyDown(ReloadKey);
+	bool reloadState;
+	if (!LeftHanded)
+	{
+		reloadState = playerController->IsInputKeyDown(RightReloadKey);
+	}
+	else
+	{
+		reloadState = playerController->IsInputKeyDown(LeftReloadKey);
+	}
+	 
 	
 	return reloadState;
 	
@@ -255,18 +275,36 @@ bool AGun::GetReloadKey()
 bool AGun::GetOptionOneKey()
 {
 	APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	bool reloadState = playerController->IsInputKeyDown(OptionOneKey);
+	bool keyState;
 
-	return reloadState;
+	if (!LeftHanded)
+	{
+		keyState = playerController->IsInputKeyDown(RightOptionOneKey);
+	}
+	else
+	{
+		keyState = playerController->IsInputKeyDown(LeftOptionOneKey);
+	}
+
+	return keyState;
 
 }
 
 bool AGun::GetOptionTwoKey()
 {
 	APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	bool reloadState = playerController->IsInputKeyDown(OptionTwoKey);
+	bool keyState;
 
-	return reloadState;
+	if (!LeftHanded)
+	{
+		keyState = playerController->IsInputKeyDown(RightOptionTwoKey);
+	}
+	else
+	{
+		keyState = playerController->IsInputKeyDown(LeftOptionTwoKey);
+	}
+
+	return keyState;
 
 }
 

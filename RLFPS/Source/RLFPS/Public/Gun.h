@@ -164,17 +164,6 @@ public:
 	//int shotsPerRound = 1;
 
 
-
-
-	UPROPERTY(EditAnywhere, Category = "Controls")
-	FKey FireKey;
-	UPROPERTY(EditAnywhere, Category = "Controls")
-	FKey ReloadKey;
-	UPROPERTY(EditAnywhere, Category = "Controls")
-	FKey OptionOneKey;
-	UPROPERTY(EditAnywhere, Category = "Controls")
-	FKey OptionTwoKey;
-
 	UPROPERTY(BlueprintReadWrite)
 	int totalEXP;
 	UPROPERTY(BlueprintReadWrite)
@@ -204,4 +193,27 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 		void OnFirstUpgrade();
 	void LogFVector(FVector vector)  { UE_LOG(LogTemp, Warning, TEXT("X: %f  Y: %f  Z: %f"), vector.X, vector.Y, vector.Z); };
+
+
+	UPROPERTY(BlueprintReadWrite)
+	bool LeftHanded;
+
+	UPROPERTY(EditAnywhere, Category = "Right Controls")
+	FKey RightFireKey;
+	UPROPERTY(EditAnywhere, Category = "Right Controls")
+	FKey RightReloadKey;
+	UPROPERTY(EditAnywhere, Category = "Right Controls")
+	FKey RightOptionOneKey;
+	UPROPERTY(EditAnywhere, Category = "Right Controls")
+	FKey RightOptionTwoKey;
+
+
+	UPROPERTY(EditAnywhere, Category = "Left Controls")
+	FKey LeftFireKey;
+	UPROPERTY(EditAnywhere, Category = "Left Controls")
+	FKey LeftReloadKey;
+	UPROPERTY(EditAnywhere, Category = "Left Controls")
+	FKey LeftOptionOneKey;
+	UPROPERTY(EditAnywhere, Category = "Left Controls")
+	FKey LeftOptionTwoKey;
 };
