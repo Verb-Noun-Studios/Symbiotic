@@ -82,7 +82,7 @@ AActor* ABullet::GetClosestActor()
 	TArray<AActor*> enemies;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), targetClass, enemies);
 	AActor* closestPlayer = nullptr;
-	float distance = INT_MAX;
+	float distance = (float)INT_MAX;
 
 	//log all actors found for debugging
 	for (AActor* actor : enemies)

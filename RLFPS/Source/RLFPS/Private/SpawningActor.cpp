@@ -3,7 +3,7 @@
 
 #include "SpawningActor.h"
 #include "GruntCharacter.h"
-#include "CustomgameMode.h"
+#include "CustomGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/GameModeBase.h"
 #include "DrawDebugHelpers.h"
