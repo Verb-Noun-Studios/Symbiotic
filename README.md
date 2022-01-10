@@ -1,5 +1,6 @@
 ## Verb Noun Studios
 A fast paced roguelike fps called Symbiotic
+
 Refer to https://github.com/Allar/ue5-style-guide#anc-bp for the style guide
 
 ## “main” Branch 
