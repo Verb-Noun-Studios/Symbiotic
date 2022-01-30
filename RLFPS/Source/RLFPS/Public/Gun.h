@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ModBase.h"
+#include "ActiveItem.h"
 #include <vector>
 #include "NiagaraSystem.h"
 #include "Gun.generated.h"
@@ -113,6 +113,7 @@ protected:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<UModBase*> mods;
+	UActiveItem* activeItem;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<TSubclassOf<UModBase>> allMods;

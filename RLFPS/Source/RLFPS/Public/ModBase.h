@@ -67,6 +67,9 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void OnReload(AActor* player);
+
+	UFUNCTION(BlueprintNativeEvent)
+	void OnActiveAbility(AActor* player);
 	
 	UFUNCTION(BlueprintCallable)
 	AActor* GetActorOfClass_Internal(TSubclassOf<AActor> actorClass);
