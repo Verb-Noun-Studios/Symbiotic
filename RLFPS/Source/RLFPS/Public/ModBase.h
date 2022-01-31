@@ -76,9 +76,13 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	TArray<AActor*> GetActorsOfClass_Internal(TSubclassOf<AActor> actorClass);
+	
+	UFUNCTION(BlueprintCallable)
+	UWorld* GetWorld_Internal();
 
 	UFUNCTION(BlueprintCallable)
 	UNiagaraComponent* SpawnSystemAtLocation_Internal( UNiagaraSystem* system, FVector location, FRotator rotation, FVector scale);
+
 
 	
 	

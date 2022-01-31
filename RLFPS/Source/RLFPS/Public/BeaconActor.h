@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "InteractableInterface.h"
-#include "ModBase.h"
+#include "ActiveItem.h"
 #include "BeaconActor.generated.h"
 
 class ASpawningActor;
@@ -39,7 +39,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float time;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UModBase> newMod;
+	TSubclassOf<UActiveItem> newMod;
 	
 	void GetSpawnPoints();
 	UFUNCTION(BlueprintCallable)

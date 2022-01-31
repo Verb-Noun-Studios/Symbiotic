@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class RLFPS_API UActiveItem : public UModBase
 {
 	GENERATED_BODY()
@@ -17,12 +17,16 @@ class RLFPS_API UActiveItem : public UModBase
 public:
 	UActiveItem();
 	~UActiveItem();
+	TSubclassOf<AActor> classToSpawn;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int requiredKillCount = 15;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int currentKillCount = 0;
+	int currentKillCount = 15;
 
 	void OnActiveItem_Implementation(AActor* player);
-	
+
+	AActor* SpawnActorOfClass_Internal(AActor* owner, TSubclassOf<AActor> actorClass, FVector const& loc, FRotator const& rot);
+
+
 };

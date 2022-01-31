@@ -59,7 +59,17 @@ void AGun::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	elapsedTime += DeltaTime;
 
+	if (GetActiveKey() && activeItem)
+	{
+		if (activeItem->currentKillCount == activeItem->requiredKillCount)
+		{
+			
+			activeItem->OnActiveAbility(this);
+			activeItem->OnActiveAbility_Implementation(this);
+			activeItem->currentKillCount = 0;
 
+		}
+	}
 
 	if (!reloading && ammoRemaining != ammoCount)
 	{
@@ -233,6 +243,19 @@ void AGun::AddMod(UModBase* mod)
 }
 
 
+void AGun::ReplaceActiveItem(UActiveItem* newItem)
+{
+	if (activeItem)
+	{
+
+		activeItem->ConditionalBeginDestroy();
+	
+	}
+	
+	activeItem = newItem;
+}
+
+
 
 
 bool AGun::GetFireKey()
@@ -302,6 +325,24 @@ bool AGun::GetOptionTwoKey()
 	else
 	{
 		keyState = playerController->IsInputKeyDown(LeftOptionTwoKey);
+	}
+
+	return keyState;
+
+}
+
+bool AGun::GetActiveKey()
+{
+	APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	bool keyState;
+
+	if (!LeftHanded)
+	{
+		keyState = playerController->IsInputKeyDown(RightActiveKey);
+	}
+	else
+	{
+		keyState = playerController->IsInputKeyDown(LeftActiveKey);
 	}
 
 	return keyState;

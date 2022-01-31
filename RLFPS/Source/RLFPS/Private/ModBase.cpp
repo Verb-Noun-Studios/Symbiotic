@@ -64,6 +64,12 @@ TArray<AActor*> UModBase::GetActorsOfClass_Internal(TSubclassOf<AActor> actorCla
 }
 
 
+UWorld* UModBase::GetWorld_Internal()
+{
+	return GetWorld();
+}
+
+
 UNiagaraComponent* UModBase::SpawnSystemAtLocation_Internal( UNiagaraSystem* system, FVector location, FRotator rotation, FVector scale)
 {
 	return UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), system, location, rotation, scale);
