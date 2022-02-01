@@ -17,6 +17,8 @@ class RLFPS_API UActiveItem : public UModBase
 public:
 	UActiveItem();
 	~UActiveItem();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AActor> classToSpawn;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -24,7 +26,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int currentKillCount = 15;
 
-	void OnActiveItem_Implementation(AActor* player);
+	UFUNCTION(BlueprintNativeEvent)
+	void OnActiveAbility(AActor* gun);
 
 	AActor* SpawnActorOfClass_Internal(AActor* owner, TSubclassOf<AActor> actorClass, FVector const& loc, FRotator const& rot);
 

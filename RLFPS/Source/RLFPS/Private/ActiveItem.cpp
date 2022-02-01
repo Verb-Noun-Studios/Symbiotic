@@ -13,7 +13,7 @@ UActiveItem::~UActiveItem()
 
 }
 
-void UActiveItem::OnActiveItem_Implementation(AActor* player)
+void UActiveItem::OnActiveAbility_Implementation(AActor* gun)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Calling base active item."));
 }

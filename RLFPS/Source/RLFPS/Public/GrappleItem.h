@@ -18,6 +18,14 @@ class RLFPS_API UGrappleItem : public UActiveItem
 public:
 	UGrappleItem();
 	~UGrappleItem();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float maxGrappleDistance;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float minGrappleDistance;
 
-	void OnActiveItem_Implementation(AActor* actor);
+	TSubclassOf<AActor> playerClass;
+
+	void OnActiveAbility_Implementation(AActor* gun);
+
 };

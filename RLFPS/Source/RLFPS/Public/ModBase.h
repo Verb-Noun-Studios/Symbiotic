@@ -57,7 +57,7 @@ public:
 	void OnApply();
 	
 	UFUNCTION(BlueprintNativeEvent)
-	 void OnSpawn(ABullet* bullet);
+	void OnSpawn(ABullet* bullet);
 	
 	UFUNCTION(BlueprintNativeEvent)
 	void OnFire(AGun* gun);
@@ -68,8 +68,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void OnReload(AActor* player);
 
-	UFUNCTION(BlueprintNativeEvent)
-	void OnActiveAbility(AActor* player);
+
 	
 	UFUNCTION(BlueprintCallable)
 	AActor* GetActorOfClass_Internal(TSubclassOf<AActor> actorClass);

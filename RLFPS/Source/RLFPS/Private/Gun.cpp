@@ -61,14 +61,17 @@ void AGun::Tick(float DeltaTime)
 
 	if (GetActiveKey() && activeItem)
 	{
-		if (activeItem->currentKillCount == activeItem->requiredKillCount)
+		if (activeItem->currentKillCount >= activeItem->requiredKillCount)
 		{
 			
-			activeItem->OnActiveAbility(this);
+			//activeItem->OnActiveAbility(this);
 			activeItem->OnActiveAbility_Implementation(this);
 			activeItem->currentKillCount = 0;
-
+			GEngine->AddOnScreenDebugMessage(-1, 0.10f, FColor::Yellow, TEXT("Calling active Item"));
+			
 		}
+
+		UE_LOG(LogTemp, Warning, TEXT("Current Kills: %d   VS Required Kills: %d"), activeItem->currentKillCount, activeItem->requiredKillCount);
 	}
 
 	if (!reloading && ammoRemaining != ammoCount)
@@ -402,6 +405,13 @@ void AGun::GainEXP(int exp)
 		ModOptions = GetNewModOptions();
 		currentEXP = currentEXP - expToNextLevel;
 	}
+
+	if (activeItem)
+	{
+		if(activeItem->currentKillCount < activeItem->requiredKillCount)
+			activeItem->currentKillCount++;
+
+	}
 }
 
 
@@ -434,11 +444,11 @@ TArray<UModBase*> AGun::GetNewModOptions()
 
 TArray<UModBase*> AGun::GetModOptions()
 {
-	TArray<UModBase*> options;
-	for (UModBase* type : ModOptions)
-	{
-		options.Add(type);
-	}
+	//TArray<UModBase*> options;
+	//for (UModBase* type : ModOptions)
+	//{
+	//	options.Add(type);
+	//}
 	return ModOptions;
 }
 

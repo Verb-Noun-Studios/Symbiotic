@@ -29,6 +29,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector endLoc;
 
+	UFUNCTION(BlueprintNativeEvent)
+	void OnStart(AActor* gun, AActor* hitActor, FVector hitPointOffset);
 
 
 };
