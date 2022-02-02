@@ -24,11 +24,15 @@ void UGrappleItem::OnActiveAbility_Implementation(AActor* gun)
 	FVector start = gun->GetActorLocation() + gun->GetActorForwardVector() * minGrappleDistance;
 	FCollisionQueryParams CollisionParameters;
 	FVector end = gun->GetActorLocation() + gun->GetActorForwardVector() * maxGrappleDistance;
+	
+	World->LineTraceSingleByChannel(result, gun->GetActorLocation(), start, ECollisionChannel::ECC_Visibility);
+	
+	if (result.IsValidBlockingHit())
+	{
+		return;
+	}
 
 	World->LineTraceSingleByChannel(result, start, end, ECollisionChannel::ECC_Visibility);
-	DrawDebugLine(GetWorld(), start, end, FColor::Green, true, 5, 0, 3);
-	//GEngine->AddOnScreenDebugMessage(-1, 0.10f, FColor::Yellow, TEXT("ActiveItem"));
-	//UE_LOG(LogTemp, Warning, TEXT("Calling On Active"));
 
 	if (result.IsValidBlockingHit())
 	{

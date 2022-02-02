@@ -66,7 +66,6 @@ void AGun::Tick(float DeltaTime)
 			
 			//activeItem->OnActiveAbility(this);
 			activeItem->OnActiveAbility_Implementation(this);
-			activeItem->currentKillCount = 0;
 			GEngine->AddOnScreenDebugMessage(-1, 0.10f, FColor::Yellow, TEXT("Calling active Item"));
 			
 		}
