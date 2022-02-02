@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ModBase.h"
+#include "ActiveItem.h"
 #include <vector>
 #include "NiagaraSystem.h"
 #include "Gun.generated.h"
@@ -35,6 +35,10 @@ public:
 	*/
 	UFUNCTION(BlueprintCallable)
 	void AddMod(UModBase* mod);
+
+	UFUNCTION(BlueprintCallable)
+	void ReplaceActiveItem(UActiveItem* activeItem);
+
 	
 	/*
 	* Gets the state of the keys
@@ -43,6 +47,7 @@ public:
 	bool GetReloadKey();
 	bool GetOptionOneKey();
 	bool GetOptionTwoKey();
+	bool GetActiveKey();
 
 	/*
 	* Blueprint callable function to call Onhit effects for mods
@@ -113,6 +118,8 @@ protected:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<UModBase*> mods;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UActiveItem* activeItem;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<TSubclassOf<UModBase>> allMods;
@@ -191,7 +198,7 @@ public:
 	UFUNCTION()
 	FVector RaycastFromCamera();
 	UFUNCTION(BlueprintImplementableEvent)
-		void OnFirstUpgrade();
+	void OnFirstUpgrade();
 	void LogFVector(FVector vector)  { UE_LOG(LogTemp, Warning, TEXT("X: %f  Y: %f  Z: %f"), vector.X, vector.Y, vector.Z); };
 
 
@@ -206,6 +213,8 @@ public:
 	FKey RightOptionOneKey;
 	UPROPERTY(EditAnywhere, Category = "Right Controls")
 	FKey RightOptionTwoKey;
+	UPROPERTY(EditAnywhere, Category = "Right Controls")
+	FKey RightActiveKey;
 
 
 	UPROPERTY(EditAnywhere, Category = "Left Controls")
@@ -216,4 +225,6 @@ public:
 	FKey LeftOptionOneKey;
 	UPROPERTY(EditAnywhere, Category = "Left Controls")
 	FKey LeftOptionTwoKey;
+	UPROPERTY(EditAnywhere, Category = "Left Controls")
+	FKey LeftActiveKey;
 };

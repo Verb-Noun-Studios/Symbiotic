@@ -39,6 +39,11 @@ void UModBase::OnReload_Implementation(AActor* player)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Calling Test On Reload"));
 }
+//
+//void UModBase::OnActiveAbility_Implementation(AActor* player)
+//{
+//	UE_LOG(LogTemp, Warning, TEXT("Calling Test On Active"));
+//}
 
 
 AActor* UModBase::GetActorOfClass_Internal(TSubclassOf<AActor> actorClass)
@@ -56,6 +61,12 @@ TArray<AActor*> UModBase::GetActorsOfClass_Internal(TSubclassOf<AActor> actorCla
 	UGameplayStatics::GetAllActorsOfClass(world, actorClass, OutActors);
 	return OutActors;
 
+}
+
+
+UWorld* UModBase::GetWorld_Internal()
+{
+	return GetWorld();
 }
 
 
