@@ -26,9 +26,11 @@ void UGrappleItem::OnActiveAbility_Implementation(AActor* gun)
 	FVector end = gun->GetActorLocation() + gun->GetActorForwardVector() * maxGrappleDistance;
 	
 	World->LineTraceSingleByChannel(result, gun->GetActorLocation(), start, ECollisionChannel::ECC_Visibility);
-	
-	if (result.IsValidBlockingHit())
+	//DrawDebugLine(GetWorld(), start, end, FColor::Red, true, 3);
+
+	if (result.IsValidBlockingHit() && result.Actor != gun)
 	{
+		//UE_LOG(LogTemp, Warning, TEXT("Coliding with: %s"), result.Actor->GetFName().ToString());
 		return;
 	}
 

@@ -66,11 +66,11 @@ void AGun::Tick(float DeltaTime)
 			
 			//activeItem->OnActiveAbility(this);
 			activeItem->OnActiveAbility_Implementation(this);
-			GEngine->AddOnScreenDebugMessage(-1, 0.10f, FColor::Yellow, TEXT("Calling active Item"));
+			//GEngine->AddOnScreenDebugMessage(-1, 0.10f, FColor::Yellow, TEXT("Calling active Item"));
 			
 		}
 
-		UE_LOG(LogTemp, Warning, TEXT("Current Kills: %d   VS Required Kills: %d"), activeItem->currentKillCount, activeItem->requiredKillCount);
+		//UE_LOG(LogTemp, Warning, TEXT("Current Kills: %d   VS Required Kills: %d"), activeItem->currentKillCount, activeItem->requiredKillCount);
 	}
 
 	if (!reloading && ammoRemaining != ammoCount)
