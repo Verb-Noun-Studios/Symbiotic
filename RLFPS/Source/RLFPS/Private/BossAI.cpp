@@ -34,14 +34,13 @@ void ABossAI::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 int ABossAI::ChooseAction()
 {
-	if (distanceToPlayer <= meleeRange && mTimer <= 0)
+	if (distanceToPlayer <= mMeleeRange && mTimer <= 0)
 	{
-		mTimer = meleeRecharge;
 		return 1;
 	}
-	else if(distanceToPlayer > meleeRange)
+	else if(distanceToPlayer > mMeleeRange)
 	{
-		if (cTimer >= chargeTime)
+		if (cTimer >= mChargeTime)
 		{
 			cTimer = 0.0f;
 			return 3;
@@ -49,7 +48,6 @@ int ABossAI::ChooseAction()
 
 		if (rTimer <= 0)
 		{
-			rTimer = rangedRecharge;
 			return 2;
 		}
 	}
@@ -61,7 +59,7 @@ float ABossAI::update(FVector playerLoc, FVector bossLoc, float dt)
 {
 	distanceToPlayer = FVector::Dist(playerLoc, bossLoc)/100;
 
-	if (distanceToPlayer > chargeRange)
+	if (distanceToPlayer > mChargeRange)
 		cTimer += dt;
 	else
 		cTimer = 0.0;
@@ -79,3 +77,17 @@ FVector ABossAI::moveTo(FVector playerLoc, FVector bossLoc, float dt)
 	directionToPlayer = playerLoc - bossLoc;
 	return directionToPlayer * dt;
 }
+
+void ABossAI::resetTimer(int num)
+{
+	switch (num)
+	{
+	case 0:
+		mTimer = mMeleeRecharge;
+		break;
+	case 1:
+		rTimer = mRangedRecharge;
+		break;
+	}
+}
+

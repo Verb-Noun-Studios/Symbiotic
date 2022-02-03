@@ -27,38 +27,38 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float walkSpeed;
+	float mWalkSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float chargeSpeed;
+	float mChargeSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int currentHealth;
+	int mCurrentHealth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int maxHealth;
+	int mMaxHealth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float shieldDuration;
+	float mShieldDuration;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float meleeRange;
+	float mMeleeRange;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float chargeRange;
+	float mChargeRange;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float chargeTime;
+	float mChargeTime;
 
 	float cTimer = 0;
 	float mTimer;
 	float rTimer;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float meleeRecharge;
+	float mMeleeRecharge;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float rangedRecharge;
+	float mRangedRecharge;
 
 	UFUNCTION(BlueprintCallable)
 	int ChooseAction();
@@ -68,6 +68,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FVector moveTo(FVector playerLoc, FVector bossLoc, float dt);
+
+	UFUNCTION(BlueprintCallable)
+	void resetTimer(int num);
 
 private:
 	float distanceToPlayer;
