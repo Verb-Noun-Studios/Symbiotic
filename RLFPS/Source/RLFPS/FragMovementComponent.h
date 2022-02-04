@@ -95,6 +95,7 @@ public:
 	bool CheckJump();
 	void QueueJump();
 	void FlyMove();
+	UFUNCTION(BlueprintCallable)
 	void ApplyAcceleration(FVector WishDirection, float WishSpeed, float DynamicAcceleration);
 	void AirControl(FVector WishDirection, float WishSpeed);
 	void ApplyGravity();
