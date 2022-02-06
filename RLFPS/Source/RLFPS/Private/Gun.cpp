@@ -78,7 +78,7 @@ void AGun::Tick(float DeltaTime)
 		if (activeItem->currentKillCount >= activeItem->requiredKillCount)
 		{
 			
-			//activeItem->OnActiveAbility(this);
+			activeItem->OnActiveAbility(this);
 			activeItem->OnActiveAbility_Implementation(this);
 			//GEngine->AddOnScreenDebugMessage(-1, 0.10f, FColor::Yellow, TEXT("Calling active Item"));
 			
