@@ -37,10 +37,10 @@ void ABossAI::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 int ABossAI::ChooseAction(float healthThreshold)
 {
 	
-	//if (HealthComponent->currentHealth < healthThreshold)
-	//{
-		//return 4;
-	//}
+	if (HealthComponent->currentHealth < healthThreshold)
+	{
+		return 4;
+	}
 	
 	if (distanceToPlayer <= mMeleeRange && mTimer <= 0)
 	{
