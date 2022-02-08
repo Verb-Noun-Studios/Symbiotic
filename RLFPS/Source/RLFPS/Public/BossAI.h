@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "BossAI.generated.h"
 
+class UHealthComponent;
+
 UCLASS()
 class RLFPS_API ABossAI : public ACharacter
 {
@@ -14,6 +16,9 @@ class RLFPS_API ABossAI : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ABossAI();
+
+	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		UHealthComponent* HealthComponent;
 
 protected:
 	// Called when the game starts or when spawned
@@ -32,11 +37,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float mChargeSpeed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int mCurrentHealth;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int mMaxHealth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float mShieldDuration;
