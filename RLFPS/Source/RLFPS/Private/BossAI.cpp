@@ -2,6 +2,7 @@
 
 
 #include "BossAI.h"
+#include "HealthComponent.h"
 
 // Sets default values
 ABossAI::ABossAI()
@@ -9,20 +10,21 @@ ABossAI::ABossAI()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Defragr Health Component"));
+
 }
 
 // Called when the game starts or when spawned
 void ABossAI::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	HealthComponent->currentHealth = mMaxHealth;
+	HealthComponent->DefaultHealth = mMaxHealth;
 }
 
 // Called every frame
 void ABossAI::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -32,8 +34,14 @@ void ABossAI::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-int ABossAI::ChooseAction()
+int ABossAI::ChooseAction(float healthThreshold)
 {
+	
+	//if (HealthComponent->currentHealth < healthThreshold)
+	//{
+		//return 4;
+	//}
+	
 	if (distanceToPlayer <= mMeleeRange && mTimer <= 0)
 	{
 		return 1;
@@ -72,11 +80,6 @@ float ABossAI::update(FVector playerLoc, FVector bossLoc, float dt)
 	return distanceToPlayer;
 }
 
-FVector ABossAI::moveTo(FVector playerLoc, FVector bossLoc, float dt)
-{
-	directionToPlayer = playerLoc - bossLoc;
-	return directionToPlayer * dt;
-}
 
 void ABossAI::resetTimer(int num)
 {

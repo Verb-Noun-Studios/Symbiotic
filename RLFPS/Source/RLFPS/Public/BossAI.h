@@ -50,6 +50,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float mChargeTime;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float mMaxHealth;
+
 	float cTimer = 0;
 	float mTimer;
 	float rTimer;
@@ -61,13 +64,10 @@ public:
 	float mRangedRecharge;
 
 	UFUNCTION(BlueprintCallable)
-	int ChooseAction();
+	int ChooseAction(float healthThreshold);
 
 	UFUNCTION(BlueprintCallable)
 	float update(FVector playerLoc, FVector bossLoc, float dt);
-
-	UFUNCTION(BlueprintCallable)
-	FVector moveTo(FVector playerLoc, FVector bossLoc, float dt);
 
 	UFUNCTION(BlueprintCallable)
 	void resetTimer(int num);
