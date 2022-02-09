@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "StatusEffect.h"
 #include "GruntCharacter.generated.h"
 
 class UHealthComponent;
@@ -19,6 +20,8 @@ public:
 
 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		UHealthComponent* HealthComponent;
+	UPROPERTY(BlueprintReadOnly)
+	TArray<UStatusEffect*> statusEffects;
 
 protected:
 	// Called when the game starts or when spawned
@@ -27,6 +30,10 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+
+	UFUNCTION(BlueprintCallable)
+	void AddEffect(UStatusEffect* effect);
 
 
 };

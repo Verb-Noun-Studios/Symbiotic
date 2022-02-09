@@ -18,6 +18,10 @@ class RLFPS_API UGrappleItem : public UActiveItem
 public:
 	UGrappleItem();
 	~UGrappleItem();
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AActor> classToSpawn;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float maxGrappleDistance;
