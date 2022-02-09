@@ -24,6 +24,38 @@ void AGruntCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	for (int i = 0; i < statusEffects.Num(); i++)
+	{
+		UStatusEffect* effect = statusEffects[i];
+		if (effect->dead)
+		{
+			statusEffects.Remove(effect);
+			effect->ConditionalBeginDestroy();
+		}
+		else
+		{
+			effect->OnTick(this, DeltaTime);
+			effect->OnTick_Implementation(this, DeltaTime);
+			//UE_LOG(LogTemp, Warning, TEXT("%s"), *effect->name.ToString());
+		}
+		
+	}
+
 }
 
 
+void AGruntCharacter::AddEffect(UStatusEffect* newEffect)
+{
+	for (UStatusEffect* effect : statusEffects)
+	{
+		if (newEffect->name == effect->name)
+		{
+			effect->stacks++;
+			effect->timeRemaining = effect->duration;
+			newEffect->ConditionalBeginDestroy();
+			return;
+		}
+	}
+	
+	statusEffects.Add(newEffect);
+}
