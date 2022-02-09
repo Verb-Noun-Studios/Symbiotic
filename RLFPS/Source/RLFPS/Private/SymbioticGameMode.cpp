@@ -9,6 +9,7 @@ void ASymbioticGameMode::StartPlay()
 {
 	Super::StartPlay();
 	enemiesLeftToSpawn = maxEnemies;
+	SpawnLevel();
 }
 
 void ASymbioticGameMode::StartBossSequence()
@@ -35,4 +36,14 @@ void ASymbioticGameMode::StartIncreasedSpawnRate()
 		spawner->ActivateWithBeacon(sequenceTime, increasedSpawnRate);
 	}
 	
+}
+
+void ASymbioticGameMode::SpawnLevel() 
+{
+	FLatentActionInfo LatentInfo;
+	FName temp = "Blockout1";
+	UGameplayStatics::LoadStreamLevel(this, temp, true, true, LatentInfo);
+	ULevelStreaming* Level = UGameplayStatics::GetStreamingLevel(GetWorld(), temp);
+	
+
 }

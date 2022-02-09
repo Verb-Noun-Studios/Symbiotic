@@ -28,10 +28,6 @@ public:
 		bool firstBeaconFound = false;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool firstBeaconActivated = false;
-		
-		
-	
-
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Boss Sequence")
 		bool bossSequenceStarted = false;
@@ -48,5 +44,25 @@ public:
 		UFUNCTION(BlueprintImplementableEvent)
 		void StartTimer();
 
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
+		int maxRoomstoSpawn = 8;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
+		int minRoomstoSpawn = 6;
+
+
+	UPROPERTY(EditAnywhere, Category = "Level Generation")
+		FName SpawnRoom;
+	
+
+	//Note: These need to be added to the level window in order to load
+	//UPROPERTY(EditAnywhere, Category = "Level Generation")
+		//FName LevelsToLoad[8];
+
+private:
+
+	void SpawnLevel();
 
 };
