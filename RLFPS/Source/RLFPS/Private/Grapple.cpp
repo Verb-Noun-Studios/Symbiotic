@@ -26,7 +26,7 @@ void AGrapple::Tick(float DeltaTime)
 }
 
 
-void AGrapple::OnStart_Implementation(AActor* gun, AActor* hitActor, FVector hitPointOffset)
+void AGrapple::OnStart_Implementation(AActor* gun)
 {
 
 }
