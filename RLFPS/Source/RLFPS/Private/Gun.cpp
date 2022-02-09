@@ -78,7 +78,7 @@ void AGun::Tick(float DeltaTime)
 		if (activeItem->currentKillCount >= activeItem->requiredKillCount)
 		{
 			
-			//activeItem->OnActiveAbility(this);
+			activeItem->OnActiveAbility(this);
 			activeItem->OnActiveAbility_Implementation(this);
 			//GEngine->AddOnScreenDebugMessage(-1, 0.10f, FColor::Yellow, TEXT("Calling active Item"));
 			
@@ -209,7 +209,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 
 	PlayMuzzleFlashFX(true);
 
-	//UNiagaraFunctionLibrary::SpawnSystemAttached(muzzleFlash, this->GetRootComponent(),FName("point"), GetActorLocation() + MuzzleLocation * GetActorForwardVector(), GetActorRotation(), EAttachLocation::KeepWorldPosition, true);
+
 	
 }
 
@@ -234,7 +234,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 
 	ammoRemaining--;
 	PlayMuzzleFlashFX(false);
-	//UNiagaraFunctionLibrary::SpawnSystemAttached(muzzleFlash, this->GetRootComponent(), FName("point"), GetActorLocation() + MuzzleLocation * GetActorForwardVector(), GetActorRotation(), EAttachLocation::KeepWorldPosition, true);
+	
 }
 
 
@@ -443,9 +443,14 @@ TArray<UModBase*> AGun::GetNewModOptions()
 	int randTwo;
 
 
-	UModBase* modTwo;
+	UModBase* modTwo = nullptr;
 	do
 	{
+		if (modTwo != NULL)
+		{
+			modTwo->ConditionalBeginDestroy();
+		}
+
 		randTwo = FMath::RandHelper(allMods.Num());
 		modTwo = NewObject<UModBase>((UObject*)this, allMods[randTwo]);
 	
