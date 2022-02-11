@@ -209,7 +209,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 
 	PlayMuzzleFlashFX(true);
 
-	//UNiagaraFunctionLibrary::SpawnSystemAttached(muzzleFlash, this->GetRootComponent(),FName("point"), GetActorLocation() + MuzzleLocation * GetActorForwardVector(), GetActorRotation(), EAttachLocation::KeepWorldPosition, true);
+
 	
 }
 
@@ -234,7 +234,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 
 	ammoRemaining--;
 	PlayMuzzleFlashFX(false);
-	//UNiagaraFunctionLibrary::SpawnSystemAttached(muzzleFlash, this->GetRootComponent(), FName("point"), GetActorLocation() + MuzzleLocation * GetActorForwardVector(), GetActorRotation(), EAttachLocation::KeepWorldPosition, true);
+	
 }
 
 
@@ -443,9 +443,14 @@ TArray<UModBase*> AGun::GetNewModOptions()
 	int randTwo;
 
 
-	UModBase* modTwo;
+	UModBase* modTwo = nullptr;
 	do
 	{
+		if (modTwo != NULL)
+		{
+			modTwo->ConditionalBeginDestroy();
+		}
+
 		randTwo = FMath::RandHelper(allMods.Num());
 		modTwo = NewObject<UModBase>((UObject*)this, allMods[randTwo]);
 	
