@@ -30,7 +30,7 @@ public:
 	FVector endLoc;
 
 	UFUNCTION(BlueprintNativeEvent)
-	void OnStart(AActor* gun, AActor* hitActor, FVector hitPointOffset);
+	void OnStart(AActor* gun);//, AActor* hitActor, FVector hitPointOffset
 
 
 };
