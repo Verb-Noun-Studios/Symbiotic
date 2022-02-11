@@ -53,6 +53,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float mMaxHealth;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float mMeleeDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float mRangedDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float mChargeDamage;
+
 	float cTimer = 0;
 	float mTimer;
 	float rTimer;
