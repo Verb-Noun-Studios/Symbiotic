@@ -112,19 +112,51 @@ void AGun::Tick(float DeltaTime)
 	}
 	else if (GetFireKey() && ammoRemaining > 0)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Calling Fire"));
-		Fire(DeltaTime);
+
+		firing = true;
+		if (burstMode)
+		{
+			if (!burstComplete)
+			{
+				Fire(DeltaTime);
+			}
+
+		}
+		else
+		{
+			Fire(DeltaTime);
+		}
+	}
+	else if (burstMode)
+	{
+		if (burstComplete && !GetFireKey())
+		{
+			burstComplete = false;
+		}
+
+		firing = false;
+		currentBurstCount = 0;
+		elapsedTime = 0;
+
 	}
 	else
 	{
 		firing = false;
+		currentBurstCount = 0;
 	}
+	
 
 	if (ammoRemaining <= 0 && !reloading)
 	{
 		firing = false;
 		Reload();
 		reloading = true;
+	}
+
+	if (firing == false)
+	{
+		spreadValue -= spreadDecreaseRate;
+		spreadValue = FMath::Clamp(spreadValue, 0.0f, 1.0f);
 	}
 
 	if (readyToLevelUp)
@@ -148,26 +180,49 @@ void AGun::Tick(float DeltaTime)
 void AGun::Fire(float deltaTime)
 {
 
-	//elapsedTime += deltaTime;
-	firing = false;
+	for (UModBase* mod : mods)
+	{
+		mod->OnFire(this);
+		mod->OnFire_Implementation(this);
+	}
+
+	if (burstMode)
+	{
+		if (elapsedTime >= (60.0 / rpm))
+		{
+
+			elapsedTime = 0;
+			SpawnRound(*spawnParams);
+
+			spreadValue += 0.07;
+			spreadValue = FMath::Clamp(spreadValue, 0.0f, 1.0f);
+
+			currentBurstCount++;
+
+			if (currentBurstCount >= burstSize)
+			{
+				burstComplete = true;
+			}
+		}
+
+		return;
+	}
+
 	if (elapsedTime >= (60.0 / rpm))
 	{
 
 		elapsedTime = 0;
 		SpawnRound(*spawnParams);
-	;
 
-		for (UModBase* mod : mods)
-		{
-			mod->OnFire(this);
-			mod->OnFire_Implementation(this);
-		}
+		spreadValue += spreadIncreaseRate;
+		spreadValue = FMath::Clamp(spreadValue, 0.0f, 1.0f);
 
-		
-		firing = true;
+		currentBurstCount++;
+		return;
 	}
 
-
+	spreadValue -= spreadDecreaseRate / 10.0f;
+	spreadValue = FMath::Clamp(spreadValue, 0.0f, 1.0f);
 	
 	//UE_LOG(LogTemp, Warning, TEXT("Ammo Remaining: %d"), ammoRemaining);
 

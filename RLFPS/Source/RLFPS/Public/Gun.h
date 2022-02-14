@@ -6,6 +6,7 @@
 #include "ActiveItem.h"
 #include <vector>
 #include "NiagaraSystem.h"
+#include "Curves/CurveFloat.h"
 #include "Gun.generated.h"
 
 
@@ -186,6 +187,30 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float levelingRate = 1.5;
 	int level = 0;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UCurveFloat* horizontalSpread;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UCurveFloat* verticalSpread;
+
+
+	/*Burst Fire Variables*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool burstMode;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool burstComplete;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int burstSize;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int currentBurstCount;
+
+	float spreadValue = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float spreadIncreaseRate = 0.03;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float spreadDecreaseRate = 0.01;
+
 
 
 
