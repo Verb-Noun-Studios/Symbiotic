@@ -84,7 +84,7 @@ void AGun::Tick(float DeltaTime)
 			
 		}
 
-		//UE_LOG(LogTemp, Warning, TEXT("Current Kills: %d   VS Required Kills: %d"), activeItem->currentKillCount, activeItem->requiredKillCount);
+		
 	}
 
 	if (!reloading && ammoRemaining != ammoCount)
@@ -171,6 +171,7 @@ void AGun::Tick(float DeltaTime)
 		}
 	}
 	
+	UE_LOG(LogTemp, Warning, TEXT("Spread Value: %f"), spreadValue);
 }
 
 
@@ -180,11 +181,7 @@ void AGun::Tick(float DeltaTime)
 void AGun::Fire(float deltaTime)
 {
 
-	for (UModBase* mod : mods)
-	{
-		mod->OnFire(this);
-		mod->OnFire_Implementation(this);
-	}
+
 
 	if (burstMode)
 	{
@@ -198,6 +195,13 @@ void AGun::Fire(float deltaTime)
 			spreadValue = FMath::Clamp(spreadValue, 0.0f, 1.0f);
 
 			currentBurstCount++;
+
+			for (UModBase* mod : mods)
+			{
+				mod->OnFire(this);
+				mod->OnFire_Implementation(this);
+			}
+
 
 			if (currentBurstCount >= burstSize)
 			{
@@ -218,6 +222,13 @@ void AGun::Fire(float deltaTime)
 		spreadValue = FMath::Clamp(spreadValue, 0.0f, 1.0f);
 
 		currentBurstCount++;
+
+		for (UModBase* mod : mods)
+		{
+			mod->OnFire(this);
+			mod->OnFire_Implementation(this);
+		}
+
 		return;
 	}
 
@@ -250,6 +261,19 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 		FVector dir = RaycastFromCamera() - (GetActorLocation());
 		//LogFVector(dir);
 		dir.Normalize();
+
+		float spreadPercentage = spreadValue / 1.0f;
+		spreadPercentage = FMath::Clamp(spreadPercentage, 0.0f, 1.0f);
+
+		float horizontalSpreadVal = horizontalSpread->GetFloatValue(spreadPercentage);
+		float verticalSpreadVal = verticalSpread->GetFloatValue(spreadPercentage);
+
+		dir = dir.RotateAngleAxis(horizontalSpreadVal * 10, GetActorUpVector());
+		//LogFVector(dir);
+		dir = dir.RotateAngleAxis(-verticalSpreadVal * 10, GetActorRightVector());
+		//LogFVector(dir);
+
+
 		bullet->SetInitialDirection(dir);
 		bullet->SetGun(this);
 
@@ -264,8 +288,6 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 
 	PlayMuzzleFlashFX(true);
 
-
-	
 }
 
 void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector dir)
