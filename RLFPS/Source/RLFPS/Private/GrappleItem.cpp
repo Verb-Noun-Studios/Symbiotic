@@ -43,7 +43,7 @@ void UGrappleItem::OnActiveAbility_Implementation(AActor* gun)
 		AGrapple* grapple = Cast<AGrapple>(newActor);
 		grapple->startLoc = start;
 		grapple->endLoc = result.ImpactPoint;
-		grapple->OnStart(gun, result.Actor.Get(), grapple->endLoc - result.Actor.Get()->GetActorLocation() );
+		grapple->OnStart(gun);
 		
 		currentKillCount = 0;
 
