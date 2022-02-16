@@ -136,7 +136,7 @@ void AGun::Tick(float DeltaTime)
 
 		firing = false;
 		currentBurstCount = 0;
-		elapsedTime = 0;
+		elapsedTime = (60.0 / rpm);
 
 	}
 	else
