@@ -10,7 +10,7 @@
 #include "Particles/ParticleEmitter.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Bullet.h"
-
+#include "ModControllerSubsystem.h"
 
 // Sets default values
 AGun::AGun()
@@ -48,8 +48,22 @@ void AGun::BeginPlay()
 	SpawnParams->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	spawnParams = SpawnParams;
 
+	{
+		// load mods if there are some in from the mods list
+		UModControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<UModControllerSubsystem>();
+		subsystem->LoadMods(mods, (UObject*)this);
+		UpdateCoreStats();
+	}
+}
 
-
+//called whenever this actor is being removed 
+void AGun::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+	// save mods to subsystem before unload
+	if (EndPlayReason == EEndPlayReason::Destroyed) {
+		UModControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<UModControllerSubsystem>();
+		if (subsystem)
+			subsystem->SaveMods(mods);
+	}
 }
 
 // Called every frame
@@ -64,7 +78,7 @@ void AGun::Tick(float DeltaTime)
 		if (activeItem->currentKillCount >= activeItem->requiredKillCount)
 		{
 			
-			//activeItem->OnActiveAbility(this);
+			activeItem->OnActiveAbility(this);
 			activeItem->OnActiveAbility_Implementation(this);
 			//GEngine->AddOnScreenDebugMessage(-1, 0.10f, FColor::Yellow, TEXT("Calling active Item"));
 			
@@ -195,7 +209,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 
 	PlayMuzzleFlashFX(true);
 
-	//UNiagaraFunctionLibrary::SpawnSystemAttached(muzzleFlash, this->GetRootComponent(),FName("point"), GetActorLocation() + MuzzleLocation * GetActorForwardVector(), GetActorRotation(), EAttachLocation::KeepWorldPosition, true);
+
 	
 }
 
@@ -220,7 +234,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 
 	ammoRemaining--;
 	PlayMuzzleFlashFX(false);
-	//UNiagaraFunctionLibrary::SpawnSystemAttached(muzzleFlash, this->GetRootComponent(), FName("point"), GetActorLocation() + MuzzleLocation * GetActorForwardVector(), GetActorRotation(), EAttachLocation::KeepWorldPosition, true);
+	
 }
 
 
@@ -429,9 +443,14 @@ TArray<UModBase*> AGun::GetNewModOptions()
 	int randTwo;
 
 
-	UModBase* modTwo;
+	UModBase* modTwo = nullptr;
 	do
 	{
+		if (modTwo != NULL)
+		{
+			modTwo->ConditionalBeginDestroy();
+		}
+
 		randTwo = FMath::RandHelper(allMods.Num());
 		modTwo = NewObject<UModBase>((UObject*)this, allMods[randTwo]);
 	
