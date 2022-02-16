@@ -47,19 +47,37 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
-		int maxRoomstoSpawn = 8;
-	
+		int minRoomstoSpawn = 1;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
-		int minRoomstoSpawn = 6;
+		int maxRoomstoSpawn = 5;
 
-
-	UPROPERTY(EditAnywhere, Category = "Level Generation")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
 		FName SpawnRoom;
 	
+	/** The desired transform of our map */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
+		FTransform MapTransform;
+
+	/** The desired transform of our map */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
+		FTransform CorridorTransform;
 
 	//Note: These need to be added to the level window in order to load
-	//UPROPERTY(EditAnywhere, Category = "Level Generation")
-		//FName LevelsToLoad[8];
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
+		TArray<FName> LevelsToLoadTier1;
+
+	//Note: These need to be added to the level window in order to load
+	UPROPERTY(EditAnywhere, Category = "Level Generation")
+		TArray<FName> LevelsToLoadTier2;
+
+	//Note: These need to be added to the level window in order to load
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
+		TArray<FName> LevelsToLoadTier3;
+
+	//Note: These need to be added to the level window in order to load
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, BlueprintReadWrite, Category = "Level Generation")
+		TArray<FName> LevelsToLoadCorridors;
 
 private:
 

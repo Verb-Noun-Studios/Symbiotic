@@ -4,6 +4,7 @@
 #include "SymbioticGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "SpawningActor.h"
+#include "Engine.h"
 
 void ASymbioticGameMode::StartPlay()
 {
@@ -40,10 +41,21 @@ void ASymbioticGameMode::StartIncreasedSpawnRate()
 
 void ASymbioticGameMode::SpawnLevel() 
 {
-	FLatentActionInfo LatentInfo;
-	FName temp = "Blockout1";
-	UGameplayStatics::LoadStreamLevel(this, temp, true, true, LatentInfo);
-	ULevelStreaming* Level = UGameplayStatics::GetStreamingLevel(GetWorld(), temp);
-	
+	//int rNum = FMath::RandRange(minRoomstoSpawn, maxRoomstoSpawn);
+	//ULevelStreaming* instance;
+	//for (int i = 0; i < 5; i++)
+	//{
+	//	int tNum = 0;
+	//	FLatentActionInfo info;
+	//	FName temp = LevelsToLoadTier1[tNum];
+	//	UGameplayStatics::LoadStreamLevel(GetWorld(), temp, false, false, info);
+	//	ULevelStreaming* Level = UGameplayStatics::GetStreamingLevel(GetWorld(), temp);
+
+	//	instance = Level->CreateInstance(FString::FString(temp.ToString() + "%i", i));
+	//	instance->SetShouldBeLoaded(true);
+	//	MapTransform.SetLocation(FVector(MapTransform.GetLocation().X * i, 0.0, 0.0));
+	//	instance->LevelTransform = MapTransform;
+	//	instance->SetShouldBeVisible(true);
+	//}
 
 }
