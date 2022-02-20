@@ -54,6 +54,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
 		FName SpawnRoom;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
+		FName roomsSpawned;
 	
 	/** The desired transform of our map */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
