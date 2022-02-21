@@ -19,13 +19,19 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	float roomHalflength = 300;
 
 public:	
+	float roomHalflength = 300;
+
 	bool roomCleared = false;
 	bool activated = false;
 	int emnemiesKilled = 0;
+	int enemiesSpawned = 0;
 	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SpawnRate = 10;
+	float elapsedTime = 0;
 
 
 
@@ -33,6 +39,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void SpawnEnemy();
+	void SpawnEnemy(bool& spawned);
 
 };
