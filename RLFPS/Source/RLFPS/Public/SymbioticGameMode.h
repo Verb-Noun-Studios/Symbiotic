@@ -63,11 +63,11 @@ public:
 	
 	/** The desired transform of our map */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
-		FTransform MapTransform;
+		FTransform RoomTransform;
 
 	/** The desired transform of our map */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
-		FTransform CorridorTransform;
+		FTransform SpawnTransform;
 
 	//Note: These need to be added to the level window in order to load
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
