@@ -26,21 +26,26 @@ void AEnemySpawner::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	elapsedTime += DeltaTime;
 
-	if (elapsedTime >= 60.0 / SpawnRate)
+	if (activated)
 	{
-		bool spawned = false;
-
-		while (!spawned)
+		if (elapsedTime >= 60.0 / SpawnRate)
 		{
-			SpawnEnemy(spawned);
+			bool spawned = false;
+
+			while (!spawned)
+			{
+				SpawnEnemy(spawned);
+			}
+
+
+			enemiesSpawned++;
+			UE_LOG(LogTemp, Warning, TEXT("Enemy Spawned: %d"), enemiesSpawned);
+			elapsedTime = 0;
+
 		}
-
-
-		enemiesSpawned++;
-		UE_LOG(LogTemp, Warning, TEXT("Enemy Spawned: %d"), enemiesSpawned);
-		elapsedTime = 0;
-	
 	}
+
+	
 
 }
 

@@ -23,9 +23,9 @@ protected:
 public:	
 	float roomHalflength = 300;
 
-	bool roomCleared = false;
-	bool activated = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int emnemiesKilled = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int enemiesSpawned = 0;
 	
 
@@ -33,12 +33,18 @@ public:
 	float SpawnRate = 10;
 	float elapsedTime = 0;
 
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool activated = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool roomCleared = false;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void SpawnEnemy(bool& spawned);
-
+	UFUNCTION(BlueprintCallable)
+	void SetActivated(bool newStatus)  { activated = newStatus; };
+	UFUNCTION(BlueprintCallable)
+	bool GetActivated() { return activated; };
 };
