@@ -51,10 +51,26 @@ void AGun::BeginPlay()
 	{
 		// load mods if there are some in from the mods list
 		UModControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<UModControllerSubsystem>();
+		/*
+		TArray<FSavedModInfo>& savedMods = subsystem->GetSavedMods();
+		for (FSavedModInfo info : savedMods) {
+			TSubclassOf<UModBase> mod_class;
+			for (TSubclassOf<UModBase> m : allMods) {
+				uint32 id = m.GetDefaultObject()->GetID();
+				if (id == info.id)
+					mod_class = m;
+			}
+			verify(mod_class);
+			UModBase* mod = NewObject<UModBase>(this, mod_class);
+			mod->stacks = info.stacks;
+		}
+		*/
 		subsystem->LoadMods(mods, (UObject*)this);
 		UpdateCoreStats();
 	}
 }
+
+
 
 //called whenever this actor is being removed 
 void AGun::EndPlay(const EEndPlayReason::Type EndPlayReason) {
