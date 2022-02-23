@@ -15,27 +15,30 @@ void UModControllerSubsystem::Deinitialize() {
 
 
 void UModControllerSubsystem::SaveMods(const TArray<UModBase*>& mods) {
-	savedMods.Empty();
-	savedMods.Reserve(mods.Num());
+	
+	subclasses.Empty();
+	stacks.Empty();
+	subclasses.Reserve(mods.Num());
+	stacks.Reserve(mods.Num());
+	
 	for (UModBase* mod : mods) {
-		SavedModInfo info;
-		info.subclass = mod->GetClass();
-		info.stacks = mod->stacks;
-
-		savedMods.Add(info);
+		subclasses.Add(mod->GetClass());
+		stacks.Add(mod->stacks);
 	}
 }
 
 
 
-void UModControllerSubsystem::LoadMods(TArray<UModBase*>& mods, UObject* outer) {
+void UModControllerSubsystem::LoadMods(TArray<UModBase*>& mods, UObject * outer) {
 	mods.Empty();
-	mods.Reserve(savedMods.Num());
-	for (SavedModInfo info : savedMods) {
-		UModBase* mod = NewObject<UModBase>(outer, info.subclass);
-		mod->stacks = info.stacks;
+	mods.Reserve(subclasses.Num());
+	for (int i = 0; i < subclasses.Num(); i++) {
+		UModBase * mod = NewObject<UModBase>(outer, subclasses[i]);
+	
+		mod->stacks = stacks[i];
 		mods.Add(mod);
 	}
-	savedMods.Empty();
+	stacks.Empty();
+	subclasses.Empty();
 }
 
