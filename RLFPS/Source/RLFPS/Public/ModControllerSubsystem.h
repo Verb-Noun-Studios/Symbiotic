@@ -32,14 +32,18 @@ public:
     // in order to make it better I would have to change the lifecyle of the mods on the gun
     // which seems like something we should talk about first
     void SaveMods(const TArray<UModBase*>& mods);
-    void LoadMods(TArray<UModBase*>& out, UObject* outer);
+    void LoadMods(TArray<UModBase*>& mods, UObject* outer);
 
+    //TArray<FSavedModInfo>& GetSavedMods() { return savedMods;  }
 
-    struct SavedModInfo {
-        TSubclassOf<UModBase> subclass;
-        int stacks;
-    };
-    TArray<SavedModInfo> savedMods;
+    UPROPERTY()
+    TArray< TSubclassOf<UModBase>> subclasses;
+
+    UPROPERTY()
+    TArray <int> stacks;
+    //TArray<FSavedModInfo> savedMods;
 
    
 };
+
+
