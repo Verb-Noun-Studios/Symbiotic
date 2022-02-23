@@ -99,6 +99,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString infoText;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString effectText;
+
 	UPROPERTY(BlueprintReadOnly)
 	int stacks = 1;
 
