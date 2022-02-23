@@ -112,8 +112,11 @@ public:
 	USoundWave* sound;
 
 
-	
-	
+	uint32 GetID();
+
+private:
+
+	uint32 id;
 
 
 };
