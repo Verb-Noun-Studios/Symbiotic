@@ -74,3 +74,9 @@ UNiagaraComponent* UModBase::SpawnSystemAtLocation_Internal( UNiagaraSystem* sys
 {
 	return UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), system, location, rotation, scale);
 }
+
+uint32 UModBase::GetID() {
+	if (id != 0)
+		id = TextKeyUtil::HashString(name.ToString());
+	return id;
+}

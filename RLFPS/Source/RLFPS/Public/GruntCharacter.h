@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "StatusEffect.h"
+#include "EnemySpawner.h"
 #include "GruntCharacter.generated.h"
 
 class UHealthComponent;
@@ -22,6 +23,8 @@ public:
 		UHealthComponent* HealthComponent;
 	UPROPERTY(BlueprintReadOnly)
 	TArray<UStatusEffect*> statusEffects;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	AEnemySpawner* EnemySpawner;
 
 protected:
 	// Called when the game starts or when spawned
@@ -34,6 +37,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void AddEffect(UStatusEffect* effect);
+	UFUNCTION(BlueprintCallable)
+	void OnDeath();
 
 
 };
