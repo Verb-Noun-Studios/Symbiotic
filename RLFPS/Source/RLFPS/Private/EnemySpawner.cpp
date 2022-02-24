@@ -3,7 +3,7 @@
 
 #include "EnemySpawner.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "NavigationSystem.h"
+//#include "NavigationSystem.h"
 
 // Sets default values
 AEnemySpawner::AEnemySpawner()
