@@ -59,3 +59,11 @@ void AGruntCharacter::AddEffect(UStatusEffect* newEffect)
 	
 	statusEffects.Add(newEffect);
 }
+
+void AGruntCharacter::OnDeath()
+{
+	if (EnemySpawner)
+	{
+		EnemySpawner->emnemiesKilled++;
+	}
+}
