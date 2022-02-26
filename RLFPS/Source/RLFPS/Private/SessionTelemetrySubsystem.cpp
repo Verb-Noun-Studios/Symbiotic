@@ -17,7 +17,6 @@ bool USessionTelemetrySubsystem::ShouldCreateSubsystem(UObject* Outer) const { /
 void USessionTelemetrySubsystem::Initialize(FSubsystemCollectionBase& Collection) {
 
 	NewSession();
-	
 
 }
 
@@ -51,19 +50,15 @@ void USessionTelemetrySubsystem::SaveFeedback(FString category, uint8 mood, FStr
 	OutJson->SetStringField("text", text);
 
 
-	// serialize game state
-	TSharedRef<FJsonObject> StateJson = MakeShareable(new FJsonObject);
 
 	FVector playerPos = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
 	
-	StateJson->SetStringField("level_name", GetWorld()->GetMapName());
-	StateJson->SetStringField("level_seed", "0"); //TODO (thornton): get level seed
-	StateJson->SetStringField("level_pos", playerPos.ToString());
-	StateJson->SetNumberField("playtime", (double)(timestamp.ToUnixTimestamp() - sessionStart));
+	// serialize game state
+	OutJson->SetStringField("level_name", GetWorld()->GetMapName());
+	OutJson->SetStringField("level_seed", "0"); //TODO (thornton): get level seed
+	OutJson->SetStringField("level_pos", playerPos.ToString());
+	OutJson->SetNumberField("playtime", (double)(timestamp.ToUnixTimestamp() - sessionStart));
 
-
-	OutJson->SetObjectField("state", StateJson);
-	
 
 	// save to file
 	FString folderPath = FPaths::ConvertRelativePathToFull(FPaths::AutomationDir()) + "/submissions/";
@@ -75,7 +70,7 @@ void USessionTelemetrySubsystem::SaveFeedback(FString category, uint8 mood, FStr
 
 
 
-	// THIS IS SO STUPID BUT I CAN'T DEAL WITH WADING THROUGH 40 LAYERS OF OOP BULLSHIT
+	// THIS IS SO STUPID BUT I CAN'T DEAL WITH WADING THROUGH 40 LAYERS OF OOP 
 	// TO FIGURE OUT HOW TO WRITE DIRECTLY TO A FILE SO HERE WE ARE
 
 	FString jsonStr;
@@ -103,21 +98,19 @@ void  USessionTelemetrySubsystem::SendSavedFeedbacks() {
 	platformFile.FindFiles(FoundFiles, *folderPath, NULL);
 
 	for (const FString& path : FoundFiles) {
-		UFeedbackSubmissionHTTP::Send(path);
+		UFeedbackSubmissionHTTP::Send(path, this);
 		
 	}
 }
 
 
+void UFeedbackSubmissionHTTP::Send(FString path, UObject* outer) {
 
-
-void UFeedbackSubmissionHTTP::Send(FString path) {
-
-	const FString url = "localhost:8080/feedback";
+	const FString url = "local.trobol.net:8080/feedback";
 	FString content;
 	FFileHelper::LoadFileToString(content, *path);
 
-	UFeedbackSubmissionHTTP* obj = NewObject<UFeedbackSubmissionHTTP>();
+	UFeedbackSubmissionHTTP* obj = NewObject<UFeedbackSubmissionHTTP>(outer);
 	obj->path = path;
 
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = FHttpModule::Get().CreateRequest();
@@ -135,7 +128,7 @@ void UFeedbackSubmissionHTTP::Send(FString path) {
 void UFeedbackSubmissionHTTP::OnComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful) {
 	if (bWasSuccessful) {
 		IPlatformFile& platformFile = FPlatformFileManager::Get().GetPlatformFile();
-		// TODO (thornton): only delete if the request goes through
+		         
 		platformFile.DeleteFile(*path);
 	}
 }
