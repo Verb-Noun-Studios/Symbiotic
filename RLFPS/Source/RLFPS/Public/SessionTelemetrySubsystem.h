@@ -59,9 +59,8 @@ private:
 UCLASS()
 class RLFPS_API UFeedbackSubmissionHTTP : public UObject {
 	GENERATED_BODY()
-
 public:
-	static void Send(FString path);
+	static void Send(FString path, UObject* outer);
 
 private:
 	FString path;
