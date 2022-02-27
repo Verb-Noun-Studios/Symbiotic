@@ -75,6 +75,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float mRangedRecharge;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float mHealthScale;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float mDamageScale;
+
+
 	UFUNCTION(BlueprintCallable)
 	int ChooseAction(float healthThreshold);
 
@@ -83,6 +90,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void resetTimer(int num);
+
+	UFUNCTION(BlueprintCallable)
+	void calculateScale(int num);
 
 private:
 	float distanceToPlayer;
