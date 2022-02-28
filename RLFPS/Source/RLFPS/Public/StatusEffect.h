@@ -3,8 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-//#include "UObject/NoExportTypes.h"
 #include "StatusEffect.generated.h"
+
+class AGruntCharacter;
 
 /**
  * 
@@ -45,7 +46,7 @@ public:
 
 
 	bool dead = false;
-
+	AGruntCharacter* owner;
 
 	UFUNCTION(BlueprintNativeEvent)
 	void OnTick(AActor* actor, float deltaTime);

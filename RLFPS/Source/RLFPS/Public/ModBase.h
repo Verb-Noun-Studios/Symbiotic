@@ -82,6 +82,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UNiagaraComponent* SpawnSystemAtLocation_Internal( UNiagaraSystem* system, FVector location, FRotator rotation, FVector scale);
 
+	UFUNCTION(BlueprintCallable)
+	AActor* SpawnActorOfClass_Internal(AActor* owner, TSubclassOf<AActor> actorClass, FVector const& loc, FRotator const& rot);
+
 
 	
 	

@@ -37,7 +37,7 @@ void UAcidMod::OnHit_Implementation(AActor* hitActor, UWorld* world)
 		acid->duration = duration;
 		acid->interval = interval;
 
-		//UE_LOG(LogTemp, Warning, TEXT("Spawning Acid"));
+		UE_LOG(LogTemp, Warning, TEXT("Spawning Acid"));
 
 	}
 
