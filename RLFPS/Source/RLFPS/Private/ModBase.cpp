@@ -74,3 +74,15 @@ UNiagaraComponent* UModBase::SpawnSystemAtLocation_Internal( UNiagaraSystem* sys
 {
 	return UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), system, location, rotation, scale);
 }
+
+AActor* UModBase::SpawnActorOfClass_Internal(AActor* owner, TSubclassOf<AActor> actorClass, FVector const& loc, FRotator const& rot)
+{
+
+	UWorld* World = GetWorld();
+	FActorSpawnParameters* SpawnParams = new FActorSpawnParameters;
+	SpawnParams->Owner = owner;
+	SpawnParams->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	AActor* actor = World->SpawnActor<AActor>(actorClass, loc, rot, *SpawnParams);
+
+	return actor;
+}

@@ -27,16 +27,18 @@ void AGruntCharacter::Tick(float DeltaTime)
 	for (int i = 0; i < statusEffects.Num(); i++)
 	{
 		UStatusEffect* effect = statusEffects[i];
+
 		if (effect->dead)
 		{
 			statusEffects.Remove(effect);
 			effect->ConditionalBeginDestroy();
+			UpdateStatusEffects();
 		}
 		else
 		{
 			effect->OnTick(this, DeltaTime);
 			effect->OnTick_Implementation(this, DeltaTime);
-			//UE_LOG(LogTemp, Warning, TEXT("%s"), *effect->name.ToString());
+			UE_LOG(LogTemp, Warning, TEXT("%s"), *(effect->name.ToString()));
 		}
 		
 	}
@@ -53,11 +55,14 @@ void AGruntCharacter::AddEffect(UStatusEffect* newEffect)
 			effect->stacks++;
 			effect->timeRemaining = effect->duration;
 			newEffect->ConditionalBeginDestroy();
+			UpdateStatusEffects();
 			return;
 		}
 	}
-	
+	newEffect->owner = this;
 	statusEffects.Add(newEffect);
+	UpdateStatusEffects();
+	UE_LOG(LogTemp, Warning, TEXT("AddingEffect: %s"), *(newEffect->name.ToString()));
 }
 
 void AGruntCharacter::OnDeath()
