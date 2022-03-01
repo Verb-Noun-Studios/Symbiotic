@@ -37,6 +37,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void AddEffect(UStatusEffect* effect);
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateStatusEffects();
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void UpdateStatusWidget();
 	UFUNCTION(BlueprintCallable)
 	void OnDeath();
 

@@ -27,8 +27,6 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void OnActiveAbility(AActor* gun);
 
-	UFUNCTION(BlueprintCallable)
-	AActor* SpawnActorOfClass_Internal(AActor* owner, TSubclassOf<AActor> actorClass, FVector const& loc, FRotator const& rot);
-
+	
 
 };
