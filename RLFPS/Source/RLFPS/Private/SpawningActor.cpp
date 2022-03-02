@@ -68,12 +68,12 @@ void ASpawningActor::Tick(float DeltaTime)
 					elapsedTime = 0;
 				}
 			}
-			//DrawDebugSphere(GetWorld(), location, distanceToPlayerThreshold, 8, FColor::Blue, false, 1.0f, 0, 4);
+			
 		}
 
 
 		distanceToPlayer = (location - player->GetActorLocation()).Size();
-		//DrawDebugSphere(const UWorld* InWorld, FVector const& Center, float Radius, int32 Segments, FColor const& Color, bool bPersistentLines = false, float LifeTime = -1.f, uint8 DepthPriority = 0, float Thickness = 0.f)
+		
 		
 	}
 	

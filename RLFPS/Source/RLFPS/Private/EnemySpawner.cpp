@@ -28,20 +28,42 @@ void AEnemySpawner::Tick(float DeltaTime)
 
 	if (activated)
 	{
-		if (elapsedTime >= 60.0 / SpawnRate)
+
+		if (beaconTime > 0)
 		{
-			bool spawned = false;
+			beaconTime -= DeltaTime;
 
-			while (!spawned)
+			if (elapsedTime >= 60.0 / (SpawnRate * beaconMultiplier))
 			{
-				SpawnEnemy(spawned);
+				bool spawned = false;
+
+				while (!spawned)
+				{
+					SpawnEnemy(spawned);
+				}
+				
+
+				enemiesSpawned++;
+				elapsedTime = 0;
+				UE_LOG(LogTemp, Warning, TEXT("SpawningActor: %d"), enemiesSpawned);
 			}
+		}
+		else
+		{
+			if (elapsedTime >= 60.0 / SpawnRate)
+			{
+				bool spawned = false;
+
+				while (!spawned)
+				{
+					SpawnEnemy(spawned);
+				}
 
 
-			enemiesSpawned++;
-			UE_LOG(LogTemp, Warning, TEXT("Enemy Spawned: %d"), enemiesSpawned);
-			elapsedTime = 0;
-
+				enemiesSpawned++;
+				elapsedTime = 0;
+				UE_LOG(LogTemp, Warning, TEXT("SpawningActor: %d"), enemiesSpawned);
+			}	
 		}
 	}
 
@@ -49,3 +71,8 @@ void AEnemySpawner::Tick(float DeltaTime)
 
 }
 
+void AEnemySpawner::Boost(float BeaconTime, float BeaconMultiplier)
+{
+	beaconTime = BeaconTime;
+	beaconMultiplier = BeaconMultiplier;
+}
