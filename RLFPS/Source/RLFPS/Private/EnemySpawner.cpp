@@ -18,6 +18,7 @@ void AEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	enemiesSpawned = 0;
+	//SpawnInitialEnemies();
 }
 
 // Called every frame
@@ -75,4 +76,19 @@ void AEnemySpawner::Boost(float BeaconTime, float BeaconMultiplier)
 {
 	beaconTime = BeaconTime;
 	beaconMultiplier = BeaconMultiplier;
+}
+
+void AEnemySpawner::SpawnInitialEnemies()
+{
+	for (int i = 0; i < InitialEnemies; i++)
+	{
+
+		bool spawned = false;
+
+		while (!spawned)
+		{
+			SpawnEnemy(spawned);
+		}
+		
+	}
 }
