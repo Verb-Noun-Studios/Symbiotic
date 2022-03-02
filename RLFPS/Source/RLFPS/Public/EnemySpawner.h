@@ -31,7 +31,13 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SpawnRate = 10;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int InitialEnemies = 10;
 	float elapsedTime = 0;
+	
+
+	float beaconTime = 0;
+	float beaconMultiplier = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool activated = false;
@@ -44,7 +50,11 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SpawnEnemy(bool& spawned);
 	UFUNCTION(BlueprintCallable)
-	void SetActivated(bool newStatus)  { activated = newStatus; };
+	void SetActivated(bool newStatus) { activated = newStatus; };
 	UFUNCTION(BlueprintCallable)
 	bool GetActivated() { return activated; };
+	UFUNCTION(BlueprintCallable)
+	void Boost(float BeaconTime, float BeaconMultiplier);
+	UFUNCTION(BlueprintCallable)
+	void SpawnInitialEnemies();
 };
