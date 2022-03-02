@@ -22,6 +22,9 @@ public:
 	AFragPlayer();
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void EndPlay(EEndPlayReason::Type EndReason) override;
+
 	/** Called when the controller sets up the input for the pawn */
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	/** Per frame tick */

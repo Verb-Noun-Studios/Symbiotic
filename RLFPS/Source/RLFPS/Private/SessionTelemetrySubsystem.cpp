@@ -11,13 +11,19 @@
 		*
 		* Note: This function is called on the CDO prior to instances being created!
 		*/
-bool USessionTelemetrySubsystem::ShouldCreateSubsystem(UObject* Outer) const { /* TODO(thornton): disable in editor */return true; }
+bool USessionTelemetrySubsystem::ShouldCreateSubsystem(UObject* Outer) const { return true; }
+
+void USessionTelemetrySubsystem::SessionStart() {
+	sessionID = FGuid::NewGuid();
+	sessionStart = FDateTime::Now().ToUnixTimestamp();
+}
+
+void USessionTelemetrySubsystem::SessionEnd() {
+
+}
 
 /** Implement this for initialization of instances of the system */
 void USessionTelemetrySubsystem::Initialize(FSubsystemCollectionBase& Collection) {
-
-	NewSession();
-
 
 	// send any un sent feedback
 	SendSavedFeedbacks();
@@ -90,11 +96,6 @@ void USessionTelemetrySubsystem::SaveFeedback(FString category, uint8 mood, FStr
 
 }
 
-void USessionTelemetrySubsystem::NewSession() {
-	sessionID = FGuid::NewGuid();
-	sessionStart = FDateTime::Now().ToUnixTimestamp();
-}
-
 void  USessionTelemetrySubsystem::SendSavedFeedbacks() {
 
 	TArray< FString > FoundFiles;
@@ -110,6 +111,10 @@ void  USessionTelemetrySubsystem::SendSavedFeedbacks() {
 	}
 }
 
+
+void USessionTelemetrySubsystem::SaveEvent(FString name, TArray<FString> params) {
+
+}
 
 void UFeedbackSubmissionHTTP::Send(FString path, UObject* outer) {
 

@@ -8,7 +8,14 @@
 #include "SessionTelemetrySubsystem.generated.h"
 
 
-
+/*
+ * Session telemetry 
+ * list of events
+ * an event has a name, a timestamp (in "in game" seconds) and a list of paramerters
+ * 
+ * 
+ * 
+ */
 
 /**
  * INFO AND SOME CODE SNIPPETS FROM: https://benui.ca/unreal/subsystem-singleton/
@@ -35,19 +42,30 @@ class RLFPS_API USessionTelemetrySubsystem : public UGameInstanceSubsystem
 	virtual void Deinitialize();
 
 
+
 public:
 
 	// Save feedback to disk for sending later
 	UFUNCTION(BlueprintCallable)
 	void SaveFeedback(FString category, uint8 mood, FString text);
 
+	
+	UFUNCTION(BlueprintCallable)
+	void SaveEvent(FString name, TArray<FString> params);
+
+
+	UFUNCTION(BlueprintCallable)
+	void SessionStart();
+
+	UFUNCTION(BlueprintCallable)
+	void SessionEnd();
+	
 private:
 
 	FGuid sessionID;
 	int64 sessionStart;
 
-	// generate new session id
-	void NewSession();
+
 
 	// send feedbacks that we have saved on disk
 	void SendSavedFeedbacks();

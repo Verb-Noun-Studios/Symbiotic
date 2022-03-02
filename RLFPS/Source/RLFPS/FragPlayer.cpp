@@ -8,6 +8,8 @@
 #include "Engine.h"
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
+#include "SessionTelemetrySubsystem.h"
+
 // Sets default values
 AFragPlayer::AFragPlayer()
 {
@@ -82,7 +84,19 @@ void AFragPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// FIXME: this doesnt work with multiple levels, need some system to track when the session action starts and ends (and also EndPlay)
+	USessionTelemetrySubsystem* subsystem = GetGameInstance()->GetSubsystem<USessionTelemetrySubsystem>();
+	subsystem->SessionStart();
 }
+
+void AFragPlayer::EndPlay(EEndPlayReason::Type EndReason) {
+	Super::EndPlay(EndReason);
+
+	// FIXME: see BeginPlay()
+	USessionTelemetrySubsystem* subsystem = GetGameInstance()->GetSubsystem<USessionTelemetrySubsystem>();
+	subsystem->SessionEnd();
+}
+
 // Called every frame
 void AFragPlayer::Tick(float DeltaTime)
 {
