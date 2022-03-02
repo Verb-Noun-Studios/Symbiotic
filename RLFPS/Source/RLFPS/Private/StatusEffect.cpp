@@ -3,6 +3,7 @@
 
 #include "StatusEffect.h"
 #include "Kismet/GameplayStatics.h"
+#include "GruntCharacter.h"
 
 UStatusEffect::UStatusEffect()
 {
@@ -18,12 +19,19 @@ void UStatusEffect::OnTick_Implementation(AActor* actor, float deltaTime)
 {
 	timeRemaining -= deltaTime;
 	timeSinceLastTick += deltaTime;
-	UE_LOG(LogTemp, Warning, TEXT("Time Remaining: %f"), timeRemaining);
+	//UE_LOG(LogTemp, Warning, TEXT("Time Remaining: %f"), timeRemaining);
 
 	if (timeRemaining <= 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Destroying"));
-		dead = true;
+		stacks--;
+		if (stacks < 1)
+		{
+			//UE_LOG(LogTemp, Warning, TEXT("Destroying"));
+			dead = true;
+		}
+		timeRemaining = duration;
+		owner->UpdateStatusEffects();
+	
 		
 	}
 }

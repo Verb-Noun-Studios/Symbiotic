@@ -1,0 +1,3 @@
+[submodule "AudioFileModule"]
+	path = AudioFileModule
+	url = https://github.com/Verb-Noun-Studios/AudioFileModule.git
