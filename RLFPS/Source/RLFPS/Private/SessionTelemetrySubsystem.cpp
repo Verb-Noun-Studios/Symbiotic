@@ -18,16 +18,14 @@ void USessionTelemetrySubsystem::Initialize(FSubsystemCollectionBase& Collection
 
 	NewSession();
 
+
+	// send any un sent feedback
+	SendSavedFeedbacks();
 }
 
 
 /** Implement this for deinitialization of instances of the system */
 void USessionTelemetrySubsystem::Deinitialize() {
-
-	// send any un sent feedback
-	SendSavedFeedbacks();
-
-
 }
 
 
@@ -36,10 +34,13 @@ void USessionTelemetrySubsystem::Deinitialize() {
 
 void USessionTelemetrySubsystem::SaveFeedback(FString category, uint8 mood, FString text) {
 
+	// don't save or send feedbacks if we are playing in editor or preview mode (i think thats when u pop out in editor)
+	if (GetWorld()->IsPlayInEditor() || GetWorld()->IsPlayInPreview()) return;
+
 	TSharedRef<FJsonObject> OutJson = MakeShareable(new FJsonObject);
 
 	FGuid submissionID = FGuid::NewGuid();
-	FDateTime timestamp = FDateTime::UtcNow();
+	FDateTime timestamp = FDateTime::Now();
 
 	OutJson->SetStringField("id", submissionID.ToString());
 	OutJson->SetStringField("timestamp", timestamp.ToIso8601());
@@ -61,12 +62,15 @@ void USessionTelemetrySubsystem::SaveFeedback(FString category, uint8 mood, FStr
 
 
 	// save to file
-	FString folderPath = FPaths::ConvertRelativePathToFull(FPaths::AutomationDir()) + "/submissions/";
+	FString dataPath = FPaths::ConvertRelativePathToFull(FPaths::AutomationDir());
+	FString folderPath = dataPath + "/submissions/";
+	FString backupPath = dataPath + "/submissions_backup/";
 	FString filepath = folderPath + submissionID.ToString() + ".json";
 
 
 	IPlatformFile& platformFile = FPlatformFileManager::Get().GetPlatformFile();
 	platformFile.CreateDirectory(*folderPath);
+	platformFile.CreateDirectory(*backupPath);
 
 
 
@@ -78,18 +82,20 @@ void USessionTelemetrySubsystem::SaveFeedback(FString category, uint8 mood, FStr
 
 	FJsonSerializer::Serialize(OutJson, JsonWriter);
 
+
 	FFileHelper::SaveStringToFile(jsonStr, *filepath);
+
+	
+	UFeedbackSubmissionHTTP::Send(filepath, this);
 
 }
 
 void USessionTelemetrySubsystem::NewSession() {
 	sessionID = FGuid::NewGuid();
-	sessionStart = FDateTime::UtcNow().ToUnixTimestamp();
+	sessionStart = FDateTime::Now().ToUnixTimestamp();
 }
 
 void  USessionTelemetrySubsystem::SendSavedFeedbacks() {
-
-	
 
 	TArray< FString > FoundFiles;
 	FString folderPath = FPaths::ConvertRelativePathToFull(FPaths::AutomationDir()) + "/submissions/";
@@ -98,6 +104,7 @@ void  USessionTelemetrySubsystem::SendSavedFeedbacks() {
 	platformFile.FindFiles(FoundFiles, *folderPath, NULL);
 
 	for (const FString& path : FoundFiles) {
+
 		UFeedbackSubmissionHTTP::Send(path, this);
 		
 	}
@@ -125,10 +132,14 @@ void UFeedbackSubmissionHTTP::Send(FString path, UObject* outer) {
 
 }
 
+
+// This wont execute if we try to send when the game it shutting down, think the HTTP request is getting cleaned up before it finishes
 void UFeedbackSubmissionHTTP::OnComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful) {
 	if (bWasSuccessful) {
 		IPlatformFile& platformFile = FPlatformFileManager::Get().GetPlatformFile();
-		         
-		platformFile.DeleteFile(*path);
+		FString backupPath = FPaths::ConvertRelativePathToFull(FPaths::AutomationDir()) + "/submissions_backup/" + FPaths::GetCleanFilename(path);
+		
+	
+		platformFile.MoveFile(*backupPath, *path);
 	}
 }
