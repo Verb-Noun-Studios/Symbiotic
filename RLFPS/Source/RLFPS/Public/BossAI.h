@@ -92,7 +92,7 @@ public:
 	void resetTimer(int num);
 
 	UFUNCTION(BlueprintCallable)
-	void calculateScale(int num);
+	float calculateScale(int num);
 
 private:
 	float distanceToPlayer;

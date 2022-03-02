@@ -94,7 +94,7 @@ void ABossAI::resetTimer(int num)
 	}
 }
 
-void ABossAI::calculateScale(int num)
+float ABossAI::calculateScale(int num)
 {
 	float damagePercent = (mDamageScale * num)/100;
 	float healthPercent = (mHealthScale * num)/100;
@@ -103,5 +103,7 @@ void ABossAI::calculateScale(int num)
 	mRangedDamage += damagePercent * mRangedDamage;
 	mChargeDamage += damagePercent * mChargeDamage;
 	mMeleeDamage += damagePercent * mMeleeDamage;
+
+	return (float)mMaxHealth;
 }
 
