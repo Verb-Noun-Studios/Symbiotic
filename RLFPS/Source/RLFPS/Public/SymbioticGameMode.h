@@ -74,14 +74,6 @@ public:
 		TArray<FName> LevelsToLoadTier1;
 
 	//Note: These need to be added to the level window in order to load
-	UPROPERTY(EditAnywhere, Category = "Level Generation")
-		TArray<FName> LevelsToLoadTier2;
-
-	//Note: These need to be added to the level window in order to load
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
-		TArray<FName> LevelsToLoadTier3;
-
-	//Note: These need to be added to the level window in order to load
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, BlueprintReadWrite, Category = "Level Generation")
 		TArray<FName> LevelsToLoadCorridors;
 
