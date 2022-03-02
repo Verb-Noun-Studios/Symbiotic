@@ -52,6 +52,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float mChargeStartupTime;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float mSummonTime;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float mMaxHealth;
@@ -68,6 +70,7 @@ public:
 	float cTimer = 0;
 	float mTimer= 0;
 	float rTimer = 0;
+	float sTimer = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float mMeleeRecharge;
