@@ -2,7 +2,7 @@
 
 
 #include "BeaconActor.h"
-#include "SpawningActor.h"
+
 #include "Kismet/GameplayStatics.h"
 #include "EngineUtils.h"
 
@@ -18,7 +18,7 @@ ABeaconActor::ABeaconActor()
 void ABeaconActor::BeginPlay()
 {
 	Super::BeginPlay();
-	GetSpawnPoints();
+
 	timeRemaining = time;
 }
 
@@ -42,14 +42,21 @@ void ABeaconActor::Tick(float DeltaTime)
 
 void ABeaconActor::GetSpawnPoints()
 {
-
-	for (TActorIterator<ASpawningActor> it(GetWorld()); it; ++it)
+	TArray<AActor*> spawnActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), spawnerClass, spawnActors);
+	for (AActor* actor : spawnActors)
 	{
+		//
 
-		FVector dir = it->GetActorLocation() - GetActorLocation();
+		FVector dir = GetActorLocation() - actor->GetActorLocation();
+
+
+
+		
 		if (dir.SizeSquared() < radius * radius)
 		{
-			spawnPoints.Add(*it);
+			AEnemySpawner* spawner = Cast<AEnemySpawner>(actor);
+			spawnPoint = spawner;
 		}
 	}
 }
@@ -60,11 +67,7 @@ void ABeaconActor::Activate()
 
 	UE_LOG(LogTemp, Warning, TEXT("Activating"));
 	
-	for (ASpawningActor* spawnPoint : spawnPoints)
-	{
-		spawnPoint->ActivateWithBeacon(time, multiplier);
-	}
-
+	spawnPoint->Boost(time, multiplier);
 
 	PlayActivationSound();
 	
@@ -83,6 +86,7 @@ void ABeaconActor::Use()
 
 	if (!activated) 
 	{
+		GetSpawnPoints();
 		activated = true;
 		Activate();
 	}
