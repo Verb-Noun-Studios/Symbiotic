@@ -19,9 +19,7 @@ class RLFPS_API ABeaconActor : public AActor, public IInteractableInterface
 
 protected:
 	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	AEnemySpawner* spawnPoint;
-	float timeRemaining;
+	virtual void BeginPlay() override;;
 	UPROPERTY(BlueprintReadOnly)
 	bool eventComplete = false;
 	
@@ -30,27 +28,20 @@ public:
 	ABeaconActor();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<AEnemySpawner> spawnerClass;
-	float radius = 1000;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool activated = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float multiplier = 1;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float time;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UActiveItem> newMod;
+	TSubclassOf<UModBase> newMod;
 	
-	void GetSpawnPoints();
+
 	UFUNCTION(BlueprintCallable)
-	void Activate();
+	void OnActivate();
+	UFUNCTION(BlueprintCallable)
+	void OnDeactivate();
 	UFUNCTION(BlueprintNativeEvent)
-	void RecieveOnUse();
+	void ReceiveOnUse();
 	UFUNCTION(BlueprintCallable)
 	void Use();
-
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayActivationSound();
 

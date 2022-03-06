@@ -19,62 +19,30 @@ void ABeaconActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	timeRemaining = time;
+
 }
 
 // Called every frame
 void ABeaconActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (activated)
-	{
-		timeRemaining -= DeltaTime;
 		
-		if (timeRemaining < 0)
-		{
-			eventComplete = true;
-		}
-	}
-	
-	
 	
 }
 
-void ABeaconActor::GetSpawnPoints()
+
+
+void ABeaconActor::OnActivate()
 {
-	TArray<AActor*> spawnActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), spawnerClass, spawnActors);
-	for (AActor* actor : spawnActors)
-	{
-		//
-
-		FVector dir = GetActorLocation() - actor->GetActorLocation();
-
-
-
-		
-		if (dir.SizeSquared() < radius * radius)
-		{
-			AEnemySpawner* spawner = Cast<AEnemySpawner>(actor);
-			spawnPoint = spawner;
-		}
-	}
+	UE_LOG(LogTemp, Warning, TEXT("Calling beacon base class activation"));
 }
 
-void ABeaconActor::Activate()
+void ABeaconActor::OnDeactivate()
 {
-	
-
-	UE_LOG(LogTemp, Warning, TEXT("Activating"));
-	
-	spawnPoint->Boost(time, multiplier);
-
-	PlayActivationSound();
-	
-	
+	UE_LOG(LogTemp, Warning, TEXT("Calling beacon base class deactivation"));
 }
 
-void ABeaconActor::RecieveOnUse_Implementation()
+void ABeaconActor::ReceiveOnUse_Implementation()
 {
 
 }
@@ -82,15 +50,7 @@ void ABeaconActor::RecieveOnUse_Implementation()
 
 void ABeaconActor::Use()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Using"));
-
-	if (!activated) 
-	{
-		GetSpawnPoints();
-		activated = true;
-		Activate();
-	}
-	
-	RecieveOnUse();
+	ReceiveOnUse();
+	ReceiveOnUse_Implementation();
 }
 
