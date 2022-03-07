@@ -52,6 +52,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float mChargeStartupTime;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float mSummonTime;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float mMaxHealth;
@@ -68,12 +70,20 @@ public:
 	float cTimer = 0;
 	float mTimer= 0;
 	float rTimer = 0;
+	float sTimer = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float mMeleeRecharge;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float mRangedRecharge;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float mHealthScale;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float mDamageScale;
+
 
 	UFUNCTION(BlueprintCallable)
 	int ChooseAction(float healthThreshold);
@@ -83,6 +93,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void resetTimer(int num);
+
+	UFUNCTION(BlueprintCallable)
+	float calculateScale(int num);
 
 private:
 	float distanceToPlayer;

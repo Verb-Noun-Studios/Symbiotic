@@ -6,9 +6,10 @@
 #include "GameFramework/Actor.h"
 #include "InteractableInterface.h"
 #include "ActiveItem.h"
+#include "EnemySpawner.h"
 #include "BeaconActor.generated.h"
 
-class ASpawningActor;
+
 
 UCLASS()
 class RLFPS_API ABeaconActor : public AActor, public IInteractableInterface
@@ -19,7 +20,7 @@ class RLFPS_API ABeaconActor : public AActor, public IInteractableInterface
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	TArray<ASpawningActor*> spawnPoints;
+	AEnemySpawner* spawnPoint;
 	float timeRemaining;
 	UPROPERTY(BlueprintReadOnly)
 	bool eventComplete = false;
@@ -31,9 +32,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool activated = false;
+	TSubclassOf<AEnemySpawner> spawnerClass;
+	float radius = 1000;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float radius;
+	bool activated = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float multiplier = 1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
