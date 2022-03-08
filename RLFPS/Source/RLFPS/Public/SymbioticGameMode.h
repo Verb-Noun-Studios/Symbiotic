@@ -47,12 +47,6 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
-		int minRoomstoSpawn = 1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
-		int maxRoomstoSpawn = 5;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
 		FName SpawnRoom;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
@@ -65,13 +59,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
 		FTransform RoomTransform;
 
-	/** The desired transform of our map */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
-		FTransform SpawnTransform;
-
 	//Note: These need to be added to the level window in order to load
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Generation")
-		TArray<FName> LevelsToLoadTier1;
+		TArray<FName> LevelsToLoad;
 
 	//Note: These need to be added to the level window in order to load
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, BlueprintReadWrite, Category = "Level Generation")
