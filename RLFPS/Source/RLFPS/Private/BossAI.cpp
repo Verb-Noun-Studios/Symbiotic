@@ -42,6 +42,12 @@ int ABossAI::ChooseAction(float healthThreshold)
 		return 4;
 	}
 	
+	if (sTimer >= mSummonTime)
+	{
+		sTimer = 0.0f;
+		return 5;
+	}
+
 	if (distanceToPlayer <= mMeleeRange && mTimer <= 0)
 	{
 		return 1;
@@ -77,6 +83,10 @@ float ABossAI::update(FVector playerLoc, FVector bossLoc, float dt)
 	if (rTimer > 0.0)
 		rTimer -= dt;
 
+	if (sTimer < mSummonTime)
+	{
+		sTimer += dt;
+	}
 	return distanceToPlayer;
 }
 
