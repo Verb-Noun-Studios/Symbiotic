@@ -19,6 +19,7 @@ void ABossAI::BeginPlay()
 	Super::BeginPlay();
 	HealthComponent->currentHealth = mMaxHealth;
 	HealthComponent->DefaultHealth = mMaxHealth;
+	sTimer = mSummonTime;
 }
 
 // Called every frame
@@ -42,9 +43,8 @@ int ABossAI::ChooseAction(float healthThreshold)
 		return 4;
 	}
 	
-	if (sTimer >= mSummonTime)
+	if (sTimer <= 0)
 	{
-		sTimer = 0.0f;
 		return 5;
 	}
 
@@ -83,9 +83,9 @@ float ABossAI::update(FVector playerLoc, FVector bossLoc, float dt)
 	if (rTimer > 0.0)
 		rTimer -= dt;
 
-	if (sTimer < mSummonTime)
+	if (sTimer > 0)
 	{
-		sTimer += dt;
+		sTimer -= dt;
 	}
 	return distanceToPlayer;
 }
@@ -100,6 +100,9 @@ void ABossAI::resetTimer(int num)
 		break;
 	case 1:
 		rTimer = mRangedRecharge;
+		break;
+	case 2:
+		sTimer = mSummonTime;
 		break;
 	}
 }
