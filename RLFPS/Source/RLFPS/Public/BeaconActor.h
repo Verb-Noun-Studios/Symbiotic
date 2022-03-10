@@ -38,12 +38,13 @@ public:
 	void OnActivate();
 	UFUNCTION(BlueprintCallable)
 	void OnDeactivate();
-	UFUNCTION(BlueprintNativeEvent)
-	void ReceiveOnUse();
-	UFUNCTION(BlueprintCallable)
-	void Use();
+
+	
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayActivationSound();
 
+	//virtual void Use_Implementation() override;
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void Use();
 };

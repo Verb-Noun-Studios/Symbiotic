@@ -41,16 +41,3 @@ void ABeaconActor::OnDeactivate()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Calling beacon base class deactivation"));
 }
-
-void ABeaconActor::ReceiveOnUse_Implementation()
-{
-
-}
-
-
-void ABeaconActor::Use()
-{
-	ReceiveOnUse();
-	ReceiveOnUse_Implementation();
-}
-
