@@ -5,6 +5,6 @@
 
 void ASpawnBeacon::Use_Implementation() {
 
-
+	
 
 }

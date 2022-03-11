@@ -16,6 +16,9 @@ class RLFPS_API ABeaconActor : public AActor, public IInteractableInterface
 {
 	GENERATED_BODY()
 	
+private:
+	bool EventStarted = false;
+	bool EventComplete = false;
 
 protected:
 	// Called when the game starts or when spawned
@@ -23,13 +26,23 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	bool eventComplete = false;
 	
+
+	// MUST BE CALLED WHEN A BEACON EVENT IS STARTED
+	UFUNCTION(BlueprintCallable)
+		void BeaconEventStart();
+
+	// MUST BE CALLED ONCE THE BEACON EVENT HAS FINISHED
+	UFUNCTION(BlueprintCallable)
+		void BeaconEventComplete();
+
+
 public:	
 	// Sets default values for this actor's properties
 	ABeaconActor();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool activated = false;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UModBase> newMod;
 	
@@ -43,8 +56,41 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayActivationSound();
 
-	//virtual void Use_Implementation() override;
+	UFUNCTION(BlueprintCallable)
+	bool IsBeaconEventStarted() const;
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void Use();
+	UFUNCTION(BlueprintCallable)
+	bool IsBeaconEventActive() const;
+
+
+	UFUNCTION(BlueprintCallable)
+	bool IsBeaconEventComplete() const;
+
+
+
+	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	//void Use();
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+	UStaticMeshComponent* MeshTop;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+	UStaticMeshComponent* MeshBottom;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+		USceneComponent* SceneRootComponent;
+
+	UPROPERTY(EditDefaultsOnly)
+	UMaterialInstance* BurntOutMaterial;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float RotateSpeed;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float BobSpeed;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float BobMagnitude;
+
+private:
+	float RotateTime = 0;
 };
