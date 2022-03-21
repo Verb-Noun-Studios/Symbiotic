@@ -14,14 +14,14 @@ struct FSpawnBeaconTrail {
 
 public:
 	FSpawnBeaconTrail() {};
-	FSpawnBeaconTrail(FVector _start, FVector _end, TSubclassOf<AGruntCharacter> _enemyToSpawn) : start{ _start }, end{ _end }, EnemyToSpawn{ _enemyToSpawn }, t{ 0 } { speed = FVector::Dist(start, end); };
-	FVector start;
+	
 	FVector end;
 
-	TSubclassOf<AGruntCharacter> EnemyToSpawn;
-
 	float t;
+	float delay;
 	float speed;
+
+	AActor* trail;
 };
 /**
  * 
@@ -33,16 +33,28 @@ class RLFPS_API ASpawnBeacon : public ABeaconActor
 	
 public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	int32 EnemySpawnCount;
 
-	virtual void Use_Implementation() override;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float SpawnRadius;
+
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TSubclassOf<AGruntCharacter> EnemiesToSpawn;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TSubclassOf<AActor> Trail;
+
+	virtual void Tick(float dt);
+
+	void OnBeaconActivate_Implementation() override;
 
 private:
 
-	TArray<AGruntCharacter*> EnemiesToKill;
+	TArray<FSpawnBeaconTrail> SpawnTrails;
+
+	TArray<TWeakObjectPtr<AGruntCharacter>> EnemiesToKill;
 
 
+	bool AreAllEnemiesDead();
 };

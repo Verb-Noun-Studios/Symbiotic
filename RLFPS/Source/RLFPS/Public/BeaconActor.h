@@ -27,14 +27,14 @@ protected:
 	bool eventComplete = false;
 	
 
-	// MUST BE CALLED WHEN A BEACON EVENT IS STARTED
-	UFUNCTION(BlueprintCallable)
-		void BeaconEventStart();
-
-	// MUST BE CALLED ONCE THE BEACON EVENT HAS FINISHED
+	// MUST BE CALLED TO END THE BEACON
 	UFUNCTION(BlueprintCallable)
 		void BeaconEventComplete();
 
+	UFUNCTION(BlueprintNativeEvent)
+		bool CanBeaconActivate(); 
+
+	virtual bool CanBeaconActivate_Implementation() { return !IsBeaconEventStarted(); }
 
 public:	
 	// Sets default values for this actor's properties
@@ -43,14 +43,16 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UModBase> newMod;
-	
+	// start the beacon event, starts the event (if CanActivate() returns true), called by Use()
+	UFUNCTION(BlueprintCallable)
+		void BeaconEventStart();
 
-	UFUNCTION(BlueprintCallable)
-	void OnActivate();
-	UFUNCTION(BlueprintCallable)
-	void OnDeactivate();
+
+	UFUNCTION(BlueprintNativeEvent)
+		void OnBeaconActivate();
+
+	UFUNCTION(BlueprintNativeEvent)
+		void OnBeaconDeactivate();
 
 	
 	UFUNCTION(BlueprintImplementableEvent)
@@ -67,9 +69,14 @@ public:
 	bool IsBeaconEventComplete() const;
 
 
+	virtual void Use_Implementation() override { if (CanBeaconActivate()) { BeaconEventStart(); } }
 
 	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	//void Use();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TSubclassOf<UModBase> newMod;
+
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* MeshTop;
 
@@ -81,6 +88,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	UMaterialInstance* BurntOutMaterial;
+
+	// DOESNT DO ANYTHING RIGHT NOW
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	USoundBase* ActivationSound;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float RotateSpeed;

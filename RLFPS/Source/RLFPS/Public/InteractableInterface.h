@@ -13,6 +13,7 @@ class UInteractableInterface : public UInterface
 	GENERATED_BODY()
 };
 
+// useful article https://unreal.gg-labs.com/wiki-archives/macros-and-data-types/interfaces-in-c++
 /**
  * 
  */
