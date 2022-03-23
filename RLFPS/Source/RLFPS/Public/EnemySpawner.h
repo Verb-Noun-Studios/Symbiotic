@@ -36,8 +36,8 @@ public:
 	float elapsedTime = 0;
 	
 
-	float beaconTime = 0;
-	float beaconMultiplier = 0;
+	float boostTime = 0;
+	float boostMultiplier = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool activated = false;
@@ -54,7 +54,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool GetActivated() { return activated; };
 	UFUNCTION(BlueprintCallable)
-	void Boost(float BeaconTime, float BeaconMultiplier);
+	void Boost(float Time, float Multiplier);
 	UFUNCTION(BlueprintCallable)
 	void SpawnInitialEnemies();
 };

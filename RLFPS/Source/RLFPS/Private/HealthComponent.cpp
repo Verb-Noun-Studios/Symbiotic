@@ -37,11 +37,6 @@ void UHealthComponent::TakeDamage(AActor* DamagedActor, float Damage, const UDam
 	currentHealth = FMath::Clamp(currentHealth - Damage, 0.0f, currentHealth);
 }
 
-void UHealthComponent::InflictDamage(float Damage) 
-{
-	currentHealth = FMath::Clamp(currentHealth - Damage, 0.0f, currentHealth);
-}
-
 void UHealthComponent::Heal(float HP)
 {
 	currentHealth = FMath::Clamp(currentHealth + HP, 0.0f, DefaultHealth);

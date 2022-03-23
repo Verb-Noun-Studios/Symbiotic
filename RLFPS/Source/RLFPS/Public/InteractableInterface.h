@@ -13,6 +13,7 @@ class UInteractableInterface : public UInterface
 	GENERATED_BODY()
 };
 
+// useful article https://unreal.gg-labs.com/wiki-archives/macros-and-data-types/interfaces-in-c++
 /**
  * 
  */
@@ -22,6 +23,6 @@ class RLFPS_API IInteractableInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void Use();
 };
