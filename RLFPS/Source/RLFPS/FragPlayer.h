@@ -134,12 +134,6 @@ public:
 	UPROPERTY(Category = "Camera ", EditAnywhere, BlueprintReadWrite)
 		float pitchMinY;
 
-	//Health Pieces
-public:
-
-	/* Deal Damage to Player */
-	UFUNCTION(BlueprintCallable, Category = "fragCharacter|Health")
-		void dealDamage(float damage);
 
 
 
