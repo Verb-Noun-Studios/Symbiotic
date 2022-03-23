@@ -240,10 +240,3 @@ FVector2D AFragPlayer::ConsumeMouseInput()
 	MouseVelocity = FVector2D::ZeroVector;
 	return MouseVelocity;
 }
-
-
-void AFragPlayer::dealDamage(float damage)
-{
-	currentHealth -= damage;
-	if (currentHealth < 0.0f) currentHealth = 0.0f;
-}
