@@ -12,6 +12,7 @@
 #include "Bullet.h"
 #include "ModControllerSubsystem.h"
 #include "../FragPlayer.h"
+#include "HealthComponent.h"
 
 // Sets default values
 AGun::AGun()
@@ -59,16 +60,19 @@ void AGun::BeginPlay()
 	player = (AFragPlayer*)UGameplayStatics::GetActorOfClass(GetWorld(), AFragPlayer::StaticClass());
 }
 
-
-
 //called whenever this actor is being removed 
 void AGun::EndPlay(const EEndPlayReason::Type EndPlayReason) {
 	// save mods to subsystem before unload
 	if (EndPlayReason == EEndPlayReason::Destroyed) {
 		UModControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<UModControllerSubsystem>();
 		// NEED A WAY TO DIFFERENTIATE BETWEEN DEATH AND CHANGING LEVELS
-		//if (subsystem)
-		//	subsystem->SaveMods(mods);
+		UHealthComponent* healthComponent = (UHealthComponent*)player->GetComponentByClass(UHealthComponent::StaticClass());
+		if (subsystem) {
+			if (healthComponent->currentHealth <= 0)
+				subsystem->ClearMods();
+			else
+				subsystem->SaveMods(mods);
+		}
 	}
 }
 

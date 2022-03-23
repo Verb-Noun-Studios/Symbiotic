@@ -43,6 +43,8 @@ public:
     TArray <int> stacks;
     //TArray<FSavedModInfo> savedMods;
 
+    UFUNCTION(BlueprintCallable)
+    void ClearMods() { stacks.Empty(); subclasses.Empty(); }
    
    
 };
