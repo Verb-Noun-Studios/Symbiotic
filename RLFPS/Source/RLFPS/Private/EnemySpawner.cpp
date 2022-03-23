@@ -37,9 +37,10 @@ void AEnemySpawner::Tick(float DeltaTime)
 			if (elapsedTime >= 60.0 / (SpawnRate * boostMultiplier))
 			{
 				bool spawned = false;
-
-				while (!spawned)
+				int attempts = 0;
+				while (!spawned && attempts < 10)
 				{
+					attempts++;
 					SpawnEnemy(spawned);
 				}
 				
@@ -55,8 +56,10 @@ void AEnemySpawner::Tick(float DeltaTime)
 			{
 				bool spawned = false;
 
-				while (!spawned)
+				int attempts = 0;
+				while (!spawned && attempts < 10)
 				{
+					attempts++;
 					SpawnEnemy(spawned);
 				}
 
@@ -80,13 +83,15 @@ void AEnemySpawner::Boost(float BeaconTime, float BeaconMultiplier)
 
 void AEnemySpawner::SpawnInitialEnemies()
 {
+	
 	for (int i = 0; i < InitialEnemies; i++)
 	{
-
+		
 		bool spawned = false;
-
-		while (!spawned)
+		int attempts = 0;
+		while (!spawned && attempts < 10)
 		{
+			attempts++;
 			SpawnEnemy(spawned);
 		}
 		
