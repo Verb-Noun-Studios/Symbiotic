@@ -243,9 +243,17 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 	
 }
 
+void AGun::AddMod(TSubclassOf<UModBase> modType) {
+	ensureAlways(modType.Get() != nullptr);
+	if (modType == nullptr) return;
+	UModBase* newMod = NewObject<UModBase>(this, modType);
+	AddMod(newMod);
+}
 
 void AGun::AddMod(UModBase* mod)
 {
+	ensureAlways(mod != nullptr);
+	if (mod == nullptr) return;
 	for (int i = 0; i < mods.Num(); i++)
 	{
 		if (mod->GetClass() == mods[i]->GetClass())
