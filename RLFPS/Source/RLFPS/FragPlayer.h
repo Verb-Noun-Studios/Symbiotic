@@ -136,12 +136,6 @@ public:
 
 	//Health Pieces
 public:
-	UPROPERTY(Category = "Health ", EditAnywhere, BlueprintReadWrite)
-		float maxHealth;
-
-	UPROPERTY(Category = "Health ", EditAnywhere, BlueprintReadOnly)
-		float currentHealth;
-
 
 	/* Deal Damage to Player */
 	UFUNCTION(BlueprintCallable, Category = "fragCharacter|Health")
