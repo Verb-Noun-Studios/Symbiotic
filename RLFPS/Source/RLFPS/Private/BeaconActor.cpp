@@ -5,6 +5,7 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "EngineUtils.h"
+#include "Gun.h"
 
 // Sets default values
 ABeaconActor::ABeaconActor()
@@ -89,6 +90,9 @@ void ABeaconActor::BeaconEventComplete() {
 
 	MeshTop->SetMaterial(1, BurntOutMaterial);
 	MeshBottom->SetMaterial(1, BurntOutMaterial);
+
+	AGun* gun = (AGun*)UGameplayStatics::GetActorOfClass(GetWorld(), AGun::StaticClass() );
+	gun->AddMod(newMod);
 }
 
 bool ABeaconActor::IsBeaconEventStarted() const {

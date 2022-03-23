@@ -40,7 +40,7 @@ public:
 	float SpawnRadius;
 
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AGruntCharacter> EnemiesToSpawn;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TSubclassOf<AActor> Trail;
