@@ -19,12 +19,12 @@ class RLFPS_API AGun : public AActor
 
 
 
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<AActor> ProjectileClass;
-	
-	
+		UPROPERTY(EditAnywhere)
+		TSubclassOf<AActor> ProjectileClass;
 
-public:	
+
+
+public:
 	// Sets default values for this actor's properties
 	AGun();
 
@@ -34,12 +34,12 @@ public:
 	* Adds a mod to the list. If the mod is already in the list it adds to its stacks
 	*/
 	UFUNCTION(BlueprintCallable)
-	void AddMod(UModBase* mod);
+		void AddMod(UModBase* mod);
 
 	UFUNCTION(BlueprintCallable)
-	void ReplaceActiveItem(UActiveItem* activeItem);
+		void ReplaceActiveItem(UActiveItem* activeItem);
 
-	
+
 	/*
 	* Gets the state of the keys
 	*/
@@ -53,23 +53,23 @@ public:
 	* Blueprint callable function to call Onhit effects for mods
 	*/
 	UFUNCTION(BlueprintCallable)
-	void OnHitCallback(AActor* actor);
-	
+		void OnHitCallback(AActor* actor);
+
 	UFUNCTION(BlueprintCallable)
-	void OnHitCallbackWithSkip(AActor* actor, FName name);
+		void OnHitCallbackWithSkip(AActor* actor, FName name);
 
 	/*
 	* Spawns a bullet If enough time has passed to amch the RPM. Calls mods OnFire functions.
 	*/
 	void Fire(float deltaTime);
-	
+
 	/*
 	* This calls reload effects on mods and will also be used to potentially play animations or sounds
 	*/
 	void Reload();
 
 	/*
-	* These are used to spawn rounds. 
+	* These are used to spawn rounds.
 	* Both call OnSpawn effects but the seccond one is used to modify the direction of the bullet and the location it is spawned.
 	*/
 	void SpawnRound(FActorSpawnParameters spawnParams);
@@ -79,14 +79,14 @@ public:
 	* This is a Blueprint callable function that adds exp to the gun. Preps gun to level up when necessary.
 	*/
 	UFUNCTION(BlueprintCallable)
-	void GainEXP(int exp);
-	
+		void GainEXP(int exp);
+
 	/*
 	* This is a Blueprint callable function to get level progress.
 	*/
 	UFUNCTION(BlueprintCallable)
-	float GetLevelPercentage();
-	
+		float GetLevelPercentage();
+
 	/*
 	* Gets a new set of two random mods. Sets ModOptions.
 	*/
@@ -96,8 +96,8 @@ public:
 	* Returns the current Mod Options. Blueprint callable.
 	*/
 	UFUNCTION(BlueprintCallable)
-	TArray<UModBase*> GetModOptions();
-	
+		TArray<UModBase*> GetModOptions();
+
 	/*
 	* Levels up the Gun and adds mod based on parameter.
 	*/
@@ -109,7 +109,7 @@ public:
 	void UpdateCoreStats();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void PlayMuzzleFlashFX(bool playVFX);
+		void PlayMuzzleFlashFX(bool playVFX);
 
 
 protected:
@@ -119,12 +119,24 @@ protected:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<UModBase*> mods;
+		TArray<UModBase*> mods;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UActiveItem* activeItem;
+		UActiveItem* activeItem;
+
+	//Mod Rarity Array List
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<TSubclassOf<UModBase>> modsCommon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<TSubclassOf<UModBase>> modsUncommon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<TSubclassOf<UModBase>> modsRare;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<TSubclassOf<UModBase>> modsMythic;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TSubclassOf<UModBase>> allMods;
+		TArray<float> weights;
+		TArray<float> curWeights;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UNiagaraSystem* muzzleFlash;
 
@@ -183,6 +195,7 @@ public:
 	bool readyToLevelUp = false;
 	UPROPERTY(BlueprintReadWrite)
 	TArray<UModBase*> ModOptions;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float levelingRate = 1.5;
 	int level = 0;
