@@ -11,6 +11,8 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Bullet.h"
 #include "ModControllerSubsystem.h"
+#include "../FragPlayer.h"
+#include "HealthComponent.h"
 
 // Sets default values
 AGun::AGun()
@@ -54,9 +56,9 @@ void AGun::BeginPlay()
 		subsystem->LoadMods(mods, (UObject*)this);
 		UpdateCoreStats();
 	}
+
+	player = (AFragPlayer*)UGameplayStatics::GetActorOfClass(GetWorld(), AFragPlayer::StaticClass());
 }
-
-
 
 //called whenever this actor is being removed 
 void AGun::EndPlay(const EEndPlayReason::Type EndPlayReason) {
@@ -64,8 +66,13 @@ void AGun::EndPlay(const EEndPlayReason::Type EndPlayReason) {
 	if (EndPlayReason == EEndPlayReason::Destroyed) {
 		UModControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<UModControllerSubsystem>();
 		// NEED A WAY TO DIFFERENTIATE BETWEEN DEATH AND CHANGING LEVELS
-		//if (subsystem)
-		//	subsystem->SaveMods(mods);
+		UHealthComponent* healthComponent = (UHealthComponent*)player->GetComponentByClass(UHealthComponent::StaticClass());
+		if (subsystem) {
+			if (healthComponent->currentHealth <= 0)
+				subsystem->ClearMods();
+			else
+				subsystem->SaveMods(mods);
+		}
 	}
 }
 
@@ -240,14 +247,23 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 	
 }
 
+void AGun::AddMod(TSubclassOf<UModBase> modType) {
+	ensureAlways(modType.Get() != nullptr);
+	if (modType == nullptr) return;
+	UModBase* newMod = NewObject<UModBase>(this, modType);
+	AddMod(newMod);
+}
 
 void AGun::AddMod(UModBase* mod)
 {
+	ensureAlways(mod != nullptr);
+	if (mod == nullptr) return;
 	for (int i = 0; i < mods.Num(); i++)
 	{
 		if (mod->GetClass() == mods[i]->GetClass())
 		{
 			mods[i]->stacks++;
+			mods[i]->OnApply(player);
 			mod->ConditionalBeginDestroy();
 			UpdateCoreStats();
 			return;
@@ -255,6 +271,7 @@ void AGun::AddMod(UModBase* mod)
 	}
 
 	mods.Add(mod);
+	mod->OnApply(player);
 	UpdateCoreStats();
 
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *mod->GetClass()->GetFullName() );
@@ -501,6 +518,8 @@ void AGun::UpdateCoreStats()
 	int ammoModStacks = 0;
 	int rofModStacks = 0;
 	int reloadModStacks = 0;
+	int maxHealthStacks = 0;
+	int curHealthStacks = 0;
 
 	for (int i = 0; i < mods.Num(); i++)
 	{
@@ -517,6 +536,13 @@ void AGun::UpdateCoreStats()
 				break;
 			case ModAdditionalAtrributes::ATRIB_REDUCED_RELOAD_TIME:
 				reloadModStacks += mods[i]->stacks;
+				break;
+			case ModAdditionalAtrributes::ATRIB_MAX_HEALTH_INCREASE:
+				maxHealthStacks += mods[i]->stacks;
+				break;
+			case ModAdditionalAtrributes::ATRIB_CUR_HEALTH_INCREASE:
+				curHealthStacks += mods[i]->stacks;
+				break;
 			default:
 				break;
 			}

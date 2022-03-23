@@ -11,6 +11,7 @@
 
 
 class UCameraComponent; 
+class AFragPlayer;
 
 UCLASS()
 class RLFPS_API AGun : public AActor
@@ -35,6 +36,8 @@ public:
 	*/
 	UFUNCTION(BlueprintCallable)
 	void AddMod(UModBase* mod);
+
+	void AddMod(TSubclassOf<UModBase> modType);
 
 	UFUNCTION(BlueprintCallable)
 	void ReplaceActiveItem(UActiveItem* activeItem);
@@ -101,6 +104,7 @@ public:
 	/*
 	* Levels up the Gun and adds mod based on parameter.
 	*/
+
 	void LevelUp(UModBase* newModType);
 
 	/*
@@ -111,13 +115,13 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayMuzzleFlashFX(bool playVFX);
 
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<UModBase*> mods;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -229,4 +233,7 @@ public:
 	FKey LeftOptionTwoKey;
 	UPROPERTY(EditAnywhere, Category = "Left Controls")
 	FKey LeftActiveKey;
+
+	UPROPERTY(BlueprintReadOnly)
+	AFragPlayer* player;
 };
