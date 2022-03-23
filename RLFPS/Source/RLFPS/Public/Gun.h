@@ -11,6 +11,7 @@
 
 
 class UCameraComponent; 
+class AFragPlayer;
 
 UCLASS()
 class RLFPS_API AGun : public AActor
@@ -232,4 +233,7 @@ public:
 	FKey LeftOptionTwoKey;
 	UPROPERTY(EditAnywhere, Category = "Left Controls")
 	FKey LeftActiveKey;
+
+	UPROPERTY(BlueprintReadOnly)
+	AFragPlayer* player;
 };

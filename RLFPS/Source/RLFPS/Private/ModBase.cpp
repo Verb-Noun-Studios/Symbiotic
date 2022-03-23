@@ -15,7 +15,7 @@ UModBase::~UModBase()
 }
 
 
-void UModBase::OnApply_Implementation()
+void UModBase::OnApply_Implementation(AFragPlayer* player)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Calling Base Mod On Apply"));
 }
