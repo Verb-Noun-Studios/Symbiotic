@@ -30,11 +30,11 @@ void AEnemySpawner::Tick(float DeltaTime)
 	if (activated)
 	{
 
-		if (beaconTime > 0)
+		if (boostTime > 0)
 		{
-			beaconTime -= DeltaTime;
+			boostTime -= DeltaTime;
 
-			if (elapsedTime >= 60.0 / (SpawnRate * beaconMultiplier))
+			if (elapsedTime >= 60.0 / (SpawnRate * boostMultiplier))
 			{
 				bool spawned = false;
 
@@ -74,8 +74,8 @@ void AEnemySpawner::Tick(float DeltaTime)
 
 void AEnemySpawner::Boost(float BeaconTime, float BeaconMultiplier)
 {
-	beaconTime = BeaconTime;
-	beaconMultiplier = BeaconMultiplier;
+	boostTime = BeaconTime;
+	boostMultiplier = BeaconMultiplier;
 }
 
 void AEnemySpawner::SpawnInitialEnemies()

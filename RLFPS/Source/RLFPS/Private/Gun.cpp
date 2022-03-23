@@ -240,6 +240,10 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 	
 }
 
+void AGun::AddMod(TSubclassOf<UModBase> modType) {
+	UModBase* newMod = NewObject<UModBase>(this, modType);
+	AddMod(newMod);
+}
 
 void AGun::AddMod(UModBase* mod)
 {

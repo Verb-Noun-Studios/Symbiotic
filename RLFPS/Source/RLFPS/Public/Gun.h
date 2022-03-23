@@ -36,6 +36,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AddMod(UModBase* mod);
 
+	void AddMod(TSubclassOf<UModBase> modType);
+
 	UFUNCTION(BlueprintCallable)
 	void ReplaceActiveItem(UActiveItem* activeItem);
 
@@ -101,6 +103,7 @@ public:
 	/*
 	* Levels up the Gun and adds mod based on parameter.
 	*/
+
 	void LevelUp(UModBase* newModType);
 
 	/*
