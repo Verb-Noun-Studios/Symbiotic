@@ -56,7 +56,7 @@ void AGun::BeginPlay()
 		subsystem->LoadMods(mods, (UObject*)this);
 		UpdateCoreStats();
 	}
-
+	curWeights = weights;
 	player = (AFragPlayer*)UGameplayStatics::GetActorOfClass(GetWorld(), AFragPlayer::StaticClass());
 }
 
@@ -453,15 +453,72 @@ float AGun::GetLevelPercentage()
 	return (float)currentEXP / (float)expToNextLevel;
 }
 
+TArray<UModBase*> AGun::GetModOptions()
+{
+	//TArray<UModBase*> options;
+	//for (UModBase* type : ModOptions)
+	//{
+	//	options.Add(type);
+	//}
+	return ModOptions;
+}
+
 TArray<UModBase*> AGun::GetNewModOptions()
 {
 	
-	int randOne = FMath::RandHelper(allMods.Num());
+	int rarity = 0;
 
-	UModBase* modOne = NewObject<UModBase>((UObject*)this, allMods[randOne]);;
+	int sum_of_weight = 0;
+	for (int i = 0; i < 4; i++) {
+		sum_of_weight += curWeights[i];
+	}
+	int rnd = FMath::RandRange(0, sum_of_weight);
+	for (int i = 0; i < 4; i++) {
+		if (rnd < curWeights[i])
+		{
+			rarity = i;
+			break;
+		}
+		rnd -= curWeights[i];
+	}
+
+	UModBase* modOne = nullptr;
+	int randOne;
+	switch (rarity)
+	{
+	case 0:
+		randOne = FMath::RandHelper(modsCommon.Num());
+		modOne = NewObject<UModBase>((UObject*)this, modsCommon[randOne]);;
+		break;
+	case 1:
+		randOne = FMath::RandHelper(modsUncommon.Num());
+		modOne = NewObject<UModBase>((UObject*)this, modsUncommon[randOne]);;
+		break;
+	case 2:
+		randOne = FMath::RandHelper(modsRare.Num());
+		modOne = NewObject<UModBase>((UObject*)this, modsRare[randOne]);;
+		break;
+	case 3:
+		randOne = FMath::RandHelper(modsMythic.Num());
+		modOne = NewObject<UModBase>((UObject*)this, modsMythic[randOne]);;
+		break;
+	}
 
 	int randTwo;
 
+	sum_of_weight = 0;
+	for (int i = 0; i < 4; i++) {
+		sum_of_weight += curWeights[i];
+	}
+	rnd = FMath::RandRange(0, sum_of_weight);
+	for (int i = 0; i < 4; i++) {
+		if (rnd < curWeights[i])
+		{
+			rarity = i;
+			break;
+		}
+		rnd -= curWeights[i];
+	}
 
 	UModBase* modTwo = nullptr;
 	do
@@ -471,23 +528,29 @@ TArray<UModBase*> AGun::GetNewModOptions()
 			modTwo->ConditionalBeginDestroy();
 		}
 
-		randTwo = FMath::RandHelper(allMods.Num());
-		modTwo = NewObject<UModBase>((UObject*)this, allMods[randTwo]);
-	
+		switch (rarity)
+		{
+		case 0:
+			randTwo = FMath::RandHelper(modsCommon.Num());
+			modTwo = NewObject<UModBase>((UObject*)this, modsCommon[randTwo]);;
+			break;
+		case 1:
+			randTwo = FMath::RandHelper(modsUncommon.Num());
+			modTwo = NewObject<UModBase>((UObject*)this, modsUncommon[randTwo]);;
+			break;
+		case 2:
+			randTwo = FMath::RandHelper(modsRare.Num());
+			modTwo = NewObject<UModBase>((UObject*)this, modsRare[randTwo]);;
+			break;
+		case 3:
+			randTwo = FMath::RandHelper(modsMythic.Num());
+			modTwo = NewObject<UModBase>((UObject*)this, modsMythic[randTwo]);;
+			break;
+		}
+
 	} while (modTwo->name == modOne->name);
-	
+
 	return TArray<UModBase*>{modOne, modTwo};
-
-}
-
-TArray<UModBase*> AGun::GetModOptions()
-{
-	//TArray<UModBase*> options;
-	//for (UModBase* type : ModOptions)
-	//{
-	//	options.Add(type);
-	//}
-	return ModOptions;
 }
 
 
