@@ -520,6 +520,7 @@ TArray<UModBase*> AGun::GetNewModOptions()
 		rnd -= curWeights[i];
 	}
 
+	bool mythicOut = true;
 	UModBase* modTwo = nullptr;
 	do
 	{
@@ -545,10 +546,11 @@ TArray<UModBase*> AGun::GetNewModOptions()
 		case 3:
 			randTwo = FMath::RandHelper(modsMythic.Num());
 			modTwo = NewObject<UModBase>((UObject*)this, modsMythic[randTwo]);;
+			mythicOut = false;
 			break;
 		}
 
-	} while (modTwo->name == modOne->name);
+	} while (modTwo->name == modOne->name && mythicOut);
 
 	return TArray<UModBase*>{modOne, modTwo};
 }
