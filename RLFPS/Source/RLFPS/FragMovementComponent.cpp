@@ -52,7 +52,7 @@ void UFragMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		CollisionComponent->TraceGround();
 		if (CollisionComponent->CanGroundMove) {
 			GroundMove();
-			JumpCount = 2;
+			JumpCount = MaxJumps;
 		}
 		else
 			AirMove();
