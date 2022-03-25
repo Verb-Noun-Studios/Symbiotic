@@ -16,43 +16,92 @@ class RLFPS_API ABeaconActor : public AActor, public IInteractableInterface
 {
 	GENERATED_BODY()
 	
+private:
+	bool EventStarted = false;
+	bool EventComplete = false;
 
 protected:
 	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	AEnemySpawner* spawnPoint;
-	float timeRemaining;
+	virtual void BeginPlay() override;;
 	UPROPERTY(BlueprintReadOnly)
 	bool eventComplete = false;
 	
+
+	// MUST BE CALLED TO END THE BEACON
+	UFUNCTION(BlueprintCallable)
+		void BeaconEventComplete();
+
+	UFUNCTION(BlueprintNativeEvent)
+		bool CanBeaconActivate(); 
+
+	virtual bool CanBeaconActivate_Implementation() { return !IsBeaconEventStarted(); }
+
 public:	
 	// Sets default values for this actor's properties
 	ABeaconActor();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<AEnemySpawner> spawnerClass;
-	float radius = 1000;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool activated = false;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float multiplier = 1;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float time;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UActiveItem> newMod;
-	
-	void GetSpawnPoints();
-	UFUNCTION(BlueprintCallable)
-	void Activate();
-	UFUNCTION(BlueprintNativeEvent)
-	void RecieveOnUse();
-	UFUNCTION(BlueprintCallable)
-	void Use();
 
+	// start the beacon event, starts the event (if CanActivate() returns true), called by Use()
+	UFUNCTION(BlueprintCallable)
+		void BeaconEventStart();
+
+
+	UFUNCTION(BlueprintNativeEvent)
+		void OnBeaconActivate();
+
+	UFUNCTION(BlueprintNativeEvent)
+		void OnBeaconDeactivate();
+
+	
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayActivationSound();
 
+	UFUNCTION(BlueprintCallable)
+	bool IsBeaconEventStarted() const;
 
+	UFUNCTION(BlueprintCallable)
+	bool IsBeaconEventActive() const;
+
+
+	UFUNCTION(BlueprintCallable)
+	bool IsBeaconEventComplete() const;
+
+
+	virtual void Use_Implementation() override { if (CanBeaconActivate()) { BeaconEventStart(); } }
+
+	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	//void Use();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TSubclassOf<UModBase> newMod;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+	UStaticMeshComponent* MeshTop;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+	UStaticMeshComponent* MeshBottom;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+		USceneComponent* SceneRootComponent;
+
+	UPROPERTY(EditDefaultsOnly)
+	UMaterialInstance* BurntOutMaterial;
+
+	// DOESNT DO ANYTHING RIGHT NOW
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	USoundBase* ActivationSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float RotateSpeed;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float BobSpeed;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float BobMagnitude;
+
+private:
+	float RotateTime = 0;
 };
