@@ -191,7 +191,11 @@ public:
 	float levelingRate = 1.5;
 	int level = 0;
 
+	UPROPERTY(BlueprintReadWrite)
+	int KilledEnemies;
 
+	UFUNCTION(BlueprintCallable)
+	void IncrementKills() { KilledEnemies++;  }
 
 
 	/*RETICLE RELATED THINGS*/

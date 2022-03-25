@@ -10,9 +10,11 @@
 #include "Particles/ParticleEmitter.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Bullet.h"
-#include "ModControllerSubsystem.h"
+#include "SaveControllerSubsystem.h"
 #include "../FragPlayer.h"
 #include "HealthComponent.h"
+
+
 
 // Sets default values
 AGun::AGun()
@@ -52,8 +54,8 @@ void AGun::BeginPlay()
 
 	{
 		// load mods if there are some in from the mods list
-		UModControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<UModControllerSubsystem>();
-		subsystem->LoadMods(mods, (UObject*)this);
+		USaveControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<USaveControllerSubsystem>();
+		subsystem->LoadGunData(this);
 		UpdateCoreStats();
 	}
 
@@ -64,14 +66,14 @@ void AGun::BeginPlay()
 void AGun::EndPlay(const EEndPlayReason::Type EndPlayReason) {
 	// save mods to subsystem before unload
 	if (EndPlayReason == EEndPlayReason::Destroyed) {
-		UModControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<UModControllerSubsystem>();
+		USaveControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<USaveControllerSubsystem>();
 		// NEED A WAY TO DIFFERENTIATE BETWEEN DEATH AND CHANGING LEVELS
 		UHealthComponent* healthComponent = (UHealthComponent*)player->GetComponentByClass(UHealthComponent::StaticClass());
 		if (subsystem) {
 			if (healthComponent->currentHealth <= 0)
-				subsystem->ClearMods();
+				subsystem->ClearData();
 			else
-				subsystem->SaveMods(mods);
+				subsystem->SaveGunData(this);
 		}
 	}
 }
