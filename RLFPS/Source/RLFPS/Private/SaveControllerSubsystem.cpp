@@ -34,7 +34,6 @@ void USaveControllerSubsystem::SaveGunData(AGun* gun) {
 }
 
 
-
 void USaveControllerSubsystem::LoadGunData(AGun* gun) {
 
 	TArray<UModBase*>& mods = gun->mods;
@@ -43,9 +42,13 @@ void USaveControllerSubsystem::LoadGunData(AGun* gun) {
 	mods.Reserve(subclasses.Num());
 	for (int i = 0; i < subclasses.Num(); i++) {
 		UModBase * mod = NewObject<UModBase>(gun, subclasses[i]);
-	
-		mod->stacks = stacks[i];
+		int stack_count = stacks[i];
+		// I hate this :(
 		mods.Add(mod);
+		for (int j = 0; j < stack_count; j++) {
+			mod->stacks = j;
+			mod->OnApply(gun->player);
+		}
 	}
 	stacks.Empty();
 	subclasses.Empty();
