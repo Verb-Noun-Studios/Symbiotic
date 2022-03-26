@@ -24,9 +24,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float offsetMultiplier = 100;
 
-	
-	void OnApply_Implementation();
-	void OnFire_Implementation( AGun* gun);
+	virtual void OnFire_Implementation( AGun* gun) override;
 
 	
 	

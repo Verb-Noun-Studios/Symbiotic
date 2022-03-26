@@ -110,6 +110,10 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	int stacks = 1;
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int rarity = 0;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<ModAdditionalAtrributes> atribs;
 
