@@ -14,11 +14,6 @@ UShotgunMod::~UShotgunMod()
 
 }
 
-void UShotgunMod::OnApply_Implementation()
-{
-
-}
-
 void UShotgunMod::OnFire_Implementation(AGun* gun)
 {
 	FVector startingPoint = gun->GetActorLocation() + gun->MuzzleLocation * gun->GetActorForwardVector();
