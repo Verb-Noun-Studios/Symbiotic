@@ -205,6 +205,16 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 		bullet->SetInitialSpeed(bulletSpeed);
 
 		FVector dir = RaycastFromCamera() - (GetActorLocation());
+
+		for (UModBase* mod : mods)
+		{
+			if (mod->GetFName().ToString().Contains("BP_Fireworks"))
+			{
+				//FVector(FMath::FRandRange(-250, 250), FMath::FRandRange(-250, 250), FMath::FRandRange(-250, 250));
+				dir += FVector(FMath::FRandRange(-90 * mod->stacks, 90 * mod->stacks), FMath::FRandRange(-90 * mod->stacks, 90 * mod->stacks), 0);
+			}
+		}
+
 		//LogFVector(dir);
 		dir.Normalize();
 		bullet->SetInitialDirection(dir);
@@ -233,6 +243,15 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 
 	if (bullet)
 	{
+		for (UModBase* mod : mods)
+		{
+			if (mod->GetFName().ToString().Contains("BP_Fireworks"))
+			{
+				//FVector(FMath::FRandRange(-250, 250), FMath::FRandRange(-250, 250), FMath::FRandRange(-250, 250));
+				dir += FVector(FMath::FRandRange(-250, 250), FMath::FRandRange(-250, 250), 0);
+			}
+		}
+
 		bullet->SetInitialSpeed(bulletSpeed);
 		bullet->SetInitialDirection(dir);
 		bullet->SetGun(this);
