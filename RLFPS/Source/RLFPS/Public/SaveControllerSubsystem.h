@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "ModBase.h"
-#include "ModControllerSubsystem.generated.h"
+#include "SaveControllerSubsystem.generated.h"
 
 
 /**
@@ -14,9 +14,11 @@
  * 
  */
 
+class AGun;
+class AFragPlayer;
 
 UCLASS()
-class RLFPS_API UModControllerSubsystem : public UGameInstanceSubsystem
+class RLFPS_API USaveControllerSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
@@ -27,25 +29,33 @@ public:
     virtual void Deinitialize() override;
     // End USubsystem
 
- 
-    // This is kind of sucks, might be better for this class to manage the active mods
-    // in order to make it better I would have to change the lifecyle of the mods on the gun
-    // which seems like something we should talk about first
-    void SaveMods(const TArray<UModBase*>& mods);
-    void LoadMods(TArray<UModBase*>& mods, UObject* outer);
-
     //TArray<FSavedModInfo>& GetSavedMods() { return savedMods;  }
 
+   
+    // UNIMPLEMENTED
+    void LoadPlayerData(AFragPlayer* player);
+    // UNIMPLEMENTED
+    void SavePlayerData(AFragPlayer* player);
+
+    void LoadGunData(AGun* gun);
+    void SaveGunData(AGun* gun);
+
+    void ClearData();
+
+
+    /* SAVE DATA */
+
+    /* GUN SAVE DATA*/
     UPROPERTY()
-    TArray< TSubclassOf<UModBase>> subclasses;
+    TArray<TSubclassOf<UModBase>> subclasses;
 
     UPROPERTY()
     TArray <int> stacks;
-    //TArray<FSavedModInfo> savedMods;
 
-    UFUNCTION(BlueprintCallable)
-    void ClearMods() { stacks.Empty(); subclasses.Empty(); }
-   
+
+    int KilledEnemies;
+
+    
    
 };
 
