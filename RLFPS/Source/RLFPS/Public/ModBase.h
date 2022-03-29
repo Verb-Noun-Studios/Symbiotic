@@ -12,7 +12,8 @@ UENUM()
 enum class ModType : uint8
 {
 	MOD_GUN		UMETA(DisplayName = "Gun Mod"),
-	MOD_AMMO		UMETA(DisplayName = "Ammo Mod"),
+	MOD_AMMO	UMETA(DisplayName = "Ammo Mod"),
+	MOD_PLAYER	UMETA(DisplayName = "Player Mod"),
 };
 
 
@@ -33,7 +34,8 @@ enum class ModAdditionalAtrributes : uint8
 	ATRIB_INCREASED_MAG			UMETA(DisplayName = "Magazine Increase"),
 	ATRIB_RATE_OF_FIRE			UMETA(DisplayName = "Rate of Fire"),
 	ATRIB_REDUCED_RELOAD_TIME	UMETA(DisplayName = "Reduced Reload Time"),
-
+	ATRIB_MAX_HEALTH_INCREASE	UMETA(DisplayName = "Increase Max Health"),
+	ATRIB_CUR_HEALTH_INCREASE	UMETA(DisplayName = "Increase Current Health"),
 };
 
 
@@ -54,8 +56,8 @@ public:
 
 	/********** FUNCTIONS *************/
 	UFUNCTION(BlueprintNativeEvent)
-	void OnApply();
-	
+	void OnApply(AFragPlayer* player);
+
 	UFUNCTION(BlueprintNativeEvent)
 	void OnSpawn(ABullet* bullet);
 	
@@ -107,6 +109,10 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	int stacks = 1;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int rarity = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<ModAdditionalAtrributes> atribs;

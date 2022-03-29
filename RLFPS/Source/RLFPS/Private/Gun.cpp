@@ -10,7 +10,11 @@
 #include "Particles/ParticleEmitter.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Bullet.h"
-#include "ModControllerSubsystem.h"
+#include "SaveControllerSubsystem.h"
+#include "../FragPlayer.h"
+#include "HealthComponent.h"
+
+
 
 // Sets default values
 AGun::AGun()
@@ -50,22 +54,27 @@ void AGun::BeginPlay()
 
 	{
 		// load mods if there are some in from the mods list
-		UModControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<UModControllerSubsystem>();
-		subsystem->LoadMods(mods, (UObject*)this);
+		USaveControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<USaveControllerSubsystem>();
+		subsystem->LoadGunData(this);
 		UpdateCoreStats();
 	}
+	curWeights = weights;
+	player = (AFragPlayer*)UGameplayStatics::GetActorOfClass(GetWorld(), AFragPlayer::StaticClass());
 }
-
-
 
 //called whenever this actor is being removed 
 void AGun::EndPlay(const EEndPlayReason::Type EndPlayReason) {
 	// save mods to subsystem before unload
 	if (EndPlayReason == EEndPlayReason::Destroyed) {
-		UModControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<UModControllerSubsystem>();
+		USaveControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<USaveControllerSubsystem>();
 		// NEED A WAY TO DIFFERENTIATE BETWEEN DEATH AND CHANGING LEVELS
-		//if (subsystem)
-		//	subsystem->SaveMods(mods);
+		UHealthComponent* healthComponent = (UHealthComponent*)player->GetComponentByClass(UHealthComponent::StaticClass());
+		if (subsystem) {
+			if (healthComponent->currentHealth <= 0)
+				subsystem->ClearData();
+			else
+				subsystem->SaveGunData(this);
+		}
 	}
 }
 
@@ -196,6 +205,16 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 		bullet->SetInitialSpeed(bulletSpeed);
 
 		FVector dir = RaycastFromCamera() - (GetActorLocation());
+
+		for (UModBase* mod : mods)
+		{
+			if (mod->GetFName().ToString().Contains("BP_Fireworks"))
+			{
+				//FVector(FMath::FRandRange(-250, 250), FMath::FRandRange(-250, 250), FMath::FRandRange(-250, 250));
+				dir += FVector(FMath::FRandRange(-90 * mod->stacks, 90 * mod->stacks), FMath::FRandRange(-90 * mod->stacks, 90 * mod->stacks), 0);
+			}
+		}
+
 		//LogFVector(dir);
 		dir.Normalize();
 		bullet->SetInitialDirection(dir);
@@ -224,6 +243,15 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 
 	if (bullet)
 	{
+		for (UModBase* mod : mods)
+		{
+			if (mod->GetFName().ToString().Contains("BP_Fireworks"))
+			{
+				//FVector(FMath::FRandRange(-250, 250), FMath::FRandRange(-250, 250), FMath::FRandRange(-250, 250));
+				dir += FVector(FMath::FRandRange(-250, 250), FMath::FRandRange(-250, 250), 0);
+			}
+		}
+
 		bullet->SetInitialSpeed(bulletSpeed);
 		bullet->SetInitialDirection(dir);
 		bullet->SetGun(this);
@@ -240,14 +268,23 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 	
 }
 
+void AGun::AddMod(TSubclassOf<UModBase> modType) {
+	ensureAlways(modType.Get() != nullptr);
+	if (modType == nullptr) return;
+	UModBase* newMod = NewObject<UModBase>(this, modType);
+	AddMod(newMod);
+}
 
 void AGun::AddMod(UModBase* mod)
 {
+	ensureAlways(mod != nullptr);
+	if (mod == nullptr) return;
 	for (int i = 0; i < mods.Num(); i++)
 	{
 		if (mod->GetClass() == mods[i]->GetClass())
 		{
 			mods[i]->stacks++;
+			mods[i]->OnApply(player);
 			mod->ConditionalBeginDestroy();
 			UpdateCoreStats();
 			return;
@@ -255,6 +292,7 @@ void AGun::AddMod(UModBase* mod)
 	}
 
 	mods.Add(mod);
+	mod->OnApply(player);
 	UpdateCoreStats();
 
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *mod->GetClass()->GetFullName() );
@@ -436,33 +474,6 @@ float AGun::GetLevelPercentage()
 	return (float)currentEXP / (float)expToNextLevel;
 }
 
-TArray<UModBase*> AGun::GetNewModOptions()
-{
-	
-	int randOne = FMath::RandHelper(allMods.Num());
-
-	UModBase* modOne = NewObject<UModBase>((UObject*)this, allMods[randOne]);;
-
-	int randTwo;
-
-
-	UModBase* modTwo = nullptr;
-	do
-	{
-		if (modTwo != NULL)
-		{
-			modTwo->ConditionalBeginDestroy();
-		}
-
-		randTwo = FMath::RandHelper(allMods.Num());
-		modTwo = NewObject<UModBase>((UObject*)this, allMods[randTwo]);
-	
-	} while (modTwo->name == modOne->name);
-	
-	return TArray<UModBase*>{modOne, modTwo};
-
-}
-
 TArray<UModBase*> AGun::GetModOptions()
 {
 	//TArray<UModBase*> options;
@@ -471,6 +482,98 @@ TArray<UModBase*> AGun::GetModOptions()
 	//	options.Add(type);
 	//}
 	return ModOptions;
+}
+
+TArray<UModBase*> AGun::GetNewModOptions()
+{
+	
+	int rarity = 0;
+
+	int sum_of_weight = 0;
+	for (int i = 0; i < 4; i++) {
+		sum_of_weight += curWeights[i];
+	}
+	int rnd = FMath::RandRange(0, sum_of_weight);
+	for (int i = 0; i < 4; i++) {
+		if (rnd < curWeights[i])
+		{
+			rarity = i;
+			break;
+		}
+		rnd -= curWeights[i];
+	}
+
+	UModBase* modOne = nullptr;
+	int randOne;
+	switch (rarity)
+	{
+	case 0:
+		randOne = FMath::RandHelper(modsCommon.Num());
+		modOne = NewObject<UModBase>((UObject*)this, modsCommon[randOne]);;
+		break;
+	case 1:
+		randOne = FMath::RandHelper(modsUncommon.Num());
+		modOne = NewObject<UModBase>((UObject*)this, modsUncommon[randOne]);;
+		break;
+	case 2:
+		randOne = FMath::RandHelper(modsRare.Num());
+		modOne = NewObject<UModBase>((UObject*)this, modsRare[randOne]);;
+		break;
+	case 3:
+		randOne = FMath::RandHelper(modsMythic.Num());
+		modOne = NewObject<UModBase>((UObject*)this, modsMythic[randOne]);;
+		break;
+	}
+
+	int randTwo;
+
+	sum_of_weight = 0;
+	for (int i = 0; i < 4; i++) {
+		sum_of_weight += curWeights[i];
+	}
+	rnd = FMath::RandRange(0, sum_of_weight);
+	for (int i = 0; i < 4; i++) {
+		if (rnd < curWeights[i])
+		{
+			rarity = i;
+			break;
+		}
+		rnd -= curWeights[i];
+	}
+
+	bool mythicOut = true;
+	UModBase* modTwo = nullptr;
+	do
+	{
+		if (modTwo != NULL)
+		{
+			modTwo->ConditionalBeginDestroy();
+		}
+
+		switch (rarity)
+		{
+		case 0:
+			randTwo = FMath::RandHelper(modsCommon.Num());
+			modTwo = NewObject<UModBase>((UObject*)this, modsCommon[randTwo]);;
+			break;
+		case 1:
+			randTwo = FMath::RandHelper(modsUncommon.Num());
+			modTwo = NewObject<UModBase>((UObject*)this, modsUncommon[randTwo]);;
+			break;
+		case 2:
+			randTwo = FMath::RandHelper(modsRare.Num());
+			modTwo = NewObject<UModBase>((UObject*)this, modsRare[randTwo]);;
+			break;
+		case 3:
+			randTwo = FMath::RandHelper(modsMythic.Num());
+			modTwo = NewObject<UModBase>((UObject*)this, modsMythic[randTwo]);;
+			mythicOut = false;
+			break;
+		}
+
+	} while (modTwo->name == modOne->name && mythicOut);
+
+	return TArray<UModBase*>{modOne, modTwo};
 }
 
 
@@ -501,6 +604,8 @@ void AGun::UpdateCoreStats()
 	int ammoModStacks = 0;
 	int rofModStacks = 0;
 	int reloadModStacks = 0;
+	int maxHealthStacks = 0;
+	int curHealthStacks = 0;
 
 	for (int i = 0; i < mods.Num(); i++)
 	{
@@ -517,6 +622,13 @@ void AGun::UpdateCoreStats()
 				break;
 			case ModAdditionalAtrributes::ATRIB_REDUCED_RELOAD_TIME:
 				reloadModStacks += mods[i]->stacks;
+				break;
+			case ModAdditionalAtrributes::ATRIB_MAX_HEALTH_INCREASE:
+				maxHealthStacks += mods[i]->stacks;
+				break;
+			case ModAdditionalAtrributes::ATRIB_CUR_HEALTH_INCREASE:
+				curHealthStacks += mods[i]->stacks;
+				break;
 			default:
 				break;
 			}
