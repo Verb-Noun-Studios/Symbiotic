@@ -54,10 +54,17 @@ int ABossAI::ChooseAction(float healthThreshold)
 	}
 	else if(distanceToPlayer > mMeleeRange)
 	{
-		if (cTimer >= mChargeTime)
+		if (cTimer >= mChargeTime && !hasCharged)
 		{
 			cTimer = 0.0f;
+			hasCharged = true;
 			return 3;
+		}
+		else if (cTimer >= mChargeTime && hasCharged)
+		{
+			cTimer = 0.0f;
+			hasCharged = false;
+			return 6;
 		}
 
 		if (rTimer <= 0)
