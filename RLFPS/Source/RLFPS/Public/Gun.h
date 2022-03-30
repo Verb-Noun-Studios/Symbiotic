@@ -94,12 +94,12 @@ public:
 	* Gets a new set of two random mods. Sets ModOptions.
 	*/
 	TArray<UModBase*> GetNewModOptions();
-
 	/*
 	* Returns the current Mod Options. Blueprint callable.
 	*/
 	UFUNCTION(BlueprintCallable)
-	TArray<UModBase*> GetModOptions();
+		TArray<UModBase*> GetModOptions();
+
 	
 	/*
 	* Levels up the Gun and adds mod based on parameter.
@@ -127,8 +127,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UActiveItem* activeItem;
 
+	//Mod Rarity Array List
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TSubclassOf<UModBase>> allMods;
+		TArray<TSubclassOf<UModBase>> modsCommon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<TSubclassOf<UModBase>> modsUncommon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<TSubclassOf<UModBase>> modsRare;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<TSubclassOf<UModBase>> modsMythic;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<float> weights;
+	TArray<float> curWeights;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UNiagaraSystem* muzzleFlash;
 
@@ -191,7 +204,11 @@ public:
 	float levelingRate = 1.5;
 	int level = 0;
 
+	UPROPERTY(BlueprintReadWrite)
+	int KilledEnemies;
 
+	UFUNCTION(BlueprintCallable)
+	void IncrementKills() { KilledEnemies++;  }
 
 
 	/*RETICLE RELATED THINGS*/

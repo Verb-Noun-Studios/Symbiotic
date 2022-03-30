@@ -14,10 +14,6 @@ UShotgunMod::~UShotgunMod()
 
 }
 
-void UShotgunMod::OnApply_Implementation()
-{
-
-}
 
 void UShotgunMod::OnFire_Implementation(AGun* gun)
 {

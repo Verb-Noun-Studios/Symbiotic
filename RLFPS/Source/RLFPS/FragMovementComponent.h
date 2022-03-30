@@ -63,6 +63,10 @@ public:
 
 	/** How Many times the player can jump before having to be grouned again*/
 	UPROPERTY(Category = "Air Movement", EditAnywhere, BlueprintReadWrite)
+		int MaxJumps = 2;
+
+	/** Tracker for how many times the player has jumped before touching grouned again*/
+	UPROPERTY(Category = "Air Movement", EditAnywhere, BlueprintReadWrite)
 		int JumpCount = 2;
 
 	/** The maximum speed the player can achieve while not strafe jumping */
