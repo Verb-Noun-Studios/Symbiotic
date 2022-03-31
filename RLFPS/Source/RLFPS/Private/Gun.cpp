@@ -248,7 +248,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 			if (mod->GetFName().ToString().Contains("BP_Fireworks"))
 			{
 				//FVector(FMath::FRandRange(-250, 250), FMath::FRandRange(-250, 250), FMath::FRandRange(-250, 250));
-				dir += FVector(FMath::FRandRange(-250, 250), FMath::FRandRange(-250, 250), 0);
+				dir += FVector(FMath::FRandRange(-90 * mod->stacks, 90 * mod->stacks), FMath::FRandRange(-90 * mod->stacks, 90 * mod->stacks), 0);
 			}
 		}
 
