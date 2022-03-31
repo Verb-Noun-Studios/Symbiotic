@@ -70,6 +70,8 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void OnReload(AActor* player);
 
+	UFUNCTION(BlueprintNativeEvent)
+	void OnUpdateBulletVFX(ABullet* bullet);
 
 	
 	UFUNCTION(BlueprintCallable)
