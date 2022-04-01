@@ -140,3 +140,4 @@ void ASpawningActor::ActivateWithBeacon(float BeaconTime, float BeaconMultiplier
 	Activate();
 	UE_LOG(LogTemp, Warning, TEXT("Activating with Beacon!"));
 }
+
