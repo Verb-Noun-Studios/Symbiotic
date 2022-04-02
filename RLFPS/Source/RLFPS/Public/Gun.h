@@ -113,7 +113,7 @@ public:
 	void UpdateCoreStats();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void PlayMuzzleFlashFX(bool playVFX);
+	void PlayMuzzleFlashFX();
 
 protected:
 	// Called when the game starts or when spawned
