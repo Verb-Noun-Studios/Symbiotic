@@ -99,7 +99,7 @@ void AGun::Tick(float DeltaTime)
 		//UE_LOG(LogTemp, Warning, TEXT("Current Kills: %d   VS Required Kills: %d"), activeItem->currentKillCount, activeItem->requiredKillCount);
 	}
 
-	if (!reloading && ammoRemaining != ammoCount)
+	if (!reloading)
 	{
 		reloading = GetReloadKey();
 		if (reloading)
@@ -236,7 +236,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 		
 	}
 
-	ammoRemaining--;
+	//ammoRemaining--;
 
 	PlayMuzzleFlashFX(true);
 
@@ -257,7 +257,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 			if (mod->GetFName().ToString().Contains("BP_Fireworks"))
 			{
 				//FVector(FMath::FRandRange(-250, 250), FMath::FRandRange(-250, 250), FMath::FRandRange(-250, 250));
-				dir += FVector(FMath::FRandRange(-250, 250), FMath::FRandRange(-250, 250), 0);
+				dir += FVector(FMath::FRandRange(-90 * mod->stacks, 90 * mod->stacks), FMath::FRandRange(-90 * mod->stacks, 90 * mod->stacks), 0);
 			}
 		}
 
@@ -272,7 +272,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 		}
 	}
 
-	ammoRemaining--;
+	//ammoRemaining--;
 	PlayMuzzleFlashFX(false);
 	
 }
