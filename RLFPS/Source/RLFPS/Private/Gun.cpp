@@ -225,6 +225,15 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 			mod->OnSpawn(bullet);
 			mod->OnSpawn_Implementation(bullet);
 		}
+
+		for (UModBase* mod : mods)
+		{
+			mod->OnUpdateBulletVFX(bullet);
+			mod->OnUpdateBulletVFX_Implementation(bullet);
+		}
+
+		bullet->UpdateVFX();
+		
 	}
 
 	//ammoRemaining--;
