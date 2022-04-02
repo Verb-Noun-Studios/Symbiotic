@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ModBase.h"
+#include "Engine/EngineTypes.h"
 #include "ActiveItem.generated.h"
 
 /**
@@ -27,6 +28,15 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void OnActiveAbility(AActor* gun);
 
-	
+	// grants the player a kill every "passiveRechargeSeconds"
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float passiveRechargeTime = 0;
+
+	UFUNCTION(BlueprintCallable)
+	void BeginRecharge();
+
+	void FinishRecharge();
+
+	FTimerHandle CooldownTimerHandle;
 
 };
