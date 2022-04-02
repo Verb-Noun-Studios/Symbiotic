@@ -39,6 +39,11 @@ void UModBase::OnReload_Implementation(AActor* player)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Calling Test On Reload"));
 }
+
+void UModBase::OnUpdateBulletVFX_Implementation(ABullet* bullet)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Calling Test On Reload"));
+}
 //
 //void UModBase::OnActiveAbility_Implementation(AActor* player)
 //{

@@ -92,6 +92,7 @@ void AGun::Tick(float DeltaTime)
 			
 			activeItem->OnActiveAbility(this);
 			activeItem->OnActiveAbility_Implementation(this);
+			activeItem->BeginRecharge();
 			//GEngine->AddOnScreenDebugMessage(-1, 0.10f, FColor::Yellow, TEXT("Calling active Item"));
 			
 		}
@@ -225,6 +226,15 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 			mod->OnSpawn(bullet);
 			mod->OnSpawn_Implementation(bullet);
 		}
+
+		for (UModBase* mod : mods)
+		{
+			mod->OnUpdateBulletVFX(bullet);
+			mod->OnUpdateBulletVFX_Implementation(bullet);
+		}
+
+		bullet->UpdateVFX();
+		
 	}
 
 	//ammoRemaining--;
@@ -268,16 +278,19 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 }
 
 void AGun::AddMod(TSubclassOf<UModBase> modType) {
-	ensureAlways(modType.Get() != nullptr);
-	if (modType == nullptr) return;
+	if (modType == nullptr) {
+		UE_LOG(LogTemp, Error, TEXT("Called AddMod with NULL Class"));
+		return;
+	}
 	UModBase* newMod = NewObject<UModBase>(this, modType);
 	AddMod(newMod);
 }
 
-void AGun::AddMod(UModBase* mod)
-{
-	ensureAlways(mod != nullptr);
-	if (mod == nullptr) return;
+void AGun::AddMod(UModBase* mod) {
+	if (mod == nullptr) {
+		UE_LOG(LogTemp, Error, TEXT("Called AddMod with NULL Object"));
+		return;
+	}
 	for (int i = 0; i < mods.Num(); i++)
 	{
 		if (mod->GetClass() == mods[i]->GetClass())
