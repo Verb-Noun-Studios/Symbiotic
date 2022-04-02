@@ -239,7 +239,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 
 	//ammoRemaining--;
 
-	PlayMuzzleFlashFX(true);
+	PlayMuzzleFlashFX();
 
 
 	
@@ -274,7 +274,6 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 	}
 
 	//ammoRemaining--;
-	PlayMuzzleFlashFX(false);
 	
 }
 
