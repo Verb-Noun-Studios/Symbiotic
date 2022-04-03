@@ -64,17 +64,11 @@ void AGun::BeginPlay()
 
 //called whenever this actor is being removed 
 void AGun::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+	Super::EndPlay(EndPlayReason);
 	// save mods to subsystem before unload
 	if (EndPlayReason == EEndPlayReason::Destroyed) {
 		USaveControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<USaveControllerSubsystem>();
-		// NEED A WAY TO DIFFERENTIATE BETWEEN DEATH AND CHANGING LEVELS
-		UHealthComponent* healthComponent = (UHealthComponent*)player->GetComponentByClass(UHealthComponent::StaticClass());
-		if (subsystem) {
-			if (healthComponent->currentHealth <= 0)
-				subsystem->ClearData();
-			else
-				subsystem->SaveGunData(this);
-		}
+		subsystem->SaveGunData(this);
 	}
 }
 
