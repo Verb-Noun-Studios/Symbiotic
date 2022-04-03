@@ -100,7 +100,7 @@ void AGun::Tick(float DeltaTime)
 		//UE_LOG(LogTemp, Warning, TEXT("Current Kills: %d   VS Required Kills: %d"), activeItem->currentKillCount, activeItem->requiredKillCount);
 	}
 
-	if (!reloading && ammoRemaining != ammoCount)
+	if (!reloading)
 	{
 		reloading = GetReloadKey();
 		if (reloading)
@@ -206,6 +206,16 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 		bullet->SetInitialSpeed(bulletSpeed);
 
 		FVector dir = RaycastFromCamera() - (GetActorLocation());
+
+		for (UModBase* mod : mods)
+		{
+			if (mod->GetFName().ToString().Contains("BP_Fireworks"))
+			{
+				//FVector(FMath::FRandRange(-250, 250), FMath::FRandRange(-250, 250), FMath::FRandRange(-250, 250));
+				dir += FVector(FMath::FRandRange(-90 * mod->stacks, 90 * mod->stacks), FMath::FRandRange(-90 * mod->stacks, 90 * mod->stacks), 0);
+			}
+		}
+
 		//LogFVector(dir);
 		dir.Normalize();
 		bullet->SetInitialDirection(dir);
@@ -216,11 +226,20 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 			mod->OnSpawn(bullet);
 			mod->OnSpawn_Implementation(bullet);
 		}
+
+		for (UModBase* mod : mods)
+		{
+			mod->OnUpdateBulletVFX(bullet);
+			mod->OnUpdateBulletVFX_Implementation(bullet);
+		}
+
+		bullet->UpdateVFX();
+		
 	}
 
-	ammoRemaining--;
+	//ammoRemaining--;
 
-	PlayMuzzleFlashFX(true);
+	PlayMuzzleFlashFX();
 
 
 	
@@ -234,6 +253,15 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 
 	if (bullet)
 	{
+		for (UModBase* mod : mods)
+		{
+			if (mod->GetFName().ToString().Contains("BP_Fireworks"))
+			{
+				//FVector(FMath::FRandRange(-250, 250), FMath::FRandRange(-250, 250), FMath::FRandRange(-250, 250));
+				dir += FVector(FMath::FRandRange(-90 * mod->stacks, 90 * mod->stacks), FMath::FRandRange(-90 * mod->stacks, 90 * mod->stacks), 0);
+			}
+		}
+
 		bullet->SetInitialSpeed(bulletSpeed);
 		bullet->SetInitialDirection(dir);
 		bullet->SetGun(this);
@@ -245,8 +273,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 		}
 	}
 
-	ammoRemaining--;
-	PlayMuzzleFlashFX(false);
+	//ammoRemaining--;
 	
 }
 

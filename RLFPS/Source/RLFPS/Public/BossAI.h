@@ -100,4 +100,5 @@ public:
 private:
 	float distanceToPlayer;
 	FVector directionToPlayer;
+	bool hasCharged;
 };
