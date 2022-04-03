@@ -59,6 +59,8 @@ public:
 	TSubclassOf<AActor> targetClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Homing)
 	AActor* target;
+
+
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Homing)
 		float HomingStrength = 0;
@@ -83,6 +85,7 @@ public:
 	bool CheckTargetAngle();
 	UFUNCTION(BlueprintCallable)
 	float GetDistanceToTarget();
-
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateVFX();
 
 };
