@@ -8,6 +8,8 @@
 #include "Engine.h"
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
+#include "Public/SaveControllerSubsystem.h"
+
 // Sets default values
 AFragPlayer::AFragPlayer()
 {
@@ -81,7 +83,24 @@ void AFragPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 void AFragPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+	{
+		// load mods if there are some in from the mods list
+		USaveControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<USaveControllerSubsystem>();
+		subsystem->LoadPlayerData(this);
+	}
+}
 
+
+//called whenever this actor is being removed 
+void AFragPlayer::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+	Super::EndPlay(EndPlayReason);
+	// save mods to subsystem before unload
+	if (EndPlayReason == EEndPlayReason::Destroyed) {
+		USaveControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<USaveControllerSubsystem>();
+		// NEED A WAY TO DIFFERENTIATE BETWEEN DEATH AND CHANGING LEVELS
+		subsystem->SavePlayerData(this);
+	}
+	
 }
 // Called every frame
 void AFragPlayer::Tick(float DeltaTime)
