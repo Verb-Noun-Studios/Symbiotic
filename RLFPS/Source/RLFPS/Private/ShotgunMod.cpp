@@ -40,6 +40,8 @@ void UShotgunMod::OnFire_Implementation(AGun* gun)
 		FVector dir = newPoint - startingPoint;
 	
 		gun->SpawnRound(*gun->spawnParams, FVector::ZeroVector, dir);
+
+		UE_LOG(LogTemp, Warning, TEXT("Shotgun Round: %d"), i);
 	}
 	
 	
