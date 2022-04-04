@@ -2,7 +2,8 @@
 
 
 #include "SaveControllerSubsystem.h"
-
+#include "../FragPlayer.h"
+#include "HealthComponent.h"
 #include "Gun.h"
 #include "ModBase.h"
 
@@ -17,7 +18,7 @@ void USaveControllerSubsystem::Deinitialize() {
 
 
 void USaveControllerSubsystem::SaveGunData(AGun* gun) {
-
+	if (!bHasValidData) return;
 	const TArray<UModBase*>& mods = gun->mods;
 	
 	subclasses.Empty();
@@ -35,6 +36,8 @@ void USaveControllerSubsystem::SaveGunData(AGun* gun) {
 
 
 void USaveControllerSubsystem::LoadGunData(AGun* gun) {
+	if (!bHasValidData) return;
+	
 
 	TArray<UModBase*>& mods = gun->mods;
 
@@ -54,12 +57,23 @@ void USaveControllerSubsystem::LoadGunData(AGun* gun) {
 	subclasses.Empty();
 
 	gun->KilledEnemies = KilledEnemies;
+
+	
 }
 
 
-void USaveControllerSubsystem::ClearData() {
-	stacks.Empty();
-	subclasses.Empty();
 
-	KilledEnemies = 0;
+
+void USaveControllerSubsystem::LoadPlayerData(AFragPlayer* player) {
+	if (!bHasValidData) {
+		bHasValidData = true;
+		return;
+	}
+	player->HealthComponent->currentHealth = PlayerHP;
+}
+
+void USaveControllerSubsystem::SavePlayerData(AFragPlayer* player) {
+	if (!bHasValidData) return;
+
+	PlayerHP = player->HealthComponent->currentHealth;
 }

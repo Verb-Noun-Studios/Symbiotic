@@ -32,15 +32,11 @@ public:
     //TArray<FSavedModInfo>& GetSavedMods() { return savedMods;  }
 
    
-    // UNIMPLEMENTED
     void LoadPlayerData(AFragPlayer* player);
-    // UNIMPLEMENTED
     void SavePlayerData(AFragPlayer* player);
 
     void LoadGunData(AGun* gun);
     void SaveGunData(AGun* gun);
-
-    void ClearData();
 
 
     /* SAVE DATA */
@@ -52,11 +48,24 @@ public:
     UPROPERTY()
     TArray <int> stacks;
 
+   
+    // mark the data as invalid, will only be valid once it has been loaded again
+    UFUNCTION(BlueprintCallable)
+    void InvalidateData() {
+        bHasValidData = false;
+        stacks.Empty();
+        subclasses.Empty();
+
+        KilledEnemies = 0;
+    }
+
+private:
+
+    float PlayerHP;
 
     int KilledEnemies;
 
-    
-   
+    bool bHasValidData = false;
 };
 
 

@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "NavMesh/RecastNavMesh.h"
+#include "NavigationSystem.h"
 #include "EnemySpawner.generated.h"
 
 UCLASS()
@@ -57,4 +59,12 @@ public:
 	void Boost(float Time, float Multiplier);
 	UFUNCTION(BlueprintCallable)
 	void SpawnInitialEnemies();
+
+
+private:
+	TArray<FNavPoly> PolyCache;
+public:
+
+	UFUNCTION(BlueprintCallable)
+	bool GetRandomNavPoint(FVector& out_point);
 };
