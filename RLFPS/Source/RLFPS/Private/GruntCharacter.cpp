@@ -3,6 +3,7 @@
 
 #include "GruntCharacter.h"
 #include "HealthComponent.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 AGruntCharacter::AGruntCharacter()
@@ -10,6 +11,10 @@ AGruntCharacter::AGruntCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Defragr Health Component"));
+
+	
+	// (thornton) hack to make not spawn inside floor
+	GetRootComponent()->AddLocalOffset(FVector::UpVector * GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
 }
 
 // Called when the game starts or when spawned
