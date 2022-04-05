@@ -44,7 +44,7 @@ public:
 	USphereComponent* CollisionComponent;
 
 	// Projectile movement component.
-	UPROPERTY(VisibleAnywhere, Category = Movement)
+	UPROPERTY(VisibleAnywhere, Category = Movement, BlueprintReadOnly)
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
 	// Used to increase the speed, 1 is normal
