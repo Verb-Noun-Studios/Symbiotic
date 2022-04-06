@@ -2,6 +2,7 @@
 
 
 #include "EnemySpawner.h"
+
 #include "Kismet/KismetMathLibrary.h"
 //#include "NavigationSystem.h"
 
@@ -89,11 +90,34 @@ void AEnemySpawner::SpawnInitialEnemies()
 		
 		bool spawned = false;
 		int attempts = 0;
-		while (!spawned && attempts < 10)
+ 		while (!spawned && attempts < 10)
 		{
 			attempts++;
 			SpawnEnemy(spawned);
 		}
 		
 	}
+}
+
+
+bool AEnemySpawner::GetRandomNavPoint(FVector& out_point) {
+	if (PolyCache.Num() == 0) {
+		UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
+		ARecastNavMesh* NavData = (ARecastNavMesh*)NavSys->GetDefaultNavDataInstance();
+
+		FVector pos = GetActorLocation();
+		FBox box(pos, pos);
+		box = box.ExpandBy(3000);
+		NavData->GetPolysInBox(box, PolyCache);
+	}
+
+	// TODO: (thornton) this might cause alot of lag if there is no mesh yet
+	if (PolyCache.Num() == 0) return false;
+
+	const int32 RandomIndex = FMath::RandHelper(PolyCache.Num());
+	const FNavPoly& Poly = PolyCache[RandomIndex];
+
+	//return FNavLocation(Poly.Center, Poly.Ref);
+	out_point = Poly.Center;
+	return true;
 }
