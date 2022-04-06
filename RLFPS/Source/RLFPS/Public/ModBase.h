@@ -104,7 +104,7 @@ public:
 	UTexture2D* image;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString infoText;
+	TArray<FString> Stats;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString effectText;
