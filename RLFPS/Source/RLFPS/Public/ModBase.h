@@ -30,10 +30,8 @@ enum class ModSubType : uint8
 UENUM()
 enum class ModAdditionalAtrributes : uint8
 {
-	
-	ATRIB_INCREASED_MAG			UMETA(DisplayName = "Magazine Increase"),
 	ATRIB_RATE_OF_FIRE			UMETA(DisplayName = "Rate of Fire"),
-	ATRIB_REDUCED_RELOAD_TIME	UMETA(DisplayName = "Reduced Reload Time"),
+	ATRIB_DAMAGE_UP				UMETA(DisplayName = "Damage Up"),
 	ATRIB_MAX_HEALTH_INCREASE	UMETA(DisplayName = "Increase Max Health"),
 	ATRIB_CUR_HEALTH_INCREASE	UMETA(DisplayName = "Increase Current Health"),
 };

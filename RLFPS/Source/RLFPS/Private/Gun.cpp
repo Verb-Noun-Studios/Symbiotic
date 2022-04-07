@@ -596,9 +596,8 @@ void AGun::LevelUp(UModBase* newModType)
 
 void AGun::UpdateCoreStats()
 {
-	int ammoModStacks = 0;
 	int rofModStacks = 0;
-	int reloadModStacks = 0;
+	int damageModStacks = 0;
 	int maxHealthStacks = 0;
 	int curHealthStacks = 0;
 
@@ -608,15 +607,11 @@ void AGun::UpdateCoreStats()
 		{
 			switch (atrib)
 			{
-
-			case ModAdditionalAtrributes::ATRIB_INCREASED_MAG:
-				ammoModStacks += mods[i]->stacks;
-				break;
 			case ModAdditionalAtrributes::ATRIB_RATE_OF_FIRE:
 				rofModStacks += mods[i]->stacks;
 				break;
-			case ModAdditionalAtrributes::ATRIB_REDUCED_RELOAD_TIME:
-				reloadModStacks += mods[i]->stacks;
+			case ModAdditionalAtrributes::ATRIB_DAMAGE_UP:
+				damageModStacks += mods[i]->stacks;
 				break;
 			case ModAdditionalAtrributes::ATRIB_MAX_HEALTH_INCREASE:
 				maxHealthStacks += mods[i]->stacks;
@@ -634,23 +629,16 @@ void AGun::UpdateCoreStats()
 	}
 
 
-	if (ammoModStacks > 0)
-	{
-		ammoCount = defaultAmmoCount * ammoModStacks * ammoModifierRate;
-
-	}
-
-
 	rpm = defaultRPM;
 	for (int j = 0; j < rofModStacks; j++)
 	{
 		rpm *= rpmModifierRate;
 	}
 
-	reloadTime = defaultReloadTime;
-	for (int j = 0; j < reloadModStacks; j++)
+	Damage = defaultDamage;
+	for (int j = 0; j < damageModStacks; j++)
 	{
-		reloadTime *= reloadTimeModifierRate;
+		Damage += damageModifier;
 	}
 
 	bulletSpeed = defaultBulletSpeed;
