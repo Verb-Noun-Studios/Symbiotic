@@ -70,7 +70,6 @@ public:
 	float cTimer = 0;
 	float mTimer= 0;
 	float rTimer = 0;
-	float sTimer = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float mMeleeRecharge;
@@ -86,7 +85,7 @@ public:
 
 
 	UFUNCTION(BlueprintCallable)
-	int ChooseAction(float healthThreshold);
+	int ChooseAction(float healthThreshold, int nextAction);
 
 	UFUNCTION(BlueprintCallable)
 	float update(FVector playerLoc, FVector bossLoc, float dt);
