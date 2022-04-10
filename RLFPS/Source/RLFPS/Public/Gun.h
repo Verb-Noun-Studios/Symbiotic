@@ -113,7 +113,7 @@ public:
 	void UpdateCoreStats();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void PlayMuzzleFlashFX(bool playVFX);
+	void PlayMuzzleFlashFX();
 
 protected:
 	// Called when the game starts or when spawned
@@ -174,7 +174,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
 	float rpmModifierRate = 1.5;
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
-	float ammoModifierRate = 0.8;
+	float damageModifier = 3;
 
 	/****************RUNTIME GUN STATS***************/
 	UPROPERTY(EditAnywhere, Category = "Gun Stats")
@@ -204,7 +204,11 @@ public:
 	float levelingRate = 1.5;
 	int level = 0;
 
+	UPROPERTY(BlueprintReadWrite)
+	int KilledEnemies;
 
+	UFUNCTION(BlueprintCallable)
+	void IncrementKills() { KilledEnemies++;  }
 
 
 	/*RETICLE RELATED THINGS*/

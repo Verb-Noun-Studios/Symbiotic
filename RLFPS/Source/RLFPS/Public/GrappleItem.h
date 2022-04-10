@@ -30,6 +30,6 @@ public:
 
 	TSubclassOf<AActor> playerClass;
 
-	void OnActiveAbility_Implementation(AActor* gun);
+	virtual void OnActiveAbility_Implementation(AActor* gun) override;
 
 };

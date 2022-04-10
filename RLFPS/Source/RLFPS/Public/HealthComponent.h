@@ -20,7 +20,11 @@ public:
 		float DefaultHealth;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-		float currentHealth;	
+		float currentHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		int armor;
+
 	// Called when the game starts
 	virtual void BeginPlay() override;
 

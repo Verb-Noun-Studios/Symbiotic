@@ -10,9 +10,11 @@
 #include "Particles/ParticleEmitter.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Bullet.h"
-#include "ModControllerSubsystem.h"
+#include "SaveControllerSubsystem.h"
 #include "../FragPlayer.h"
 #include "HealthComponent.h"
+
+
 
 // Sets default values
 AGun::AGun()
@@ -52,8 +54,8 @@ void AGun::BeginPlay()
 
 	{
 		// load mods if there are some in from the mods list
-		UModControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<UModControllerSubsystem>();
-		subsystem->LoadMods(mods, (UObject*)this);
+		USaveControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<USaveControllerSubsystem>();
+		subsystem->LoadGunData(this);
 		UpdateCoreStats();
 	}
 	curWeights = weights;
@@ -62,17 +64,11 @@ void AGun::BeginPlay()
 
 //called whenever this actor is being removed 
 void AGun::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+	Super::EndPlay(EndPlayReason);
 	// save mods to subsystem before unload
 	if (EndPlayReason == EEndPlayReason::Destroyed) {
-		UModControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<UModControllerSubsystem>();
-		// NEED A WAY TO DIFFERENTIATE BETWEEN DEATH AND CHANGING LEVELS
-		UHealthComponent* healthComponent = (UHealthComponent*)player->GetComponentByClass(UHealthComponent::StaticClass());
-		if (subsystem) {
-			if (healthComponent->currentHealth <= 0)
-				subsystem->ClearMods();
-			else
-				subsystem->SaveMods(mods);
-		}
+		USaveControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<USaveControllerSubsystem>();
+		subsystem->SaveGunData(this);
 	}
 }
 
@@ -90,6 +86,7 @@ void AGun::Tick(float DeltaTime)
 			
 			activeItem->OnActiveAbility(this);
 			activeItem->OnActiveAbility_Implementation(this);
+			activeItem->BeginRecharge();
 			//GEngine->AddOnScreenDebugMessage(-1, 0.10f, FColor::Yellow, TEXT("Calling active Item"));
 			
 		}
@@ -97,7 +94,7 @@ void AGun::Tick(float DeltaTime)
 		//UE_LOG(LogTemp, Warning, TEXT("Current Kills: %d   VS Required Kills: %d"), activeItem->currentKillCount, activeItem->requiredKillCount);
 	}
 
-	if (!reloading && ammoRemaining != ammoCount)
+	if (!reloading)
 	{
 		reloading = GetReloadKey();
 		if (reloading)
@@ -203,7 +200,8 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 		bullet->SetInitialSpeed(bulletSpeed);
 
 		FVector dir = RaycastFromCamera() - (GetActorLocation());
-		//LogFVector(dir);
+
+		
 		dir.Normalize();
 		bullet->SetInitialDirection(dir);
 		bullet->SetGun(this);
@@ -213,11 +211,20 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 			mod->OnSpawn(bullet);
 			mod->OnSpawn_Implementation(bullet);
 		}
+
+		for (UModBase* mod : mods)
+		{
+			mod->OnUpdateBulletVFX(bullet);
+			mod->OnUpdateBulletVFX_Implementation(bullet);
+		}
+
+		
+		
 	}
 
-	ammoRemaining--;
+	//ammoRemaining--;
 
-	PlayMuzzleFlashFX(true);
+	PlayMuzzleFlashFX();
 
 
 	
@@ -231,6 +238,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 
 	if (bullet)
 	{
+	
 		bullet->SetInitialSpeed(bulletSpeed);
 		bullet->SetInitialDirection(dir);
 		bullet->SetGun(this);
@@ -240,24 +248,34 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 			mod->OnSpawn(bullet);
 			mod->OnSpawn_Implementation(bullet);
 		}
+
+
+		for (UModBase* mod : mods)
+		{
+			mod->OnUpdateBulletVFX(bullet);
+			mod->OnUpdateBulletVFX_Implementation(bullet);
+		}
+		
 	}
 
-	ammoRemaining--;
-	PlayMuzzleFlashFX(false);
+	//ammoRemaining--;
 	
 }
 
 void AGun::AddMod(TSubclassOf<UModBase> modType) {
-	ensureAlways(modType.Get() != nullptr);
-	if (modType == nullptr) return;
+	if (modType == nullptr) {
+		UE_LOG(LogTemp, Error, TEXT("Called AddMod with NULL Class"));
+		return;
+	}
 	UModBase* newMod = NewObject<UModBase>(this, modType);
 	AddMod(newMod);
 }
 
-void AGun::AddMod(UModBase* mod)
-{
-	ensureAlways(mod != nullptr);
-	if (mod == nullptr) return;
+void AGun::AddMod(UModBase* mod) {
+	if (mod == nullptr) {
+		UE_LOG(LogTemp, Error, TEXT("Called AddMod with NULL Object"));
+		return;
+	}
 	for (int i = 0; i < mods.Num(); i++)
 	{
 		if (mod->GetClass() == mods[i]->GetClass())
@@ -395,8 +413,6 @@ void AGun::OnHitCallback(AActor* actor)
 			mods[i]->OnHit_Implementation(actor, GetWorld());
 		}
 	}
-
-	
 }
 
 void AGun::OnHitCallbackWithSkip(AActor* actor, FName name)
@@ -580,9 +596,8 @@ void AGun::LevelUp(UModBase* newModType)
 
 void AGun::UpdateCoreStats()
 {
-	int ammoModStacks = 0;
 	int rofModStacks = 0;
-	int reloadModStacks = 0;
+	int damageModStacks = 0;
 	int maxHealthStacks = 0;
 	int curHealthStacks = 0;
 
@@ -592,15 +607,11 @@ void AGun::UpdateCoreStats()
 		{
 			switch (atrib)
 			{
-
-			case ModAdditionalAtrributes::ATRIB_INCREASED_MAG:
-				ammoModStacks += mods[i]->stacks;
-				break;
 			case ModAdditionalAtrributes::ATRIB_RATE_OF_FIRE:
 				rofModStacks += mods[i]->stacks;
 				break;
-			case ModAdditionalAtrributes::ATRIB_REDUCED_RELOAD_TIME:
-				reloadModStacks += mods[i]->stacks;
+			case ModAdditionalAtrributes::ATRIB_DAMAGE_UP:
+				damageModStacks += mods[i]->stacks;
 				break;
 			case ModAdditionalAtrributes::ATRIB_MAX_HEALTH_INCREASE:
 				maxHealthStacks += mods[i]->stacks;
@@ -618,23 +629,16 @@ void AGun::UpdateCoreStats()
 	}
 
 
-	if (ammoModStacks > 0)
-	{
-		ammoCount = defaultAmmoCount * ammoModStacks * ammoModifierRate;
-
-	}
-
-
 	rpm = defaultRPM;
 	for (int j = 0; j < rofModStacks; j++)
 	{
 		rpm *= rpmModifierRate;
 	}
 
-	reloadTime = defaultReloadTime;
-	for (int j = 0; j < reloadModStacks; j++)
+	Damage = defaultDamage;
+	for (int j = 0; j < damageModStacks; j++)
 	{
-		reloadTime *= reloadTimeModifierRate;
+		Damage += damageModifier;
 	}
 
 	bulletSpeed = defaultBulletSpeed;

@@ -12,6 +12,7 @@ UHealthComponent::UHealthComponent()
 
 	DefaultHealth = 100;
 	currentHealth = DefaultHealth;
+	armor = 0;
 }
 
 
@@ -33,8 +34,8 @@ void UHealthComponent::TakeDamage(AActor* DamagedActor, float Damage, const UDam
 	{
 		//endGame
 	}
-
-	currentHealth = FMath::Clamp(currentHealth - Damage, 0.0f, currentHealth);
+	float actualDamage = FMath::Max(Damage - armor, 1.0f);
+	currentHealth = FMath::Clamp(currentHealth - actualDamage, 0.0f, currentHealth);
 }
 
 void UHealthComponent::Heal(float HP)
