@@ -48,7 +48,7 @@ void USaveControllerSubsystem::LoadGunData(AGun* gun) {
 		int stack_count = stacks[i];
 		// I hate this :(
 		mods.Add(mod);
-		for (int j = 0; j < stack_count; j++) {
+		for (int j = 1; j <= stack_count; j++) {
 			mod->stacks = j;
 			mod->OnApply(gun->player);
 		}
