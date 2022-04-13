@@ -148,7 +148,7 @@ public:
 	/*************FUNCTIONAL VARIABLES************/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (MakeEditWidget = true))
 	float MuzzleLocation;
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool firing = false;
 	UPROPERTY(BlueprintReadWrite)
 	int ammoRemaining;
