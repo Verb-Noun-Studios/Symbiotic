@@ -183,7 +183,7 @@ public:
 	int ammoCount;
 	UPROPERTY(EditAnywhere, Category = "Gun Stats")
 	float bulletSpeed;
-	UPROPERTY(EditAnywhere, Category = "Gun stats")
+	UPROPERTY(EditAnywhere, Category = "Gun stats", BlueprintReadWrite)
 	int rpm;
 	UPROPERTY(BlueprintReadWrite, Category = "Game Stats")
 	float Damage = 25;
