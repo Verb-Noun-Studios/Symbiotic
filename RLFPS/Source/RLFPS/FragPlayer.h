@@ -78,6 +78,7 @@ public:
 		FVector2D MovementInput;
 	UPROPERTY(Category = Input, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		bool JumpInput;
+
 	/* Stores relational (to last frame) mouse position */
 	FVector2D MouseVelocity;
 
