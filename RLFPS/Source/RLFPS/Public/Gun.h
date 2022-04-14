@@ -151,7 +151,7 @@ public:
 	/*************FUNCTIONAL VARIABLES************/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (MakeEditWidget = true))
 	float MuzzleLocation;
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool firing = false;
 	UPROPERTY(BlueprintReadWrite)
 	int ammoRemaining;
@@ -186,7 +186,7 @@ public:
 	int ammoCount;
 	UPROPERTY(EditAnywhere, Category = "Gun Stats")
 	float bulletSpeed;
-	UPROPERTY(EditAnywhere, Category = "Gun stats")
+	UPROPERTY(EditAnywhere, Category = "Gun stats", BlueprintReadWrite)
 	int rpm;
 	UPROPERTY(BlueprintReadWrite, Category = "Game Stats")
 	float Damage = 25;
