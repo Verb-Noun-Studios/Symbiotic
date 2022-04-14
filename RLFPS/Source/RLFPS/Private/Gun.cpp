@@ -440,6 +440,7 @@ void AGun::GainEXP(int exp)
 
 	if (readyToLevelUp)
 	{
+		
 		currentEXP += exp;
 		
 		return;
@@ -452,6 +453,7 @@ void AGun::GainEXP(int exp)
 		readyToLevelUp = true;
 		ModOptions.Empty();
 		ModOptions = GetNewModOptions();
+		TriggerUpgradeUI();
 		currentEXP = currentEXP - expToNextLevel;
 	}
 
@@ -589,7 +591,7 @@ void AGun::LevelUp(UModBase* newModType)
 		readyToLevelUp = false;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("LEVEL UP!"), true, FVector2D(2, 2));
+	DisableUpgradeUI();
 
 }
 
