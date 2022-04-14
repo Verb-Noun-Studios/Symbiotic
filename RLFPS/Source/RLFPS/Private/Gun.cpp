@@ -218,7 +218,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams)
 			mod->OnUpdateBulletVFX_Implementation(bullet);
 		}
 
-		
+		bullet->UpdateVFX();
 		
 	}
 
@@ -256,6 +256,7 @@ void AGun::SpawnRound(FActorSpawnParameters SpawnParams, FVector offset, FVector
 			mod->OnUpdateBulletVFX_Implementation(bullet);
 		}
 		
+		bullet->UpdateVFX();
 	}
 
 	//ammoRemaining--;
