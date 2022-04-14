@@ -83,7 +83,8 @@ public:
 	*/
 	UFUNCTION(BlueprintCallable)
 	void GainEXP(int exp);
-	
+	UFUNCTION(BlueprintImplementableEvent)
+	void TriggerUpgradeUI();
 	/*
 	* This is a Blueprint callable function to get level progress.
 	*/
@@ -106,6 +107,8 @@ public:
 	*/
 
 	void LevelUp(UModBase* newModType);
+	UFUNCTION(BlueprintImplementableEvent)
+	void DisableUpgradeUI();
 
 	/*
 	* Updates RPM, reload time, and ammo count based on mods.
@@ -148,7 +151,7 @@ public:
 	/*************FUNCTIONAL VARIABLES************/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (MakeEditWidget = true))
 	float MuzzleLocation;
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool firing = false;
 	UPROPERTY(BlueprintReadWrite)
 	int ammoRemaining;
@@ -167,7 +170,7 @@ public:
 	int defaultRPM = 120;
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
 	int defaultBulletSpeed = 120;
-	UPROPERTY(EditAnywhere, Category = "Game Stats")
+	UPROPERTY(EditAnywhere, Category = "Game Stats", BlueprintReadWrite)
 	float defaultDamage = 25;
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
 	float reloadTimeModifierRate = 0.8;
@@ -183,7 +186,7 @@ public:
 	int ammoCount;
 	UPROPERTY(EditAnywhere, Category = "Gun Stats")
 	float bulletSpeed;
-	UPROPERTY(EditAnywhere, Category = "Gun stats")
+	UPROPERTY(EditAnywhere, Category = "Gun stats", BlueprintReadWrite)
 	int rpm;
 	UPROPERTY(BlueprintReadWrite, Category = "Game Stats")
 	float Damage = 25;
