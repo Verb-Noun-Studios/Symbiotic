@@ -70,6 +70,8 @@ public:
 	float cTimer = 0;
 	float mTimer= 0;
 	float rTimer = 0;
+	float actionTimer = 0;
+	float actionDelay = .5;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float mMeleeRecharge;

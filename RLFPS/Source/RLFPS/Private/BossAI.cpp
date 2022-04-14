@@ -46,7 +46,12 @@ int ABossAI::ChooseAction(float healthThreshold, int nextAction)
 	{
 		return 1;
 	}
-	else if(distanceToPlayer > mMeleeRange)
+	if (actionTimer <= 0)
+	{
+		return nextAction;
+	}
+	/*
+	//else if(distanceToPlayer > mMeleeRange)
 	{
 		if (rTimer <= 0 && nextAction == 2)
 		{
@@ -57,7 +62,8 @@ int ABossAI::ChooseAction(float healthThreshold, int nextAction)
 			return 0;
 		}
 	}
-	return nextAction;
+	*/
+	return 0;
 		
 }
 
@@ -69,6 +75,8 @@ float ABossAI::update(FVector playerLoc, FVector bossLoc, float dt)
 		mTimer -= dt;
 	if (rTimer > 0.0)
 		rTimer -= dt;
+	if (actionTimer > 0)
+		actionTimer -= dt;
 
 	return distanceToPlayer;
 }
@@ -84,6 +92,8 @@ void ABossAI::resetTimer(int num)
 	case 1:
 		rTimer = mRangedRecharge;
 		break;
+	case 2:
+		actionTimer = actionDelay;
 	}
 }
 
