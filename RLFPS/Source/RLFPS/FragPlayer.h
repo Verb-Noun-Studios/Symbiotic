@@ -51,10 +51,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "fragCharacter")
 		void UpdateControls(bool rightHanded);
 
-	/* Add rotation to player */
-	UFUNCTION(BluePrintCallable, Category = "fragCharacter")
-		void AddRotation();
-
 	/* Gets the player's viewing angles */
 	UFUNCTION(BlueprintCallable, Category = "fragCharacter")
 		FRotator GetRotation();
@@ -96,7 +92,7 @@ public:
 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		UFragMovementComponent* MovementComponent;
 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-		UFragPlayerCollisionComponent* CollisionComponent;
+		UFragPlayerCollisionComponent* CollisionComponen;
 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		UHealthComponent* HealthComponent;
 
@@ -110,24 +106,6 @@ public:
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		UCameraComponent* FirstPersonCameraComponent;
-
-	/** Control xMin and xMax */
-	UPROPERTY(Category = "Weapon ", EditAnywhere, BlueprintReadWrite)
-		float xMin;
-	UPROPERTY(Category = "Weapon ", EditAnywhere, BlueprintReadWrite)
-		float xMax;
-
-	/** Control yMin and yMax */
-	UPROPERTY(Category = "Weapon ", EditAnywhere, BlueprintReadWrite)
-		float yMin;
-	UPROPERTY(Category = "Weapon ", EditAnywhere, BlueprintReadWrite)
-		float yMax;
-
-	/** Control yMin and yMax */
-	UPROPERTY(Category = "Weapon ", EditAnywhere, BlueprintReadWrite)
-		float zMin;
-	UPROPERTY(Category = "Weapon ", EditAnywhere, BlueprintReadWrite)
-		float zMax;
 
 	/** Set the Max Pitch For Camera */
 	UPROPERTY(Category = "Camera ", EditAnywhere, BlueprintReadWrite)
