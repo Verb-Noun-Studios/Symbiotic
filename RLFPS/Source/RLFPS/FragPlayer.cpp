@@ -250,7 +250,6 @@ void AFragPlayer::MouseY(float Value)
 FVector2D AFragPlayer::ConsumeMovementInput()
 {
 	FVector2D LastWishMove = MovementInput;
-	MovementInput = FVector2D::ZeroVector;
 	return LastWishMove;
 }
 FVector2D AFragPlayer::ConsumeMouseInput()

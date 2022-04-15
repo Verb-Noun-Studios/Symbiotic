@@ -41,6 +41,7 @@ public:
 		int32 MaxStepSize = 18;
 public:
 	/** Is the player touching the ground. This includes steep slopes and such */
+	UPROPERTY(BlueprintReadOnly)
 	bool IsGrounded;
 	/** Determines whether the player can run or not */
 	bool CanGroundMove;
