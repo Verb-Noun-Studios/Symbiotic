@@ -26,11 +26,11 @@ void UAcidMod::OnHit_Implementation(AActor* hitActor, UWorld* world)
 	SpawnParams->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	
 	float tempChance = FMath::RandRange(0.0f, 1.0f);
-
+	
 	if (tempChance < chance + additionalchancePerStack * stacks)
 	{
 		AActor* acidActor = World->SpawnActor<AActor>(acidActorClass, hitActor->GetActorLocation(), hitActor->GetActorRotation(), *SpawnParams);
-
+		
 		AAcid* acid = Cast<AAcid>(acidActor);
 
 		acid->damage = damage;
@@ -38,9 +38,9 @@ void UAcidMod::OnHit_Implementation(AActor* hitActor, UWorld* world)
 		acid->interval = interval;
 
 		UE_LOG(LogTemp, Warning, TEXT("Spawning Acid"));
-
+		
 	}
-
+	
 
 	
 }
