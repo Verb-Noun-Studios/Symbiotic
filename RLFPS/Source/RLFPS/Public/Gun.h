@@ -83,7 +83,8 @@ public:
 	*/
 	UFUNCTION(BlueprintCallable)
 	void GainEXP(int exp);
-	
+	UFUNCTION(BlueprintImplementableEvent)
+	void TriggerUpgradeUI();
 	/*
 	* This is a Blueprint callable function to get level progress.
 	*/
@@ -106,6 +107,8 @@ public:
 	*/
 
 	void LevelUp(UModBase* newModType);
+	UFUNCTION(BlueprintImplementableEvent)
+	void DisableUpgradeUI();
 
 	/*
 	* Updates RPM, reload time, and ammo count based on mods.
@@ -167,7 +170,7 @@ public:
 	int defaultRPM = 120;
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
 	int defaultBulletSpeed = 120;
-	UPROPERTY(EditAnywhere, Category = "Game Stats")
+	UPROPERTY(EditAnywhere, Category = "Game Stats", BlueprintReadWrite)
 	float defaultDamage = 25;
 	UPROPERTY(EditAnywhere, Category = "Game Stats")
 	float reloadTimeModifierRate = 0.8;

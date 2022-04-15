@@ -19,7 +19,6 @@ void ABossAI::BeginPlay()
 	Super::BeginPlay();
 	HealthComponent->currentHealth = mMaxHealth;
 	HealthComponent->DefaultHealth = mMaxHealth;
-	sTimer = mSummonTime;
 }
 
 // Called every frame
@@ -35,43 +34,35 @@ void ABossAI::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-int ABossAI::ChooseAction(float healthThreshold)
+int ABossAI::ChooseAction(float healthThreshold, int nextAction)
 {
 	
 	if (HealthComponent->currentHealth < healthThreshold)
 	{
 		return 4;
 	}
-	
-	if (sTimer <= 0)
-	{
-		return 5;
-	}
 
 	if (distanceToPlayer <= mMeleeRange && mTimer <= 0)
 	{
 		return 1;
 	}
-	else if(distanceToPlayer > mMeleeRange)
+	if (actionTimer <= 0)
 	{
-		if (cTimer >= mChargeTime && !hasCharged)
-		{
-			cTimer = 0.0f;
-			hasCharged = true;
-			return 3;
-		}
-		else if (cTimer >= mChargeTime && hasCharged)
-		{
-			cTimer = 0.0f;
-			hasCharged = false;
-			return 6;
-		}
-
-		if (rTimer <= 0)
+		return nextAction;
+	}
+	/*
+	//else if(distanceToPlayer > mMeleeRange)
+	{
+		if (rTimer <= 0 && nextAction == 2)
 		{
 			return 2;
 		}
+		else if (nextAction == 2)
+		{
+			return 0;
+		}
 	}
+	*/
 	return 0;
 		
 }
@@ -80,20 +71,13 @@ float ABossAI::update(FVector playerLoc, FVector bossLoc, float dt)
 {
 	distanceToPlayer = FVector::Dist(playerLoc, bossLoc)/100;
 
-	if (distanceToPlayer > mChargeRange)
-		cTimer += dt;
-	else
-		cTimer = 0.0;
-
 	if (mTimer > 0.0)
 		mTimer -= dt;
 	if (rTimer > 0.0)
 		rTimer -= dt;
+	if (actionTimer > 0)
+		actionTimer -= dt;
 
-	if (sTimer > 0)
-	{
-		sTimer -= dt;
-	}
 	return distanceToPlayer;
 }
 
@@ -109,8 +93,7 @@ void ABossAI::resetTimer(int num)
 		rTimer = mRangedRecharge;
 		break;
 	case 2:
-		sTimer = mSummonTime;
-		break;
+		actionTimer = actionDelay;
 	}
 }
 
