@@ -202,7 +202,7 @@ void UFragMovementComponent::FlyMove()
 	wishspeed *= 1000.f;
 	ApplyAcceleration(wishdir, wishspeed, SpectatorAccelerate);
 	// move
-	Player->CollisionComponent->VectorMA(GetOrigin(), delta, playerVelocity, origin);
+	Player->CollisionComponen->VectorMA(GetOrigin(), delta, playerVelocity, origin);
 	//origin.Z = 0.f;
 }
 bool UFragMovementComponent::CheckJump()

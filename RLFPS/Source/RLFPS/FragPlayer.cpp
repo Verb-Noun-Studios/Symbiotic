@@ -50,19 +50,19 @@ AFragPlayer::AFragPlayer()
 	FirstPersonCameraComponent->SetupAttachment(PlayerForwardRefComponent);
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(0.f, 0.f, 56.f - 4.f));
 	// Add the character collision and movement component
-	CollisionComponent = CreateDefaultSubobject<UFragPlayerCollisionComponent>(TEXT("Defragr Character Collision"));
+	CollisionComponen = CreateDefaultSubobject<UFragPlayerCollisionComponent>(TEXT("Defragr Character Collision"));
 	MovementComponent = CreateDefaultSubobject<UFragMovementComponent>(TEXT("Defragr Character Movement"));
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Defragr Health Component"));
-	if (CollisionComponent)
+	if (CollisionComponen)
 	{
-		CollisionComponent->Player = this;
-		CollisionComponent->MovementComponent = MovementComponent;
+		CollisionComponen->Player = this;
+		CollisionComponen->MovementComponent = MovementComponent;
 	}
 	// Throw down the character movement
 	if (MovementComponent)
 	{
 		MovementComponent->UpdatedComponent = Collider;
-		MovementComponent->CollisionComponent = CollisionComponent;
+		MovementComponent->CollisionComponent = CollisionComponen;
 		MovementComponent->Player = this;
 	}
 }

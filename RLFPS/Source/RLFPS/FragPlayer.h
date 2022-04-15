@@ -96,7 +96,7 @@ public:
 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		UFragMovementComponent* MovementComponent;
 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-		UFragPlayerCollisionComponent* CollisionComponent;
+		UFragPlayerCollisionComponent* CollisionComponen;
 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		UHealthComponent* HealthComponent;
 
