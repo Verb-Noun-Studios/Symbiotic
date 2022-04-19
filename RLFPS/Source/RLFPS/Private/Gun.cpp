@@ -586,7 +586,7 @@ void AGun::LevelUp(UModBase* newModType)
 	AddMod(newModType);
 	//AddMod(newModType);
 
-	expToNextLevel *= levelingRate;
+	expToNextLevel = FMath::Square(expToNextLevel / 2) + (expToNextLevel / 2);
 	if (GetLevelPercentage() != 1)
 	{
 		readyToLevelUp = false;
