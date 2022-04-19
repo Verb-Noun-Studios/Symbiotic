@@ -4,6 +4,7 @@
 #include "BeaconActor.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "EngineUtils.h"
 #include "Gun.h"
 #include "ActiveItem.h"
@@ -96,16 +97,15 @@ void ABeaconActor::BeaconEventComplete() {
 
 	
 	
-	if (Cast<UActiveItem>(newMod) == nullptr)
+	if (!UKismetMathLibrary::ClassIsChildOf(newMod,UActiveItem::StaticClass()))
 	{
 		UE_LOG(LogActor, Warning, TEXT("Failed to cast to active item"));
 		gun->AddMod(newMod);
 
-		
 	}
 	else
 	{
-		UActiveItem* activeItem = Cast<UActiveItem>(newMod);
+		UActiveItem* activeItem = NewObject<UActiveItem>((UObject*)this, newMod);;
 		gun->ReplaceActiveItem(activeItem);
 		UE_LOG(LogActor, Warning, TEXT("Adding Active Item"));
 	}
