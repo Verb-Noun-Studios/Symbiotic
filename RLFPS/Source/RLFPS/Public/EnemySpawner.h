@@ -8,6 +8,17 @@
 #include "NavigationSystem.h"
 #include "EnemySpawner.generated.h"
 
+USTRUCT(BlueprintType)
+struct FEnemySpawnChoice {
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+	float chance;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> type;
+};
+
 UCLASS()
 class RLFPS_API AEnemySpawner : public AActor
 {
@@ -37,6 +48,10 @@ public:
 	int InitialEnemies = 10;
 	float elapsedTime = 0;
 	
+	// List of the types we can spawn along with the chance to spawn
+	// will default to the last item in the array
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FEnemySpawnChoice> SpawnChoices;
 
 	float boostTime = 0;
 	float boostMultiplier = 0;
@@ -60,9 +75,24 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SpawnInitialEnemies();
 
+	bool SpawnEnemy();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnSpawnEnemy(AActor* actor);
+
+	bool TrySpawn();
+	bool TrySpawnMultiple(int count);
+
+	UFUNCTION(BlueprintCallable)
+	TSubclassOf<AActor> GetRandomType();
 
 private:
 	TArray<FNavPoly> PolyCache;
+
+	class AFragPlayer* Player;
+
+
+
 public:
 
 	UFUNCTION(BlueprintCallable)

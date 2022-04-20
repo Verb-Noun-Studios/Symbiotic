@@ -51,7 +51,9 @@ void AGun::BeginPlay()
 	SpawnParams->Instigator = GetInstigator();
 	SpawnParams->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	spawnParams = SpawnParams;
-
+	
+	
+	player = (AFragPlayer*)UGameplayStatics::GetActorOfClass(GetWorld(), AFragPlayer::StaticClass());
 	{
 		// load mods if there are some in from the mods list
 		USaveControllerSubsystem* subsystem = GetGameInstance()->GetSubsystem<USaveControllerSubsystem>();
@@ -59,7 +61,7 @@ void AGun::BeginPlay()
 		UpdateCoreStats();
 	}
 	curWeights = weights;
-	player = (AFragPlayer*)UGameplayStatics::GetActorOfClass(GetWorld(), AFragPlayer::StaticClass());
+	
 }
 
 //called whenever this actor is being removed 
