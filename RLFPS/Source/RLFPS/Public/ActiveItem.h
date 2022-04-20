@@ -37,6 +37,7 @@ public:
 
 	void FinishRecharge();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FTimerHandle CooldownTimerHandle;
 
 };
