@@ -104,9 +104,9 @@ bool AEnemySpawner::SpawnEnemy() {
 
 	if (camVolume.IntersectBox(component->Bounds.Origin + point, component->Bounds.BoxExtent)) {
 		//return false;
-		const FName TraceTag("MyTraceTag");
+		//const FName TraceTag("MyTraceTag");
 
-		GetWorld()->DebugDrawTraceTag = TraceTag;
+		//GetWorld()->DebugDrawTraceTag = TraceTag;
 
 		FCollisionQueryParams traceParams;
 		traceParams.AddIgnoredActor(Player);
