@@ -4,8 +4,10 @@
 #include "BeaconActor.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "EngineUtils.h"
 #include "Gun.h"
+#include "ActiveItem.h"
 
 // Sets default values
 ABeaconActor::ABeaconActor()
@@ -92,7 +94,21 @@ void ABeaconActor::BeaconEventComplete() {
 	MeshBottom->SetMaterial(1, BurntOutMaterial);
 
 	AGun* gun = (AGun*)UGameplayStatics::GetActorOfClass(GetWorld(), AGun::StaticClass() );
-	gun->AddMod(newMod);
+
+	
+	
+	if (!UKismetMathLibrary::ClassIsChildOf(newMod,UActiveItem::StaticClass()))
+	{
+		UE_LOG(LogActor, Warning, TEXT("Failed to cast to active item"));
+		gun->AddMod(newMod);
+
+	}
+	else
+	{
+		UActiveItem* activeItem = NewObject<UActiveItem>((UObject*)this, newMod);;
+		gun->ReplaceActiveItem(activeItem);
+		UE_LOG(LogActor, Warning, TEXT("Adding Active Item"));
+	}
 }
 
 bool ABeaconActor::IsBeaconEventStarted() const {
