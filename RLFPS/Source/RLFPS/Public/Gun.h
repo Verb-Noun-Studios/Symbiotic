@@ -61,6 +61,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnHitCallbackWithSkip(AActor* actor, FName name);
 
+	UFUNCTION(BlueprintCallable)
+	void OnLowHealthCallback(float deltaTime);
+
 	/*
 	* Spawns a bullet If enough time has passed to amch the RPM. Calls mods OnFire functions.
 	*/
@@ -113,6 +116,7 @@ public:
 	/*
 	* Updates RPM, reload time, and ammo count based on mods.
 	*/
+	UFUNCTION(BlueprintCallable)
 	void UpdateCoreStats();
 
 	UFUNCTION(BlueprintImplementableEvent)

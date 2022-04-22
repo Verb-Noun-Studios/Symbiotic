@@ -38,11 +38,16 @@ void UModBase::OnReload_Implementation(AActor* player)
 void UModBase::OnUpdateBulletVFX_Implementation(ABullet* bullet)
 {
 }
-//das
-//void UModBase::OnActiveAbility_Implementation(AActor* player)
-//{
-//	UE_LOG(LogTemp, Warning, TEXT("Calling Test On Active"));
-//}
+
+void UModBase::OnLowHealth_Implementation(float deltaTime)
+{
+}
+
+
+void UModBase::OnFlight_Implementation(float deltaTime)
+{
+}
+
 
 
 AActor* UModBase::GetActorOfClass_Internal(TSubclassOf<AActor> actorClass)

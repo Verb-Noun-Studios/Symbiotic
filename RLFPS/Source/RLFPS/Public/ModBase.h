@@ -71,6 +71,9 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void OnUpdateBulletVFX(ABullet* bullet);
 
+	UFUNCTION(BlueprintNativeEvent)
+	void OnLowHealth();
+
 	
 	UFUNCTION(BlueprintCallable)
 	AActor* GetActorOfClass_Internal(TSubclassOf<AActor> actorClass);

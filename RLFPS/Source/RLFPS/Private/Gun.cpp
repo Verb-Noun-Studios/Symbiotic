@@ -436,6 +436,18 @@ void AGun::OnHitCallbackWithSkip(AActor* actor, FName name)
 
 }
 
+void AGun::OnLowHealthCallback(float deltaTime)
+{
+	if (mods.Num())
+	{
+		for (int i = 0; i < mods.Num(); i++)
+		{
+			mods[i]->OnLowHealth(deltaTime);
+			mods[i]->OnLowHealth_Implementation(deltaTime);
+		}
+	}
+}
+
 
 void AGun::GainEXP(int exp)
 {
