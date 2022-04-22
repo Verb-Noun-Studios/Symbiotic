@@ -44,10 +44,6 @@ void UModBase::OnLowHealth_Implementation(float deltaTime)
 }
 
 
-void UModBase::OnFlight_Implementation(float deltaTime)
-{
-}
-
 
 
 AActor* UModBase::GetActorOfClass_Internal(TSubclassOf<AActor> actorClass)
