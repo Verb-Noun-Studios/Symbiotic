@@ -38,6 +38,7 @@ void AGruntCharacter::Tick(float DeltaTime)
 
 		if (effect->dead)
 		{
+			effect->OnDestroy(this);
 			statusEffects.Remove(effect);
 			effect->ConditionalBeginDestroy();
 			UpdateStatusEffects();
@@ -67,7 +68,9 @@ void AGruntCharacter::AddEffect(UStatusEffect* newEffect)
 		}
 	}
 	newEffect->owner = this;
+
 	statusEffects.Add(newEffect);
+	newEffect->OnStart(this);
 	UpdateStatusEffects();
 	UE_LOG(LogTemp, Warning, TEXT("AddingEffect: %s"), *(newEffect->name.ToString()));
 }

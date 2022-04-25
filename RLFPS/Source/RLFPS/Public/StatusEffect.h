@@ -51,6 +51,12 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void OnTick(AActor* actor, float deltaTime);
 
+	UFUNCTION(BlueprintNativeEvent)
+	void OnDestroy(AActor* actor);
+	
+	UFUNCTION(BlueprintNativeEvent)
+	void OnStart(AActor* actor);
+
 	UFUNCTION(BlueprintCallable)
 	AActor* GetActorOfClass_Internal(TSubclassOf<AActor> actorClass);
 

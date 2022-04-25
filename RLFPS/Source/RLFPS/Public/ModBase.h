@@ -72,7 +72,7 @@ public:
 	void OnUpdateBulletVFX(ABullet* bullet);
 
 	UFUNCTION(BlueprintNativeEvent)
-	void OnLowHealth();
+	void OnLowHealth(float deltatime);
 
 	
 	UFUNCTION(BlueprintCallable)

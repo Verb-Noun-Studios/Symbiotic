@@ -36,6 +36,16 @@ void UStatusEffect::OnTick_Implementation(AActor* actor, float deltaTime)
 	}
 }
 
+void UStatusEffect::OnDestroy_Implementation(AActor* actor)
+{
+	
+}
+
+void UStatusEffect::OnStart_Implementation(AActor* actor)
+{
+
+}
+
 AActor* UStatusEffect::GetActorOfClass_Internal(TSubclassOf<AActor> actorClass)
 {
 	UWorld* world = GetWorld();
