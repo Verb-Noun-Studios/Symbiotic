@@ -102,6 +102,9 @@ public:
 	UTexture2D* image;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* imageNoText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FString> Stats;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

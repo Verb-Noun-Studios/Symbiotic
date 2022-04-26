@@ -17,32 +17,26 @@ UModBase::~UModBase()
 
 void UModBase::OnApply_Implementation(AFragPlayer* player)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Calling Base Mod On Apply"));
 }
 
 void UModBase::OnSpawn_Implementation(ABullet* bullet)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Calling Base Mod On Spawn"));
 }
 
 void UModBase::OnFire_Implementation(AGun* gun)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Calling Base Mod On Fire"));
 }
 
 void UModBase::OnHit_Implementation(AActor* hitActor, UWorld* world)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Calling Test On Hit"));
 }
 
 void UModBase::OnReload_Implementation(AActor* player)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Calling Test On Reload"));
 }
 
 void UModBase::OnUpdateBulletVFX_Implementation(ABullet* bullet)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Calling Test On Reload"));
 }
 //das
 //void UModBase::OnActiveAbility_Implementation(AActor* player)
