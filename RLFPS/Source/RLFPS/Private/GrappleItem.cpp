@@ -16,7 +16,7 @@ UGrappleItem::~UGrappleItem()
 
 }
 
-void UGrappleItem::OnActiveAbility_Implementation(AActor* gun)
+void UGrappleItem::LaunchGrapple(AActor* gun)
 { 
 
 	UWorld* World = GetWorld();
