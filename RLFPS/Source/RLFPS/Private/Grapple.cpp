@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Grapple.h"
+#include "Kismet/GameplayStatics.h"
+#include "../FragPlayer.h"
 
 // Sets default values
 AGrapple::AGrapple()
@@ -28,5 +29,9 @@ void AGrapple::Tick(float DeltaTime)
 
 void AGrapple::OnStart_Implementation(AActor* gun)
 {
+	/*AActor* PlayerPawn = UGameplayStatics::GetActorOfClass(GetWorld(), AFragPlayer::StaticClass());
 
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	PlayerPawn->DisableInput(PlayerController);
+	*/
 }
