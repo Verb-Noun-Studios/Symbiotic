@@ -4,12 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GruntCharacter.h"
 #include "BossAI.generated.h"
 
-class UHealthComponent;
 
 UCLASS()
-class RLFPS_API ABossAI : public ACharacter
+class RLFPS_API ABossAI : public AGruntCharacter
 {
 	GENERATED_BODY()
 
@@ -17,8 +17,6 @@ public:
 	// Sets default values for this character's properties
 	ABossAI();
 
-	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		UHealthComponent* HealthComponent;
 
 protected:
 	// Called when the game starts or when spawned
