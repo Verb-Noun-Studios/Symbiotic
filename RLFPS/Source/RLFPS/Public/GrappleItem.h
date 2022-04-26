@@ -30,6 +30,7 @@ public:
 
 	TSubclassOf<AActor> playerClass;
 
-	virtual void OnActiveAbility_Implementation(AActor* gun) override;
+	UFUNCTION(BlueprintCallable)
+	void LaunchGrapple(AActor* gun);
 
 };
