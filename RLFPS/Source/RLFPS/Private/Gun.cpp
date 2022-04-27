@@ -87,7 +87,7 @@ void AGun::Tick(float DeltaTime)
 		{
 			
 			activeItem->OnActiveAbility(this);
-			activeItem->OnActiveAbility_Implementation(this);
+			//activeItem->OnActiveAbility_Implementation(this);
 			activeItem->BeginRecharge();
 			//GEngine->AddOnScreenDebugMessage(-1, 0.10f, FColor::Yellow, TEXT("Calling active Item"));
 			
@@ -270,48 +270,35 @@ void AGun::AddMod(TSubclassOf<UModBase> modType) {
 		UE_LOG(LogTemp, Error, TEXT("Called AddMod with NULL Class"));
 		return;
 	}
-	UModBase* newMod = NewObject<UModBase>(this, modType);
-	AddMod(newMod);
-}
 
-void AGun::AddMod(UModBase* mod) {
-	if (mod == nullptr) {
-		UE_LOG(LogTemp, Error, TEXT("Called AddMod with NULL Object"));
-		return;
-	}
-	for (int i = 0; i < mods.Num(); i++)
-	{
-		if (mod->GetClass() == mods[i]->GetClass())
-		{
-			mods[i]->stacks++;
-			mods[i]->OnApply(player);
-			mod->ConditionalBeginDestroy();
-			UpdateCoreStats();
-			return;
+	
+	if (modType->IsChildOf(UActiveItem::StaticClass())) {
+		if (activeItem)
+			activeItem->ConditionalBeginDestroy();
+
+		activeItem = (UActiveItem*)NewObject<UActiveItem>(this, modType);
+	} else {
+		
+
+		UModBase* selectedMod = nullptr;
+		for (UModBase* mod : mods) {
+			if (mod->GetClass() == modType.Get()) {
+				selectedMod = mod;
+				selectedMod->stacks++;
+				break;
+			}
 		}
-	}
 
-	mods.Add(mod);
-	mod->OnApply(player);
-	UpdateCoreStats();
+		if (selectedMod == nullptr) {
+			selectedMod = NewObject<UModBase>(this, modType);
+			mods.Add(selectedMod);
+		}
 
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *mod->GetClass()->GetFullName() );
-	return;
-}
-
-
-void AGun::ReplaceActiveItem(UActiveItem* newItem)
-{
-	if (activeItem)
-	{
-
-		activeItem->ConditionalBeginDestroy();
-	
+		selectedMod->OnApply(player);
+		UpdateCoreStats();
 	}
 	
-	activeItem = newItem;
 }
-
 
 
 
@@ -474,7 +461,7 @@ float AGun::GetLevelPercentage()
 	return (float)currentEXP / (float)expToNextLevel;
 }
 
-TArray<UModBase*> AGun::GetModOptions()
+TArray<TSubclassOf<UModBase>> AGun::GetModOptions()
 {
 	//TArray<UModBase*> options;
 	//for (UModBase* type : ModOptions)
@@ -484,7 +471,7 @@ TArray<UModBase*> AGun::GetModOptions()
 	return ModOptions;
 }
 
-TArray<UModBase*> AGun::GetNewModOptions()
+TArray<TSubclassOf<UModBase>> AGun::GetNewModOptions()
 {
 	
 	int rarity = 0;
@@ -503,25 +490,25 @@ TArray<UModBase*> AGun::GetNewModOptions()
 		rnd -= curWeights[i];
 	}
 
-	UModBase* modOne = nullptr;
+	TSubclassOf<UModBase> modOne;
 	int randOne;
 	switch (rarity)
 	{
 	case 0:
 		randOne = FMath::RandHelper(modsCommon.Num());
-		modOne = NewObject<UModBase>((UObject*)this, modsCommon[randOne]);;
+		modOne = modsCommon[randOne];
 		break;
 	case 1:
 		randOne = FMath::RandHelper(modsUncommon.Num());
-		modOne = NewObject<UModBase>((UObject*)this, modsUncommon[randOne]);;
+		modOne = modsUncommon[randOne];
 		break;
 	case 2:
 		randOne = FMath::RandHelper(modsRare.Num());
-		modOne = NewObject<UModBase>((UObject*)this, modsRare[randOne]);;
+		modOne = modsRare[randOne];
 		break;
 	case 3:
 		randOne = FMath::RandHelper(modsMythic.Num());
-		modOne = NewObject<UModBase>((UObject*)this, modsMythic[randOne]);;
+		modOne = modsMythic[randOne];
 		break;
 	}
 
@@ -542,7 +529,7 @@ TArray<UModBase*> AGun::GetNewModOptions()
 	}
 
 	bool mythicOut = true;
-	UModBase* modTwo = nullptr;
+	TSubclassOf<UModBase> modTwo;
 	do
 	{
 		if (modTwo != NULL)
@@ -554,30 +541,30 @@ TArray<UModBase*> AGun::GetNewModOptions()
 		{
 		case 0:
 			randTwo = FMath::RandHelper(modsCommon.Num());
-			modTwo = NewObject<UModBase>((UObject*)this, modsCommon[randTwo]);;
+			modTwo = modsCommon[randTwo];
 			break;
 		case 1:
 			randTwo = FMath::RandHelper(modsUncommon.Num());
-			modTwo = NewObject<UModBase>((UObject*)this, modsUncommon[randTwo]);;
+			modTwo = modsUncommon[randTwo];
 			break;
 		case 2:
 			randTwo = FMath::RandHelper(modsRare.Num());
-			modTwo = NewObject<UModBase>((UObject*)this, modsRare[randTwo]);;
+			modTwo = modsRare[randTwo];
 			break;
 		case 3:
 			randTwo = FMath::RandHelper(modsMythic.Num());
-			modTwo = NewObject<UModBase>((UObject*)this, modsMythic[randTwo]);;
+			modTwo = modsMythic[randTwo];
 			mythicOut = false;
 			break;
 		}
 
-	} while (modTwo->name == modOne->name && mythicOut);
+	} while (modTwo == modOne && mythicOut);
 
-	return TArray<UModBase*>{modOne, modTwo};
+	return TArray<TSubclassOf<UModBase>>{modOne, modTwo};
 }
 
 
-void AGun::LevelUp(UModBase* newModType)
+void AGun::LevelUp(TSubclassOf<UModBase> newModType)
 {
 	if (level == 0) {
 		OnFirstUpgrade();

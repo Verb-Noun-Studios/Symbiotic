@@ -16,25 +16,29 @@ UGrappleItem::~UGrappleItem()
 
 }
 
-void UGrappleItem::OnActiveAbility_Implementation(AActor* gun)
+void UGrappleItem::LaunchGrapple(AActor* gun)
 { 
 
 	UWorld* World = GetWorld();
 	FHitResult result;
 	FVector start = gun->GetActorLocation() + gun->GetActorForwardVector() * minGrappleDistance;
 	FCollisionQueryParams CollisionParameters;
+	FCollisionShape shape;
+	shape.SetSphere(50);
 	FVector end = gun->GetActorLocation() + gun->GetActorForwardVector() * maxGrappleDistance;
 	
 	World->LineTraceSingleByChannel(result, gun->GetActorLocation(), start, ECollisionChannel::ECC_Visibility);
-	//DrawDebugLine(GetWorld(), start, end, FColor::Red, true, 3);
+	
 
 	if (result.IsValidBlockingHit() && result.Actor != gun)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Coliding with: %s"), result.Actor->GetFName().ToString());
+		
 		return;
 	}
 
 	World->LineTraceSingleByChannel(result, start, end, ECollisionChannel::ECC_Visibility);
+
+	World->SweepSingleByChannel(result, start, end, FQuat(0, 0, 0, 0), ECollisionChannel::ECC_WorldStatic, shape, CollisionParameters, FCollisionResponseParams::DefaultResponseParam);
 
 	if (result.IsValidBlockingHit())
 	{
@@ -48,9 +52,6 @@ void UGrappleItem::OnActiveAbility_Implementation(AActor* gun)
 		currentKillCount = 0;
 
 	}
-
-	
-
 
 }
 
