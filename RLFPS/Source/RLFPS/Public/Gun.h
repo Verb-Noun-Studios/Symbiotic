@@ -23,10 +23,6 @@ class RLFPS_API AGun : public AActor
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> ProjectileClass;
 
-private:
-
-	void AddMod_Internal(UModBase* mod);
-	
 
 public:	
 	// Sets default values for this actor's properties

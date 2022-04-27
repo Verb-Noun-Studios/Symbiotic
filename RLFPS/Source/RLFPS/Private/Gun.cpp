@@ -271,46 +271,33 @@ void AGun::AddMod(TSubclassOf<UModBase> modType) {
 		return;
 	}
 
-	UModBase* newMod = NewObject<UModBase>(this, modType);
 	
 	if (modType->IsChildOf(UActiveItem::StaticClass())) {
 		if (activeItem)
 			activeItem->ConditionalBeginDestroy();
 
-		activeItem = (UActiveItem*)newMod;
+		activeItem = (UActiveItem*)NewObject<UActiveItem>(this, modType);
 	} else {
-		AddMod_Internal(newMod);
-	}
+		
 
-
-	
-}
-
-void AGun::AddMod_Internal(UModBase* mod) {
-
-	
-	if (mod == nullptr) {
-		UE_LOG(LogTemp, Error, TEXT("Called AddMod with NULL Object"));
-		return;
-	}
-	for (int i = 0; i < mods.Num(); i++)
-	{
-		if (mod->GetClass() == mods[i]->GetClass())
-		{
-			mods[i]->stacks++;
-			mods[i]->OnApply(player);
-			mod->ConditionalBeginDestroy();
-			UpdateCoreStats();
-			return;
+		UModBase* selectedMod = nullptr;
+		for (UModBase* mod : mods) {
+			if (mod->GetClass() == modType.Get()) {
+				selectedMod = mod;
+				selectedMod->stacks++;
+				break;
+			}
 		}
+
+		if (selectedMod == nullptr) {
+			selectedMod = NewObject<UModBase>(this, modType);
+			mods.Add(selectedMod);
+		}
+
+		selectedMod->OnApply(player);
+		UpdateCoreStats();
 	}
-
-	mods.Add(mod);
-	mod->OnApply(player);
-	UpdateCoreStats();
-
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *mod->GetClass()->GetFullName() );
-	return;
+	
 }
 
 
