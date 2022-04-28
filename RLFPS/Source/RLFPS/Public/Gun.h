@@ -97,6 +97,7 @@ public:
 	/*
 	* Gets a new set of two random mods. Sets ModOptions.
 	*/
+	UFUNCTION(BlueprintCallable)
 	TArray<UModBase*> GetNewModOptions();
 	/*
 	* Returns the current Mod Options. Blueprint callable.
