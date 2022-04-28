@@ -567,7 +567,7 @@ TArray<TSubclassOf<UModBase>> AGun::GetNewModOptions()
 void AGun::LevelUp(TSubclassOf<UModBase> newModType)
 {
 	if (level == 0) {
-		OnFirstUpgrade();
+		//OnFirstUpgrade();
 	}
 
 	level++;
