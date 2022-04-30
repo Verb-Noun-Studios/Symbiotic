@@ -31,6 +31,11 @@ void USaveControllerSubsystem::SaveGunData(AGun* gun) {
 		stacks.Add(mod->stacks);
 	}
 
+	if (gun->activeItem) {
+		subclasses.Add(gun->activeItem->GetClass());
+		stacks.Add(1);
+	}
+
 	KilledEnemies = gun->KilledEnemies;
 }
 
@@ -39,19 +44,9 @@ void USaveControllerSubsystem::LoadGunData(AGun* gun) {
 	if (!bHasValidData) return;
 	
 
-	TArray<UModBase*>& mods = gun->mods;
-
-	mods.Empty();
-	mods.Reserve(subclasses.Num());
 	for (int i = 0; i < subclasses.Num(); i++) {
-		UModBase * mod = NewObject<UModBase>(gun, subclasses[i]);
-		int stack_count = stacks[i];
-		// I hate this :(
-		mods.Add(mod);
-		for (int j = 1; j <= stack_count; j++) {
-			mod->stacks = j;
-			mod->OnApply(gun->player);
-		}
+		for (int j = 0; j < stacks[i]; j++)
+			gun->AddMod(subclasses[i]);
 	}
 	stacks.Empty();
 	subclasses.Empty();

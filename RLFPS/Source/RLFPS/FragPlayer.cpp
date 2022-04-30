@@ -50,21 +50,31 @@ AFragPlayer::AFragPlayer()
 	FirstPersonCameraComponent->SetupAttachment(PlayerForwardRefComponent);
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(0.f, 0.f, 56.f - 4.f));
 	// Add the character collision and movement component
-	CollisionComponent = CreateDefaultSubobject<UFragPlayerCollisionComponent>(TEXT("Defragr Character Collision"));
+	CollisionComponen = CreateDefaultSubobject<UFragPlayerCollisionComponent>(TEXT("Defragr Character Collision"));
 	MovementComponent = CreateDefaultSubobject<UFragMovementComponent>(TEXT("Defragr Character Movement"));
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Defragr Health Component"));
-	if (CollisionComponent)
+	if (CollisionComponen)
 	{
-		CollisionComponent->Player = this;
-		CollisionComponent->MovementComponent = MovementComponent;
+		CollisionComponen->Player = this;
+		CollisionComponen->MovementComponent = MovementComponent;
 	}
 	// Throw down the character movement
 	if (MovementComponent)
 	{
 		MovementComponent->UpdatedComponent = Collider;
-		MovementComponent->CollisionComponent = CollisionComponent;
+		MovementComponent->CollisionComponent = CollisionComponen;
 		MovementComponent->Player = this;
 	}
+	APlayerController* PlayerController = Cast<APlayerController>(Controller);
+	if (PlayerController)
+	{
+		if (PlayerController->PlayerCameraManager)
+		{
+			PlayerController->PlayerCameraManager->ViewPitchMin = pitchMinY; // Use whatever values you want
+			PlayerController->PlayerCameraManager->ViewPitchMax = pitchMaxY;
+		}
+	}
+
 }
 // Called to bind functionality to input
 void AFragPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -143,7 +153,6 @@ void AFragPlayer::SetRotation(FQuat NewRotation)
 	NewCameraRotation.Roll = 0.f;
 	NewCameraRotation.Pitch = FMath::Clamp(NewCameraRotation.Pitch, -0.0f, 0.0f);
 	FString pitchString = FString::SanitizeFloat(NewCameraRotation.Pitch);
-	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Test"));
 	NewCameraRotation.Yaw = 0.f;
 	FirstPersonCameraComponent->SetRelativeRotation(NewCameraRotation);
 	// Squash the roll and pitch of the rotation for the Z
@@ -181,14 +190,7 @@ void AFragPlayer::UpdateControls(bool rightHanded)
 
 }
 
-void AFragPlayer::AddRotation()
-{
-	
-	FQuat newQuat(FMath::RandRange(xMin, xMax), FMath::FRandRange(yMin, yMax), FMath::FRandRange(zMin, zMax), 1.0f);
-	FRotator RotationToAdd(newQuat);
 
-	FirstPersonCameraComponent->AddLocalRotation(RotationToAdd);
-}
 
 FRotator AFragPlayer::GetRotation()
 {
@@ -212,17 +214,11 @@ void AFragPlayer::UpdateViewingAngles()
 	if (FirstPersonCameraComponent)
 	{
 		FVector v(0.f, -MouseVelocity.Y * MouseSensitivity, 0.f);
+		if (FirstPersonCameraComponent->GetComponentRotation().Pitch + v.Y > pitchMaxY)
+			v = FVector(0.0f, 0.0f, 0.0f);
+		if (FirstPersonCameraComponent->GetComponentRotation().Pitch + v.Y < pitchMinY)
+			v = FVector(0.0f, 0.0f, 0.0f);
 		FirstPersonCameraComponent->AddLocalRotation(FQuat::MakeFromEuler(v));
-		FMinimalViewInfo cameraViewInfo;
-		FirstPersonCameraComponent->GetCameraView(1.0f, cameraViewInfo);
-		if (cameraViewInfo.Rotation.Pitch > pitchMaxY) {
-			FRotator temp(pitchMaxY * MouseSensitivity, cameraViewInfo.Rotation.Yaw, cameraViewInfo.Rotation.Roll);
-			FirstPersonCameraComponent->SetWorldRotation(temp);
-		}
-		if (cameraViewInfo.Rotation.Pitch < pitchMinY) {
-			FRotator temp(pitchMinY * MouseSensitivity, cameraViewInfo.Rotation.Yaw, cameraViewInfo.Rotation.Roll);
-			FirstPersonCameraComponent->SetWorldRotation(temp);
-		}
 	}
 	// Rotate the reference point component
 	if (PlayerForwardRefComponent)

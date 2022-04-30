@@ -12,9 +12,12 @@ AGruntCharacter::AGruntCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Defragr Health Component"));
 
-	
+
 	// (thornton) hack to make not spawn inside floor
 	GetRootComponent()->AddLocalOffset(FVector::UpVector * GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+
+
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *GetClass()->GetDefaultObject()->GetName());
 }
 
 // Called when the game starts or when spawned
@@ -49,7 +52,6 @@ void AGruntCharacter::Tick(float DeltaTime)
 	}
 
 }
-
 
 void AGruntCharacter::AddEffect(UStatusEffect* newEffect)
 {

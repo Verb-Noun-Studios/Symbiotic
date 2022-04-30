@@ -4,8 +4,10 @@
 #include "BeaconActor.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "EngineUtils.h"
 #include "Gun.h"
+#include "ActiveItem.h"
 
 // Sets default values
 ABeaconActor::ABeaconActor()
@@ -91,7 +93,9 @@ void ABeaconActor::BeaconEventComplete() {
 	MeshTop->SetMaterial(1, BurntOutMaterial);
 	MeshBottom->SetMaterial(1, BurntOutMaterial);
 
-	AGun* gun = (AGun*)UGameplayStatics::GetActorOfClass(GetWorld(), AGun::StaticClass() );
+	AGun* gun = (AGun*)UGameplayStatics::GetActorOfClass(GetWorld(), AGun::StaticClass());
+
+
 	gun->AddMod(newMod);
 }
 

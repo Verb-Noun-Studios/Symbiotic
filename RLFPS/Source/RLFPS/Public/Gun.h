@@ -22,8 +22,7 @@ class RLFPS_API AGun : public AActor
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> ProjectileClass;
-	
-	
+
 
 public:	
 	// Sets default values for this actor's properties
@@ -35,14 +34,11 @@ public:
 	* Adds a mod to the list. If the mod is already in the list it adds to its stacks
 	*/
 	UFUNCTION(BlueprintCallable)
-	void AddMod(UModBase* mod);
-
 	void AddMod(TSubclassOf<UModBase> modType);
 
-	UFUNCTION(BlueprintCallable)
-	void ReplaceActiveItem(UActiveItem* activeItem);
 
 	
+
 	/*
 	* Gets the state of the keys
 	*/
@@ -94,19 +90,19 @@ public:
 	/*
 	* Gets a new set of two random mods. Sets ModOptions.
 	*/
-	TArray<UModBase*> GetNewModOptions();
+	TArray<TSubclassOf<UModBase>> GetNewModOptions();
 	/*
 	* Returns the current Mod Options. Blueprint callable.
 	*/
 	UFUNCTION(BlueprintCallable)
-		TArray<UModBase*> GetModOptions();
+		TArray<TSubclassOf<UModBase>> GetModOptions();
 
 	
 	/*
 	* Levels up the Gun and adds mod based on parameter.
 	*/
 
-	void LevelUp(UModBase* newModType);
+	void LevelUp(TSubclassOf<UModBase> newModType);
 	UFUNCTION(BlueprintImplementableEvent)
 	void DisableUpgradeUI();
 
@@ -202,7 +198,7 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool readyToLevelUp = false;
 	UPROPERTY(BlueprintReadWrite)
-	TArray<UModBase*> ModOptions;
+	TArray<TSubclassOf<UModBase>> ModOptions;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float levelingRate = 1.5;
 	int level = 0;
